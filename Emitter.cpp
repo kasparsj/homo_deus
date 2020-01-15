@@ -76,10 +76,6 @@ void Emitter::update() {
       if (lightLists[i]->lights[j]->isExpired) {
         delete lightLists[i]->lights[j];
         lightLists[i]->lights[j] = NULL;
-        #ifdef HD_DEBUG
-        Serial.print("Light deleted");
-        Serial.println(i);
-        #endif
         continue;
       }
       allExpired = false;
@@ -93,6 +89,10 @@ void Emitter::update() {
     if (allExpired) {
       delete lightLists[i];
       lightLists[i] = NULL;
+      #ifdef HD_DEBUG
+      Serial.print("LightList deleted");
+      Serial.println(i);
+      #endif
     }
   }
 }

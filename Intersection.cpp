@@ -68,9 +68,6 @@ void Intersection::update() {
         if (light->position >= 1.f) {
           light->isExpired = true;
           lights[i] = 0;
-          #ifdef HD_DEBUG
-          Serial.println("Light expired");
-          #endif
         }
       }
       else if (light->position >= 1.0) {
