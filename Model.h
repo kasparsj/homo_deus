@@ -7,11 +7,14 @@
 class Model {
 
   public:
-  
+
+    int id;
     float defaultW;
+    // todo: perhaps better use HashMap
     Weight *weights[MAX_PORTS];
     
-    Model(float defaultW) {
+    Model(int id, float defaultW) {
+      this->id = id;
       this->defaultW = defaultW;
     }
   

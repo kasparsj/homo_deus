@@ -30,7 +30,7 @@ class HeptagonStar {
     Connection middleConnections[14];
     Connection innerConnections[7];
   
-    Model models[NUM_MODELS] = { Model(1), Model(0), Model(1), Model(0) };
+    Model models[NUM_MODELS] = { Model(M_DEFAULT, 1), Model(M_STAR, 0), Model(M_OUTER_STAR, 1), Model(M_INNER_CIRCLE, 0) };
   
     HeptagonStar() {}
     void setup();

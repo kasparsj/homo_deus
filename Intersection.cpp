@@ -59,7 +59,9 @@ void Intersection::outgoing(Light *light) {
   if (port == NULL) {
     Serial.print("Intersection ");
     Serial.print(topPixel);
-    Serial.println("choosePort returned NULL");
+    Serial.print(" choosePort returned NULL ");
+    Serial.print(" for model ");
+    Serial.println(light->model->id);
     return;
   }
   #endif
