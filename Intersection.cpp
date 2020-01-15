@@ -3,10 +3,15 @@
 #include "Model.h"
 #include <Arduino.h>
 
-Intersection::Intersection(int numPorts, int topPixel, int bottomPixel) {
+Intersection::Intersection(int maxLights, int numPorts, int topPixel, int bottomPixel) {
   this->numPorts = numPorts;
   this->topPixel = topPixel;
   this->bottomPixel = bottomPixel;
+  this->maxLights = maxLights;
+  this->lights = new Light*[maxLights]();
+  for (int i=0; i<maxLights; i++) {
+    lights[i] = NULL;
+  }
   this->ports = new Port*[numPorts]();
   for (int i=0; i<numPorts; i++) {
     ports[i] = NULL;
@@ -33,11 +38,12 @@ void Intersection::emit(LightList *lightList) {
 }
 
 void Intersection::addLight(Light *light) {
-  for (int i=0; i<MAX_LIGHTS; i++) {
-    if (!lights[i]) {
-      lights[i] = light;
-      break;
-    }
+  if (freeLight < maxLights) {
+    lights[freeLight] = light;
+    freeLight++;
+  }
+  else {
+    Serial.println("Intersection addLight no free slot");
   }
 }
 
@@ -49,13 +55,21 @@ void Intersection::outgoing(Light *light) {
   else {
     port = choosePort(light->model, light->inPort);
   }
+  #ifdef HD_DEBUG
+  if (port == NULL) {
+    Serial.print("Intersection ");
+    Serial.print(topPixel);
+    Serial.println("choosePort returned NULL");
+    return;
+  }
+  #endif
   light->setOutPort(port);
   light->position -= 1.f;
   port->connection->addLight(light);
 }
 
 void Intersection::update() {
-  for (int i=0; i<MAX_LIGHTS; i++) {
+  for (int i=0; i<freeLight; i++) {
     Light *light = lights[i];
     if (light && !light->isExpired) {
       light->resetPixels();
@@ -67,16 +81,27 @@ void Intersection::update() {
       if (light->shouldExpire()) {
         if (light->position >= 1.f) {
           light->isExpired = true;
-          lights[i] = 0;
+          removeLight(i);
         }
       }
       else if (light->position >= 1.0) {
         // neurons are updated after connections
         outgoing(light);
-        lights[i] = 0;
+        removeLight(i);
       }        
     }
   }
+}
+
+void Intersection::removeLight(int i) {
+  if (i < (freeLight - 1)) {
+    lights[i] = lights[(freeLight - 1)];
+    lights[(freeLight - 1)] = NULL;
+  }
+  else {
+    lights[i] = NULL;
+  }
+  freeLight--;
 }
 
 float Intersection::sumW(Model *model, Port *incoming) {
@@ -110,7 +135,7 @@ Port *Intersection::choosePort(Model *model, Port *incoming) {
     if (sum == 0) {
       return randomPort(incoming);
     }
-    float rnd = random(sum);
+    float rnd = random(sum * 1000) / 1000.f;
     for (int i=0; i<numPorts; i++) {
        Port *port = ports[i];
        float w = model->get(port, incoming);
@@ -120,5 +145,5 @@ Port *Intersection::choosePort(Model *model, Port *incoming) {
        }
        rnd -= w;
     }
-    return 0;
+    return NULL;
   }

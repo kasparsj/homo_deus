@@ -2,24 +2,19 @@
 
 #include "Config.h"
 #include "Port.h"
+#include "HashMap.h"
 
 class Weight {
 
   public:
     float w;
-    //float conditional[MAX_PORTS];
+    HashMap<int, float, MAX_CONDITIONAL_WEIGHTS> conditional;
     
     Weight(float w) {
       this->w = w;
     }
     
-    void add(Port *incoming, float w) {
-      //conditional[incoming->id] = w;
-    }
-    
-    float get(Port *incoming) {
-      //return conditional[incoming->id] != NULL ? conditional[incoming->id] : w;
-      return w;
-    }
+    void add(Port *incoming, float w);
+    float get(Port *incoming);
   
 };

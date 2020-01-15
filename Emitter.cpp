@@ -55,10 +55,6 @@ void Emitter::emitNew(int which, float speed, int life) {
       //OscMessage msg = new OscMessage("/hd/spawn");
       //msg.add(life / 50.f);
       //oscP5.send(msg, supercollider);
-      #ifdef HD_DEBUG
-      Serial.print("emitted : ");
-      Serial.println(which);
-      #endif
       break;  
     }
   }
@@ -89,10 +85,6 @@ void Emitter::update() {
     if (allExpired) {
       delete lightLists[i];
       lightLists[i] = NULL;
-      #ifdef HD_DEBUG
-      Serial.print("LightList deleted");
-      Serial.println(i);
-      #endif
     }
   }
 }

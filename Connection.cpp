@@ -37,16 +37,24 @@ void Connection::setup(Intersection *from, Intersection *to) {
       numLeds = abs(fromPixel - toPixel) + 1;
     }
   }
+  if (numLeds > 0) {
+    maxLights = numLeds * 4;
+    lights = new Light*[maxLights]();
+    for (int i=0; i<maxLights; i++) {
+      lights[i] = NULL;
+    }    
+  }
 }
 
 void Connection::addLight(Light *light) {
   if (numLeds > 0) {
-    for (int i=0; i<MAX_LIGHTS; i++) {
-      if (lights[i] == NULL) {
-        lights[i] = light;
-        break;
-      }
-    }    
+    if (freeLight < maxLights) {
+      lights[freeLight] = light;
+      freeLight++;
+    }
+    else {
+      Serial.println("Connection addLight no free slot");
+    }
   }
   else {
     outgoing(light);
@@ -55,7 +63,7 @@ void Connection::addLight(Light *light) {
 
 void Connection::update() {
   if (numLeds == 0) return;
-  for (int i=0; i<MAX_LIGHTS; i++) {
+  for (int i=0; i<freeLight; i++) {
     Light *light = lights[i];
     if (light != NULL) {
       light->resetPixels();
@@ -73,10 +81,21 @@ void Connection::update() {
       }
       else {
         outgoing(lights[i]);
-        lights[i] = NULL;
+        removeLight(i);
       }
     }
   }
+}
+
+void Connection::removeLight(int i) {
+  if (i < (freeLight - 1)) {
+    lights[i] = lights[(freeLight - 1)];
+    lights[(freeLight - 1)] = NULL;
+  }
+  else {
+    lights[i] = NULL;
+  }
+  freeLight--;
 }
 
 void Connection::outgoing(Light *light) {
