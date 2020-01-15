@@ -20,6 +20,10 @@ class Light {
     Light *linkedPrev;
     Port *inPort;
     Port *outPort;
+    int pixel1 = -1;
+    int pixel2 = -1;
+    float pixel1Bri = 0;
+    float pixel2Bri = 0;
     
     Light(float brightness, float speed, int life, Model *model, Light *linkedPrev) {
       this->brightness = brightness;
@@ -43,23 +47,20 @@ class Light {
       this->model = model;
     }
     
-    void update() {
-      position += speed;
-      age++;
-    }
+    void update();
     
     bool expired() {
       return age >= life;
     }
     
-    Light *setInPort(Port *port) {
+    void setInPort(Port *port) {
       inPort = port;
-      return this;
     }
     
-    Light *setOutPort(Port *port) {
+    void setOutPort(Port *port) {
       outPort = port;
-      return this;
     }
+
+    void resetPixels();
   
 };

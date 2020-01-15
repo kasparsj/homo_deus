@@ -43,12 +43,13 @@ void Intersection::outgoing(Light *light) {
 }
 
 void Intersection::update() {
-  brightness = 0;
   for (int i=0; i<MAX_LIGHTS; i++) {
     Light *light = lights[i];
     if (light != NULL) {
+      light->resetPixels();
       if (light->position >= 0) {
-        brightness += light->brightness;
+        light->pixel1 = topPixel;
+        light->pixel1Bri = light->brightness;
       }
       light->update();
       if (light->expired()) {

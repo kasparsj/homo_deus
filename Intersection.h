@@ -14,7 +14,6 @@ class Intersection {
     int topPixel;
     int bottomPixel;
     Light *lights[MAX_LIGHTS];
-    float brightness;
     
     Intersection(int numPorts, int topPixel, int bottomPixel = -1) {
       this->numPorts = numPorts;

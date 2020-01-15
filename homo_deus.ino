@@ -1,26 +1,25 @@
-#include <NeoPixelBrightnessBus.h>
+//#include <NeoPixelBrightnessBus.h>
+#include <NeoPixelBus.h>
 #include "BluetoothSerial.h"
 
+#include "Config.h"
 #include "HeptagonStar.h"
 #include "Emitter.h"
 
-const uint16_t PixelCount = 922; // make sure to set this to the number of pixels in your strip
-const uint8_t PixelPin = 14;
-const uint16_t ButtonPin = 26;
-
 NeoGamma<NeoGammaTableMethod> colorGamma;
-NeoPixelBrightnessBus<NeoGrbFeature, NeoWs2813Method> strip(PixelCount, PixelPin);
+NeoPixelBus<NeoGrbFeature, NeoWs2813Method> strip(PIXEL_COUNT, PIXEL_PIN);
 HeptagonStar heptagon;
 Emitter *emitter;
 
 void setup() {
   Serial.begin(115200);
 
-  strip.SetBrightness(32);
+  // todo: should not use BrightnessBus
+  // strip.SetBrightness(32);
   strip.Begin();
   strip.Show();
 
-  pinMode(ButtonPin, INPUT);
+  pinMode(BUTTON_PIN, INPUT);
 
   setupModels();
 }
@@ -35,11 +34,14 @@ void loop() {
 }
 
 void update() {
-  emitter->update();
+  emitter->emit();
   heptagon.update();
+  emitter->update();
 }
 
 void draw() {
-  //strip.SetPixelColor(seq.pos + j, seq.getColor(j));
+  for (int i=0; i<PIXEL_COUNT; i++) {
+    strip.SetPixelColor(i, RgbColor(min(emitter->pixelValues[i], 1.f)));
+  }
   strip.Show();
 }

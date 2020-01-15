@@ -31,9 +31,9 @@ class LightList {
     }
 
     void setup(int numLights);
-    LightList *setupRandom(int numLights, bool linked = true);
-    LightList *setupNoise(int numLights, float threshold);
-    LightList *setupNoise(int numLights) {
+    void setupRandom(int numLights, bool linked = true);
+    void setupNoise(int numLights, float threshold);
+    void setupNoise(int numLights) {
       return setupNoise(numLights, 0.0);
     }
 
@@ -41,9 +41,9 @@ class LightList {
       return lights[i];
     }
     
-    LightList *setLinked(bool linked);
-    LightList *setModel(Model *model);
-    LightList *setSpeed(float speed);
-    LightList *setLife(int numFrames);
+    void setLinked(bool linked);
+    void setModel(Model *model);
+    void setSpeed(float speed);
+    void setLife(int numFrames);
   
 };

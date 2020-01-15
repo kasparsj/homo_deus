@@ -16,9 +16,12 @@ class Connection {
     Port *toPort;
     Light *lights[MAX_LIGHTS];
     int numLeds;
-    float *brightness;
+    int pixelDir;
+    int fromPixel;
+    int toPixel;
     
-    void setup(Intersection *from, Intersection *to, int numLeds);
+    void setup(Intersection *from, Intersection *to);
     void addLight(Light *light);
     void update();
+    void outgoing(Light *light);
 };
