@@ -11,7 +11,7 @@ class Model {
     int id;
     float defaultW;
     // todo: perhaps better use HashMap
-    Weight *weights[MAX_PORTS];
+    Weight *weights[MAX_PORTS] = {0};
     
     Model(int id, float defaultW) {
       this->id = id;

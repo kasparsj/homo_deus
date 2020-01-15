@@ -51,23 +51,30 @@ void Intersection::outgoing(Light *light) {
   Port *port;
   if (light->linkedPrev != NULL) {
     port = light->linkedPrev->outPort;
+    #ifdef HD_DEBUG
+    if (port == NULL) {
+      Serial.print("linkedPrev->outPort is NULL ");
+      Serial.println(topPixel);
+    }
+    #endif
   }
   else {
     port = choosePort(light->model, light->inPort);
+    #ifdef HD_DEBUG
+    if (port == NULL) {
+      Serial.print("Intersection ");
+      Serial.print(topPixel);
+      Serial.print(" choosePort returned NULL ");
+      Serial.print(" for model ");
+      Serial.println(light->model->id);
+    }
+    #endif
   }
-  #ifdef HD_DEBUG
-  if (port == NULL) {
-    Serial.print("Intersection ");
-    Serial.print(topPixel);
-    Serial.print(" choosePort returned NULL ");
-    Serial.print(" for model ");
-    Serial.println(light->model->id);
-    return;
-  }
-  #endif
   light->setOutPort(port);
   light->position -= 1.f;
-  port->connection->addLight(light);
+  if (port != NULL) {
+    port->connection->addLight(light);
+  }
 }
 
 void Intersection::update() {
@@ -134,7 +141,7 @@ Port *Intersection::randomPort(Port *incoming) {
 
 Port *Intersection::choosePort(Model *model, Port *incoming) {
     float sum = sumW(model, incoming);
-    if (sum == 0) {
+    if (sum <= 0.f) {
       return randomPort(incoming);
     }
     float rnd = random(sum * 1000) / 1000.f;

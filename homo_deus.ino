@@ -46,4 +46,13 @@ void draw() {
 void loop() {
   update();
   draw();
+  #ifdef HD_DEBUG
+  static unsigned long lastDebug = 0;
+  unsigned long ms = millis();
+  if (ms - lastDebug > 10000) {
+    lastDebug = ms;
+    Serial.print("Free heap: ");
+    Serial.println(ESP.getFreeHeap());
+  }
+  #endif
 }
