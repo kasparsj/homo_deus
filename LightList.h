@@ -19,7 +19,6 @@ class LightList {
     Light **lights;
     
     LightList(float speed) {
-      this->numLights = numLights;
       this->speed = speed;
     }
     

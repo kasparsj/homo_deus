@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Arduino.h>
 #include "Port.h"
 
 class Model;
@@ -24,6 +23,7 @@ class Light {
     int pixel2 = -1;
     float pixel1Bri = 0;
     float pixel2Bri = 0;
+    bool isExpired = false;
     
     Light(float brightness, float speed, int life, Model *model, Light *linkedPrev) {
       this->brightness = brightness;
@@ -34,7 +34,7 @@ class Light {
       position = -1;
     }
     
-    Light(float brightness, float speed, int life) : Light(brightness, speed, life, NULL, NULL) {
+    Light(float brightness, float speed, int life) : Light(brightness, speed, life, 0, 0) {
     }
     
     Light(float brightness) : Light(brightness, SPEED, LIFE) {
@@ -49,7 +49,7 @@ class Light {
     
     void update();
     
-    bool expired() {
+    bool shouldExpire() {
       return age >= life;
     }
     

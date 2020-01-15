@@ -1,17 +1,19 @@
 #include "LightList.h"
 #include "Light.h"
 #include "Model.h"
+#include <Arduino.h>
 
 FastNoise LightList::fastNoise;
 
 void LightList::setup(int numLights) {
+  this->numLights = numLights;
   lights = new Light*[numLights]();
 }
 
 void LightList::setupRandom(int numLights, boolean linked) {
   setup(numLights);
   for (int i=0; i<numLights; i++) {
-    Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : NULL;
+    Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : 0;
     (*this)[i] = new Light(random(1.0), speed, life, model, linkedPrev);
   }
 }
@@ -20,7 +22,7 @@ void LightList::setupNoise(int numLights, float threshold) {
   setup(numLights);
   float noiseId = random(100000);
   for (int i=0; i<numLights; i++) {
-    Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : NULL;
+    Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : 0;
     float whiteNoise = LightList::fastNoise.GetWhiteNoiseInt(noiseId, i);
     (*this)[i] = new Light(threshold + ((whiteNoise + 1.0) / 2.0) * (1.0 - threshold), speed, life, model, linkedPrev);
   }
@@ -36,7 +38,7 @@ void LightList::setModel(Model *model) {
 void LightList::setLinked(bool linked) {
   this->linked = linked;
   for (int i=1; i<numLights; i++) {
-    (*this)[i]->linkedPrev = linked ? (*this)[i-1] : NULL; 
+    (*this)[i]->linkedPrev = linked ? (*this)[i-1] : 0; 
   }
 }
 

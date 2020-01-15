@@ -1,10 +1,11 @@
 #include "Intersection.h"
 #include "Connection.h"
 #include "Model.h"
+#include <Arduino.h>
 
 void Intersection::addPort(Port *p) {
   for (int i=0; i<numPorts; i++) {
-    if (ports[i] == NULL) {
+    if (!ports[i]) {
       ports[i] = p;
       p->intersection = this;
     }
@@ -22,7 +23,7 @@ void Intersection::emit(LightList *lightList) {
 
 void Intersection::addLight(Light *light) {
   for (int i=0; i<MAX_LIGHTS; i++) {
-    if (lights[i] == NULL) {
+    if (!lights[i]) {
       lights[i] = light;
       break;
     }
@@ -31,7 +32,7 @@ void Intersection::addLight(Light *light) {
 
 void Intersection::outgoing(Light *light) {
   Port *port;
-  if (light->linkedPrev != NULL) {
+  if (light->linkedPrev) {
     port = light->linkedPrev->outPort;
   }
   else {
@@ -45,23 +46,26 @@ void Intersection::outgoing(Light *light) {
 void Intersection::update() {
   for (int i=0; i<MAX_LIGHTS; i++) {
     Light *light = lights[i];
-    if (light != NULL) {
+    if (light && !light->isExpired) {
       light->resetPixels();
       if (light->position >= 0) {
         light->pixel1 = topPixel;
         light->pixel1Bri = light->brightness;
       }
       light->update();
-      if (light->expired()) {
+      if (light->shouldExpire()) {
         if (light->position >= 1.0) {
-          delete lights[i];
-          lights[i] = NULL;
+          light->isExpired = true;
+          lights[i] = 0;
+          #ifdef DEBUG
+          Serial.println("Light expired");
+          #endif
         }
       }
       else if (light->position >= 1.0) {
         // neurons are updated after connections
         outgoing(lights[i]);
-        lights[i] = NULL;
+        lights[i] = 0;
       }        
     }
   }
@@ -99,5 +103,5 @@ Port *Intersection::choosePort(Model *model, Port *incoming) {
        }
        rnd -= w;
     }
-    return NULL;
+    return 0;
   }

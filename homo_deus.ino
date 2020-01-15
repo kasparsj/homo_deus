@@ -36,12 +36,12 @@ void loop() {
 void update() {
   emitter->emit();
   heptagon.update();
-  emitter->update();
+  //emitter->update();
 }
 
 void draw() {
   for (int i=0; i<PIXEL_COUNT; i++) {
-    strip.SetPixelColor(i, RgbColor(min(emitter->pixelValues[i], 1.f)));
+    strip.SetPixelColor(i, RgbColor(min(emitter->pixelValues[i], 1.f) * MAX_BRIGHTNESS, 0, 0));
   }
   strip.Show();
 }
