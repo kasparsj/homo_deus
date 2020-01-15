@@ -14,6 +14,8 @@ Emitter *emitter;
 void setup() {
   Serial.begin(115200);
 
+  heptagon.setup();
+
   // todo: should not use BrightnessBus
   // strip.SetBrightness(32);
   strip.Begin();
@@ -21,22 +23,17 @@ void setup() {
 
   pinMode(BUTTON_PIN, INPUT);
 
-  setupModels();
-}
-
-void setupModels() {
   emitter = new Emitter(heptagon.models, heptagon.outerNeurons);
-}
 
-void loop() {
-  update();
-  draw();
+  #ifdef HD_DEBUG
+  Serial.println("setup complete");
+  #endif
 }
 
 void update() {
   emitter->emit();
   heptagon.update();
-  //emitter->update();
+  emitter->update();
 }
 
 void draw() {
@@ -44,4 +41,9 @@ void draw() {
     strip.SetPixelColor(i, RgbColor(min(emitter->pixelValues[i], 1.f) * MAX_BRIGHTNESS, 0, 0));
   }
   strip.Show();
+}
+
+void loop() {
+  update();
+  draw();
 }

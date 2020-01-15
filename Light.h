@@ -13,26 +13,19 @@ class Light {
     float brightness;
     float speed;
     float position;
-    int age;
+    int age = 0;
     int life;
-    Model *model;
-    Light *linkedPrev;
-    Port *inPort;
-    Port *outPort;
+    Model *model = 0;
+    Light *linkedPrev = 0;
+    Port *inPort = 0;
+    Port *outPort = 0;
     int pixel1 = -1;
     int pixel2 = -1;
     float pixel1Bri = 0;
     float pixel2Bri = 0;
     bool isExpired = false;
     
-    Light(float brightness, float speed, int life, Model *model, Light *linkedPrev) {
-      this->brightness = brightness;
-      this->speed = speed;
-      this->life = life;
-      this->model = model;
-      this->linkedPrev = linkedPrev;
-      position = -1;
-    }
+    Light(float brightness, float speed, int life, Model *model, Light *linkedPrev);
     
     Light(float brightness, float speed, int life) : Light(brightness, speed, life, 0, 0) {
     }

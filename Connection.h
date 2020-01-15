@@ -13,7 +13,7 @@ class Connection {
     Intersection *to;
     Port *fromPort;
     Port *toPort;
-    Light *lights[MAX_LIGHTS];
+    Light *lights[MAX_LIGHTS] = {0};
     int numLeds;
     int pixelDir;
     int fromPixel;

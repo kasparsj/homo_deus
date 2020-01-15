@@ -13,14 +13,9 @@ class Intersection {
     Port **ports; // 2 or 4 ports
     int topPixel;
     int bottomPixel;
-    Light *lights[MAX_LIGHTS];
+    Light *lights[MAX_LIGHTS] = {0};
     
-    Intersection(int numPorts, int topPixel, int bottomPixel = -1) {
-      this->numPorts = numPorts;
-      this->ports = new Port*[numPorts]();
-      this->topPixel = topPixel;
-      this->bottomPixel = bottomPixel;
-    }
+    Intersection(int numPorts, int topPixel, int bottomPixel = -1);
   
     ~Intersection() {
       delete[] ports;

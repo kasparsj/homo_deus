@@ -15,7 +15,7 @@ class LightList {
     int life;
     bool linked;
     Model *model;
-    int numLights;
+    int numLights = 0;
     Light **lights;
     
     LightList(float speed) {

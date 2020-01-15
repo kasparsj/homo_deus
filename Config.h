@@ -1,9 +1,9 @@
-#define DEBUG
+#define HD_DEBUG
 #define PIXEL_COUNT 922
 #define PIXEL_PIN 14
 #define BUTTON_PIN 26
 #define MAX_LIGHTS 20
-#define MAX_PORTS 80
+#define MAX_PORTS 90 // 85
 #define NUM_MODELS 4
 #define MAX_LIGHT_LISTS 20
 #define MAX_BRIGHTNESS 128

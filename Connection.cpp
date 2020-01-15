@@ -37,14 +37,6 @@ void Connection::setup(Intersection *from, Intersection *to) {
       numLeds = abs(fromPixel - toPixel) + 1;
     }
   }
-  #ifdef DEBUG
-  Serial.print("Connection created ");
-  Serial.print(fromPixel);
-  Serial.print(" - ");
-  Serial.print(toPixel);
-  Serial.print(" ");
-  Serial.println(numLeds);
-  #endif
 }
 
 void Connection::addLight(Light *light) {

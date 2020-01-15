@@ -3,11 +3,22 @@
 #include "Model.h"
 #include <Arduino.h>
 
+Intersection::Intersection(int numPorts, int topPixel, int bottomPixel) {
+  this->numPorts = numPorts;
+  this->topPixel = topPixel;
+  this->bottomPixel = bottomPixel;
+  this->ports = new Port*[numPorts]();
+  for (int i=0; i<numPorts; i++) {
+    ports[i] = NULL;
+  }
+}
+
 void Intersection::addPort(Port *p) {
   for (int i=0; i<numPorts; i++) {
-    if (!ports[i]) {
+    if (ports[i] == NULL) {
       ports[i] = p;
       p->intersection = this;
+      break;
     }
   }
 }
@@ -32,14 +43,14 @@ void Intersection::addLight(Light *light) {
 
 void Intersection::outgoing(Light *light) {
   Port *port;
-  if (light->linkedPrev) {
+  if (light->linkedPrev != NULL) {
     port = light->linkedPrev->outPort;
   }
   else {
     port = choosePort(light->model, light->inPort);
   }
   light->setOutPort(port);
-  light->position -= 1.0;
+  light->position -= 1.f;
   port->connection->addLight(light);
 }
 
@@ -54,17 +65,17 @@ void Intersection::update() {
       }
       light->update();
       if (light->shouldExpire()) {
-        if (light->position >= 1.0) {
+        if (light->position >= 1.f) {
           light->isExpired = true;
           lights[i] = 0;
-          #ifdef DEBUG
+          #ifdef HD_DEBUG
           Serial.println("Light expired");
           #endif
         }
       }
       else if (light->position >= 1.0) {
         // neurons are updated after connections
-        outgoing(lights[i]);
+        outgoing(light);
         lights[i] = 0;
       }        
     }
@@ -75,6 +86,15 @@ float Intersection::sumW(Model *model, Port *incoming) {
   float sum = 0;
   for (int i=0; i<numPorts; i++) {
     Port *port = ports[i];
+    #ifdef HD_DEBUG
+    if (port == NULL) {
+      Serial.print("Intersection ");
+      Serial.print(topPixel);
+      Serial.print("port ");
+      Serial.print(i);
+      Serial.println("is NULL");
+    }
+    #endif
     sum += model->get(port, incoming);
   }
   return sum;

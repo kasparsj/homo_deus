@@ -1,5 +1,6 @@
 #include "Emitter.h"
 #include "Model.h"
+#include "HeptagonStar.h"
 #include <Arduino.h>
 
 float Emitter::randomSpeed() {
@@ -33,10 +34,9 @@ void Emitter::emit() {
 void Emitter::emitNew(int which, float speed, int life) {
   for (int i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) {
-      Model *model = &models[which];
       lightLists[i] = new LightList();
       lightLists[i]->setSpeed(speed);
-      lightLists[i]->setModel(model);
+      lightLists[i]->setModel(&models[which]);
       lightLists[i]->setLinked(true);
       lightLists[i]->setLife(life);
       lightLists[i]->setupNoise(randomLength(), randomBriThresh());
@@ -55,10 +55,11 @@ void Emitter::emitNew(int which, float speed, int life) {
       //OscMessage msg = new OscMessage("/hd/spawn");
       //msg.add(life / 50.f);
       //oscP5.send(msg, supercollider);
-      #ifdef DEBUG
-      Serial.print("emitNew: ");
+      #ifdef HD_DEBUG
+      Serial.print("emitted : ");
       Serial.println(which);
-      #endif          
+      #endif
+      break;  
     }
   }
 }
@@ -75,7 +76,7 @@ void Emitter::update() {
       if (lightLists[i]->lights[j]->isExpired) {
         delete lightLists[i]->lights[j];
         lightLists[i]->lights[j] = NULL;
-        #ifdef DEBUG
+        #ifdef HD_DEBUG
         Serial.print("Light deleted");
         Serial.println(i);
         #endif

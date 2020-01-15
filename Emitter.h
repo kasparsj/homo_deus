@@ -2,7 +2,6 @@
 
 #include "Config.h"
 #include "Intersection.h"
-#include "HeptagonStar.h"
 
 class Emitter {
 
@@ -18,7 +17,7 @@ class Emitter {
     float maxBriThresh = 0.75;
     Model *models;
     Intersection *intersections;
-    LightList *lightLists[MAX_LIGHT_LISTS];
+    LightList *lightLists[MAX_LIGHT_LISTS] = {0};
     long int nextEmit = 0;
     float pixelValues[PIXEL_COUNT];
     
