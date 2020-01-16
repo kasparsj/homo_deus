@@ -20,7 +20,7 @@ class HeptagonStar {
      };
     Intersection middleNeurons[7] = {
       Intersection(INTER_MAX_LIGHTS, 4, 614, 42), Intersection(INTER_MAX_LIGHTS, 4, 699, 350), Intersection(INTER_MAX_LIGHTS, 4, 437, 81),  Intersection(INTER_MAX_LIGHTS, 4, 745, 174), 
-      Intersection(INTER_MAX_LIGHTS, 4, 839, 481), Intersection(INTER_MAX_LIGHTS, 4, 570, 220), Intersection(INTER_MAX_LIGHTS, 4, 879, 306) };
+      Intersection(INTER_MAX_LIGHTS, 4, 839, 481), Intersection(INTER_MAX_LIGHTS, 4, 571, 220), Intersection(INTER_MAX_LIGHTS, 4, 879, 306) };
     Intersection innerNeurons[7] = {
       Intersection(INTER_MAX_LIGHTS, 4, 600, 322), Intersection(INTER_MAX_LIGHTS, 4, 55, 336), Intersection(INTER_MAX_LIGHTS, 4, 711, 69), Intersection(INTER_MAX_LIGHTS, 4, 726, 451), 
       Intersection(INTER_MAX_LIGHTS, 4, 465, 193), Intersection(INTER_MAX_LIGHTS, 4, 852, 208), Intersection(INTER_MAX_LIGHTS, 4, 866, 585) };
