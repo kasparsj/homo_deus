@@ -16,6 +16,8 @@ class Intersection {
     Light **lights;
     int maxLights;
     int freeLight = 0;
+    Light *outgoingLights[MAX_OUTGOING_LIGHTS];
+    int freeOutgoing = 0;
     
     Intersection(int maxLights, int numPorts, int topPixel, int bottomPixel = -1);
   
@@ -28,7 +30,8 @@ class Intersection {
     void emit(LightList *lightList);
     void addLight(Light *light);
     void removeLight(int i);
-    void outgoing(Light *light);
+    void addOutgoingLight(Light *light);
+    Port* sendOut(int i);
     void update();
     float sumW(Model *model, Port *incoming);
     Port *randomPort(Port *incoming);

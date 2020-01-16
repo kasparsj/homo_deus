@@ -47,36 +47,6 @@ void Intersection::addLight(Light *light) {
   }
 }
 
-void Intersection::outgoing(Light *light) {
-  Port *port;
-  if (light->linkedPrev != NULL) {
-    port = light->linkedPrev->outPort;
-    #ifdef HD_DEBUG
-    if (port == NULL) {
-      Serial.print("linkedPrev->outPort is NULL ");
-      Serial.println(topPixel);
-    }
-    #endif
-  }
-  else {
-    port = choosePort(light->model, light->inPort);
-    #ifdef HD_DEBUG
-    if (port == NULL) {
-      Serial.print("Intersection ");
-      Serial.print(topPixel);
-      Serial.print(" choosePort returned NULL ");
-      Serial.print(" for model ");
-      Serial.println(light->model->id);
-    }
-    #endif
-  }
-  light->setOutPort(port);
-  light->position -= 1.f;
-  if (port != NULL) {
-    port->connection->addLight(light);
-  }
-}
-
 void Intersection::update() {
   for (int i=0; i<freeLight; i++) {
     Light *light = lights[i];
@@ -95,11 +65,64 @@ void Intersection::update() {
       }
       else if (light->position >= 1.0) {
         // neurons are updated after connections
-        outgoing(light);
+        addOutgoingLight(light);
         removeLight(i);
       }        
     }
   }
+  int maxOutgoing = freeOutgoing;
+  for (int i=0; i<maxOutgoing; i++) {
+    if (outgoingLights[i] != NULL) {
+      sendOut(i);
+    }
+  }
+}
+
+void Intersection::addOutgoingLight(Light *light) {
+  if (freeOutgoing < MAX_OUTGOING_LIGHTS) {
+    outgoingLights[freeOutgoing] = light;
+    freeOutgoing++;    
+  }
+  else {
+    Serial.println("Intersection addOutgoingLight no free slot");
+  }
+}
+
+Port* Intersection::sendOut(int i) {
+  Light *light = outgoingLights[i];
+  Port *port;
+  if (light->linkedPrev != NULL) {
+    port = light->linkedPrev->outPort;
+    if (port == NULL) {
+      int j = -1;
+      for (int k=0; k<freeOutgoing; k++) {
+        if (outgoingLights[k] == light->linkedPrev) {
+          port = sendOut(k);
+          break;
+        }
+      }
+    }
+  }
+  else {
+    port = choosePort(light->model, light->inPort);
+    #ifdef HD_DEBUG
+    if (port == NULL) {
+      Serial.print("Intersection ");
+      Serial.print(topPixel);
+      Serial.print(" choosePort returned NULL ");
+      Serial.print(" for model ");
+      Serial.println(light->model->id);
+    }
+    #endif
+  }
+  light->setOutPort(port);
+  light->position -= 1.f;
+  if (port != NULL) {
+    port->connection->addLight(light);
+  }
+  outgoingLights[i] = NULL;
+  freeOutgoing--;
+  return port;
 }
 
 void Intersection::removeLight(int i) {

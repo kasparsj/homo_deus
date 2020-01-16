@@ -72,6 +72,9 @@ void Emitter::update() {
       if (lightLists[i]->lights[j]->isExpired) {
         delete lightLists[i]->lights[j];
         lightLists[i]->lights[j] = NULL;
+        if (j > 0 && lightLists[i]->lights[j-1] != NULL) {
+          lightLists[i]->lights[j-1]->linkedPrev = NULL;
+        }
         continue;
       }
       allExpired = false;
