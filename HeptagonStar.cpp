@@ -35,6 +35,19 @@ void HeptagonStar::setup() {
     models[M_OUTER_STAR].put(innerConnection, 0);
     models[M_INNER_CIRCLE].put(innerConnection, 1);
   }
+  
+  #ifdef HD_TEST
+  for (int i=0; i<14; i++) {
+    if (i < 7) {
+      intersections[middleNeurons[i].topPixel] = true;
+      intersections[middleNeurons[i].bottomPixel] = true;
+      intersections[innerNeurons[i].topPixel] = true;
+      intersections[innerNeurons[i].bottomPixel] = true;
+    }
+    intersections[outerNeurons[i].topPixel] = true;
+  }
+  #endif
+  
   #ifdef HD_DEBUG
   Serial.println("HeptagonStar setup complete");
   #endif
@@ -57,3 +70,9 @@ void HeptagonStar::update() {
     outerNeurons[i].update();
   }
 }
+
+#ifdef HD_TEST
+bool HeptagonStar::isIntersection(int i) {
+  return intersections[i];
+}
+#endif

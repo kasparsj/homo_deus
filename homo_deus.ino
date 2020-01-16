@@ -31,14 +31,20 @@ void setup() {
 }
 
 void update() {
+  #ifndef HD_TEST
   emitter->emit();
   heptagon.update();
   emitter->update();
+  #endif
 }
 
 void draw() {
   for (int i=0; i<PIXEL_COUNT; i++) {
+    #ifdef HD_TEST
+    strip.SetPixelColor(i, RgbColor((heptagon.isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS, 0, 0));
+    #else
     strip.SetPixelColor(i, RgbColor(min(emitter->pixelValues[i], 1.f) * MAX_BRIGHTNESS, 0, 0));
+    #endif
   }
   strip.Show();
 }

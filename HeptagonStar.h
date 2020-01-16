@@ -13,17 +13,17 @@ class HeptagonStar {
   
     // todo: insert pixel numbers
     Intersection outerNeurons[14] = { 
-       Intersection(EMITTER_MAX_LIGHTS, 2, 921), Intersection(EMITTER_MAX_LIGHTS, 2, 0), Intersection(EMITTER_MAX_LIGHTS, 2, 656), Intersection(EMITTER_MAX_LIGHTS, 2, 657), 
+       Intersection(EMITTER_MAX_LIGHTS, 2, 921), Intersection(EMITTER_MAX_LIGHTS, 2, 1), Intersection(EMITTER_MAX_LIGHTS, 2, 656), Intersection(EMITTER_MAX_LIGHTS, 2, 657), 
        Intersection(EMITTER_MAX_LIGHTS, 2, 392), Intersection(EMITTER_MAX_LIGHTS, 2, 393), Intersection(EMITTER_MAX_LIGHTS, 2, 126), Intersection(EMITTER_MAX_LIGHTS, 2, 127), 
-       Intersection(EMITTER_MAX_LIGHTS, 2, 792), Intersection(EMITTER_MAX_LIGHTS, 2, 795), Intersection(EMITTER_MAX_LIGHTS, 2, 525), Intersection(EMITTER_MAX_LIGHTS, 2, 528), 
+       Intersection(EMITTER_MAX_LIGHTS, 2, 792), Intersection(EMITTER_MAX_LIGHTS, 2, 794), Intersection(EMITTER_MAX_LIGHTS, 2, 525), Intersection(EMITTER_MAX_LIGHTS, 2, 528), 
        Intersection(EMITTER_MAX_LIGHTS, 2, 262), Intersection(EMITTER_MAX_LIGHTS, 2, 265),
      };
     Intersection middleNeurons[7] = {
       Intersection(INTER_MAX_LIGHTS, 4, 614, 42), Intersection(INTER_MAX_LIGHTS, 4, 699, 350), Intersection(INTER_MAX_LIGHTS, 4, 437, 81),  Intersection(INTER_MAX_LIGHTS, 4, 745, 174), 
-      Intersection(INTER_MAX_LIGHTS, 4, 840, 481), Intersection(INTER_MAX_LIGHTS, 4, 570, 220), Intersection(INTER_MAX_LIGHTS, 4, 880, 306) };
+      Intersection(INTER_MAX_LIGHTS, 4, 839, 481), Intersection(INTER_MAX_LIGHTS, 4, 570, 220), Intersection(INTER_MAX_LIGHTS, 4, 879, 306) };
     Intersection innerNeurons[7] = {
-      Intersection(INTER_MAX_LIGHTS, 4, 600, 322), Intersection(INTER_MAX_LIGHTS, 4, 55, 335), Intersection(INTER_MAX_LIGHTS, 4, 711, 69), Intersection(INTER_MAX_LIGHTS, 4, 725, 451), 
-      Intersection(INTER_MAX_LIGHTS, 4, 465, 193), Intersection(INTER_MAX_LIGHTS, 4, 852, 208), Intersection(INTER_MAX_LIGHTS, 4, 867, 585) };
+      Intersection(INTER_MAX_LIGHTS, 4, 600, 322), Intersection(INTER_MAX_LIGHTS, 4, 55, 336), Intersection(INTER_MAX_LIGHTS, 4, 711, 69), Intersection(INTER_MAX_LIGHTS, 4, 726, 451), 
+      Intersection(INTER_MAX_LIGHTS, 4, 465, 193), Intersection(INTER_MAX_LIGHTS, 4, 852, 208), Intersection(INTER_MAX_LIGHTS, 4, 866, 585) };
 
     Connection zeroConnections[7];
     Connection outerConnections[14];
@@ -35,5 +35,10 @@ class HeptagonStar {
     HeptagonStar() {}
     void setup();
     void update();
+
+    #ifdef HD_TEST
+    bool intersections[PIXEL_COUNT] = {false};
+    bool isIntersection(int i);
+    #endif
 
 };

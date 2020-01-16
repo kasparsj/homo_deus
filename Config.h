@@ -1,4 +1,5 @@
 #define HD_DEBUG
+#define HD_TEST
 #define PIXEL_COUNT 922
 #define PIXEL_PIN 14
 #define BUTTON_PIN 26
