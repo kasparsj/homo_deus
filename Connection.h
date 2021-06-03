@@ -20,9 +20,12 @@ class Connection {
     int pixelDir;
     int fromPixel;
     int toPixel;
+    int removeLights[MAX_OUTGOING_LIGHTS] = {-1};
+    int freeRemove = 0;
     
     void setup(Intersection *from, Intersection *to);
     void addLight(Light *light);
+    void queueRemove(int i);
     void removeLight(int i);
     void update();
     void outgoing(Light *light);

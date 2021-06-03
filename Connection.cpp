@@ -38,7 +38,7 @@ void Connection::setup(Intersection *from, Intersection *to) {
     }
   }
   if (numLeds > 0) {
-    maxLights = numLeds * 4;
+    maxLights = numLeds * 5;
     lights = new Light*[maxLights]();
     for (int i=0; i<maxLights; i++) {
       lights[i] = NULL;
@@ -69,33 +69,51 @@ void Connection::update() {
       light->resetPixels();
       // hack: fix rounding error
       float pos = round(light->position * 1000) / 1000.0;
-      if (pos < 0) {
-        light->update();
-      }
-      else if (pos < numLeds) {
+      if (pos < numLeds) {
         int ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
-        light->pixel1 = fromPixel + (floor(pos) * pixelDir);
+        light->pixel1 = fromPixel + (ledIdx * pixelDir);
         light->pixel1Bri = light->brightness;
         //light->pixel2 = 
-        light->update();
       }
       else {
-        outgoing(lights[i]);
-        removeLight(i);
+        outgoing(light);
+        queueRemove(i);
       }
     }
+  }
+  for (int i=(freeRemove-1); i>=0; i--) {
+    if (removeLights[i] >= 0) {
+      removeLight(removeLights[i]);
+      removeLights[i] = -1;
+    }
+  }
+  freeLight -= freeRemove;
+  freeRemove = 0;
+}
+
+void Connection::queueRemove(int i) {
+  if (freeRemove < MAX_OUTGOING_LIGHTS) {
+    removeLights[freeRemove] = i;
+    freeRemove++;    
+  }
+  else {
+    Serial.println("Connection queueRemove no free slot");
   }
 }
 
 void Connection::removeLight(int i) {
-  if (i < (freeLight - 1)) {
-    lights[i] = lights[(freeLight - 1)];
-    lights[(freeLight - 1)] = NULL;
+  if (i < (freeLight - freeRemove)) {
+    for (int j=1; j <= freeRemove; j++) {
+      if (lights[(freeLight - j)] != NULL) {
+        lights[i] = lights[(freeLight - j)];
+        lights[(freeLight - j)] = NULL;
+        break;
+      }
+    }
   }
   else {
     lights[i] = NULL;
   }
-  freeLight--;
 }
 
 void Connection::outgoing(Light *light) {
@@ -104,5 +122,6 @@ void Connection::outgoing(Light *light) {
   Port *port = light->outPort->direction ? fromPort : toPort;
   light->position -= numLeds;
   light->setInPort(port);
+  light->setOutPort(NULL);
   neuron->addLight(light);
 }

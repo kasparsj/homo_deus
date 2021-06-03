@@ -4,11 +4,11 @@
 #include <Arduino.h>
 
 float Emitter::randomSpeed() {
-  return minSpeed + random(max(maxSpeed - minSpeed, 0.f));
+  return EMITTER_MIN_SPEED + random(max(EMITTER_MAX_SPEED - EMITTER_MIN_SPEED, 0.f));
 }
 
 int Emitter::randomLife() {
-  return minLife + (int) random(max(maxLife - minLife, 0));
+  return EMITTER_MIN_LIFE + (int) random(max(EMITTER_MAX_LIFE - EMITTER_MIN_LIFE, 0));
 }
 
 int Emitter::randomModel() {
@@ -16,22 +16,22 @@ int Emitter::randomModel() {
 }
 
 int Emitter::randomLength() {
-  return (int) (minLength + random(max(maxLength - minLength, 0)));
+  return (int) (EMITTER_MIN_LENGTH + random(max(EMITTER_MAX_LENGTH - EMITTER_MIN_LENGTH, 0)));
 }
 
 float Emitter::randomBriThresh() {
-  return minBriThresh + random(max(maxBriThresh - minBriThresh, 0.f));
+  return EMITTER_MIN_BRI + random(max(EMITTER_MAX_BRI - EMITTER_MIN_BRI, 0.f));
 }
 
 void Emitter::emit() {
   int ms = millis();
-  if (nextEmit <= ms) {
+  if (enabled && nextEmit <= ms) {
     emitNew();
     nextEmit = (int) (ms + (30 + random(250) * 1000/60));
   }
 }
 
-void Emitter::emitNew(int which, float speed, int life) {
+void Emitter::emitNew(int which, float speed, int life, int length) {
   for (int i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) {
       lightLists[i] = new LightList();
@@ -39,7 +39,7 @@ void Emitter::emitNew(int which, float speed, int life) {
       lightLists[i]->setModel(&models[which]);
       lightLists[i]->setLinked(true);
       lightLists[i]->setLife(life);
-      lightLists[i]->setupNoise(randomLength(), randomBriThresh());
+      lightLists[i]->setupNoise(length, randomBriThresh());
       switch (which) {
         case M_DEFAULT:
           break;
@@ -50,7 +50,7 @@ void Emitter::emitNew(int which, float speed, int life) {
         case M_OUTER_STAR:
           break;
       }
-      intersections[(int) random(7)].emit(lightLists[i]);
+      intersections[(int) random(14)].emit(lightLists[i]);
       // todo: fix
       //OscMessage msg = new OscMessage("/hd/spawn");
       //msg.add(life / 50.f);
@@ -58,6 +58,9 @@ void Emitter::emitNew(int which, float speed, int life) {
       break;  
     }
   }
+  //#ifdef HD_DEBUG
+  //Serial.println("No free light lists");
+  //#endif
 }
 
 void Emitter::update() {
@@ -70,11 +73,17 @@ void Emitter::update() {
         continue;
       }
       if (lightLists[i]->lights[j]->isExpired) {
+        if (((j+1) < lightLists[i]->numLights) && (lightLists[i]->lights[(j+1)] != NULL)) {
+          lightLists[i]->lights[(j+1)]->linkedPrev = NULL;
+        }
         delete lightLists[i]->lights[j];
         lightLists[i]->lights[j] = NULL;
-        if (j > 0 && lightLists[i]->lights[j-1] != NULL) {
-          lightLists[i]->lights[j-1]->linkedPrev = NULL;
-        }
+        #ifdef HD_DEBUG
+        Serial.print("Deleted light");
+        Serial.print(i);
+        Serial.print(" ");
+        Serial.println(j);
+        #endif
         continue;
       }
       allExpired = false;
@@ -84,10 +93,15 @@ void Emitter::update() {
       if (lightLists[i]->lights[j]->pixel2 >= 0) {
         pixelValues[lightLists[i]->lights[j]->pixel2] += lightLists[i]->lights[j]->pixel2Bri;
       }
+      lightLists[i]->lights[j]->update();
     }
     if (allExpired) {
       delete lightLists[i];
       lightLists[i] = NULL;
+      #ifdef HD_DEBUG
+      Serial.print("Deleted lightList");
+      Serial.println(i);
+      #endif
     }
   }
 }

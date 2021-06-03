@@ -8,13 +8,16 @@ FastNoise LightList::fastNoise;
 void LightList::setup(int numLights) {
   this->numLights = numLights;
   lights = new Light*[numLights]();
+  for (int i=0; i<numLights; i++) {
+    lights[i] = NULL;
+  }
 }
 
 void LightList::setupRandom(int numLights, boolean linked) {
   setup(numLights);
   for (int i=0; i<numLights; i++) {
-    Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : 0;
-    (*this)[i] = new Light(random(1.0), speed, life, model, linkedPrev);
+    Light *linkedPrev = linked && i > 0 ? get(i - 1) : 0;
+    set(i, new Light(random(1.0), speed, life, model, linkedPrev));
   }
 }
 
@@ -22,36 +25,36 @@ void LightList::setupNoise(int numLights, float threshold) {
   setup(numLights);
   float noiseId = random(100000);
   for (int i=0; i<numLights; i++) {
-    Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : 0;
+    Light *linkedPrev = linked && i > 0 ? get(i - 1) : 0;
     float whiteNoise = LightList::fastNoise.GetWhiteNoiseInt(noiseId, i);
-    (*this)[i] = new Light(threshold + ((whiteNoise + 1.0) / 2.0) * (1.0 - threshold), speed, life, model, linkedPrev);
+    set(i, new Light(threshold + ((whiteNoise + 1.0) / 2.0) * (1.0 - threshold), speed, life, model, linkedPrev));
   }
 }
 
 void LightList::setModel(Model *model) {
   this->model = model;
   for (int i=0; i<numLights; i++) {
-    (*this)[i]->model = model; 
+    get(i)->model = model; 
   }
 }
 
 void LightList::setLinked(bool linked) {
   this->linked = linked;
   for (int i=1; i<numLights; i++) {
-    (*this)[i]->linkedPrev = linked ? (*this)[i-1] : 0; 
+    get(i)->linkedPrev = linked ? get(i-1) : 0; 
   }
 }
 
 void LightList::setSpeed(float speed) {
   this->speed = speed;
   for (int i=0; i<numLights; i++) {
-    (*this)[i]->speed = speed;
+    get(i)->speed = speed;
   }
 }
 
 void LightList::setLife(int numFrames) {
   this->life = numFrames;
   for (int i=0; i<numLights; i++) {
-    (*this)[i]->life = numFrames;
+    get(i)->life = numFrames;
   }
 }

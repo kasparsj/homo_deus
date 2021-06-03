@@ -30,7 +30,7 @@ void Intersection::addPort(Port *p) {
 
 void Intersection::emit(LightList *lightList) {
   for (int i=0; i<lightList->numLights; i++) {
-    Light *light = (*lightList)[i];
+    Light *light = lightList->get(i);
     light->position = i * -1;
     light->life += ceil(1.0 / light->speed * i);
     addLight(light);
@@ -50,52 +50,69 @@ void Intersection::addLight(Light *light) {
 void Intersection::update() {
   for (int i=0; i<freeLight; i++) {
     Light *light = lights[i];
-    if (light && !light->isExpired) {
+    if (light != NULL && !light->isExpired) {
       light->resetPixels();
-      if (light->position >= 0) {
+      if (light->position >= 0.f) {
         light->pixel1 = topPixel;
         light->pixel1Bri = light->brightness;
       }
-      light->update();
       if (light->shouldExpire()) {
         if (light->position >= 1.f) {
           light->isExpired = true;
-          removeLight(i);
+          queueRemove(i);
         }
       }
-      else if (light->position >= 1.0) {
+      else if (light->position >= 1.f) {
         // neurons are updated after connections
-        addOutgoingLight(light);
-        removeLight(i);
+        queueOutgoing(light);
+        queueRemove(i);
       }        
     }
   }
-  int maxOutgoing = freeOutgoing;
-  for (int i=0; i<maxOutgoing; i++) {
+  for (int i=0; i<freeOutgoing; i++) {
     if (outgoingLights[i] != NULL) {
       sendOut(i);
     }
   }
+  freeOutgoing = 0;
+  for (int i=(freeRemove-1); i>=0; i--) {
+    if (removeLights[i] >= 0) {
+      removeLight(removeLights[i]);
+      removeLights[i] = -1;
+    }
+  }
+  freeLight -= freeRemove;
+  freeRemove = 0;
 }
 
-void Intersection::addOutgoingLight(Light *light) {
+void Intersection::queueOutgoing(Light *light) {
   if (freeOutgoing < MAX_OUTGOING_LIGHTS) {
     outgoingLights[freeOutgoing] = light;
-    freeOutgoing++;    
+    freeOutgoing++;  
   }
   else {
-    Serial.println("Intersection addOutgoingLight no free slot");
+    Serial.println("Intersection queueOutgoing no free slot");
+  }
+}
+
+void Intersection::queueRemove(int i) {
+  if (freeRemove < MAX_OUTGOING_LIGHTS) {
+    removeLights[freeRemove] = i;
+    freeRemove++;    
+  }
+  else {
+    Serial.println("Intersection queueRemove no free slot");
   }
 }
 
 Port* Intersection::sendOut(int i) {
   Light *light = outgoingLights[i];
-  Port *port;
+  Port *port = NULL;
   if (light->linkedPrev != NULL) {
     port = light->linkedPrev->outPort;
     if (port == NULL) {
-      int j = -1;
-      for (int k=0; k<freeOutgoing; k++) {
+      int maxOutgoing = freeOutgoing;
+      for (int k=0; k<maxOutgoing; k++) {
         if (outgoingLights[k] == light->linkedPrev) {
           port = sendOut(k);
           break;
@@ -116,24 +133,28 @@ Port* Intersection::sendOut(int i) {
     #endif
   }
   light->setOutPort(port);
+  light->setInPort(NULL);
   light->position -= 1.f;
   if (port != NULL) {
     port->connection->addLight(light);
   }
   outgoingLights[i] = NULL;
-  freeOutgoing--;
   return port;
 }
 
 void Intersection::removeLight(int i) {
-  if (i < (freeLight - 1)) {
-    lights[i] = lights[(freeLight - 1)];
-    lights[(freeLight - 1)] = NULL;
+  if (i < (freeLight - freeRemove)) {
+    for (int j=1; j <= freeRemove; j++) {
+      if (lights[(freeLight - j)] != NULL) {
+        lights[i] = lights[(freeLight - j)];
+        lights[(freeLight - j)] = NULL;
+        break;
+      }
+    }
   }
   else {
     lights[i] = NULL;
   }
-  freeLight--;
 }
 
 float Intersection::sumW(Model *model, Port *incoming) {
@@ -170,6 +191,14 @@ Port *Intersection::choosePort(Model *model, Port *incoming) {
     float rnd = random(sum * 1000) / 1000.f;
     for (int i=0; i<numPorts; i++) {
        Port *port = ports[i];
+       #ifdef HD_DEBUG
+       if (port == NULL) {
+        Serial.print("Intersection ");
+        Serial.print(topPixel);
+        Serial.print(" choosePort port is NULL ");
+        Serial.println(i);
+       }
+       #endif
        float w = model->get(port, incoming);
        if (port == incoming || w == 0) continue;
        if (rnd < w) {

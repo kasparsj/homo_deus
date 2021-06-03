@@ -11,7 +11,7 @@ void Weight::add(Port *incoming, float w) {
 }
 
 float Weight::get(Port *incoming) {
-   if (conditional.contains(incoming->id)) {
+   if (incoming != NULL && conditional.contains(incoming->id)) {
     return conditional[incoming->id];
    }
   return w;

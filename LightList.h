@@ -26,7 +26,7 @@ class LightList {
     }
 
     ~LightList() {
-      delete[] lights;
+      delete lights;
     }
 
     void setup(int numLights);
@@ -36,8 +36,12 @@ class LightList {
       return setupNoise(numLights, 0.0);
     }
 
-    Light*& operator[](int i) {
+    Light* get(int i) {
       return lights[i];
+    }
+
+    void set(int i, Light* light) {
+      lights[i] = light;
     }
     
     void setLinked(bool linked);
