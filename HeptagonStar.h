@@ -13,30 +13,30 @@ class HeptagonStar {
   
     // todo: insert pixel numbers
     Intersection outerNeurons[14] = { 
-       Intersection(EMITTER_MAX_LIGHTS, 2, 920), Intersection(EMITTER_MAX_LIGHTS, 2, 1), 
-       Intersection(EMITTER_MAX_LIGHTS, 2, 656), Intersection(EMITTER_MAX_LIGHTS, 2, 657), 
-       Intersection(EMITTER_MAX_LIGHTS, 2, 392), Intersection(EMITTER_MAX_LIGHTS, 2, 393), 
-       Intersection(EMITTER_MAX_LIGHTS, 2, 126), Intersection(EMITTER_MAX_LIGHTS, 2, 127), 
-       Intersection(EMITTER_MAX_LIGHTS, 2, 792), Intersection(EMITTER_MAX_LIGHTS, 2, 794), 
-       Intersection(EMITTER_MAX_LIGHTS, 2, 525), Intersection(EMITTER_MAX_LIGHTS, 2, 528), 
-       Intersection(EMITTER_MAX_LIGHTS, 2, 262), Intersection(EMITTER_MAX_LIGHTS, 2, 265),
+       Intersection(EMITTER_MAX_LIGHTS, 2, 918), Intersection(EMITTER_MAX_LIGHTS, 2, 1),  // bottom
+       Intersection(EMITTER_MAX_LIGHTS, 2, 653), Intersection(EMITTER_MAX_LIGHTS, 2, 654),  // bottom left
+       Intersection(EMITTER_MAX_LIGHTS, 2, 389), Intersection(EMITTER_MAX_LIGHTS, 2, 390),  // left
+       Intersection(EMITTER_MAX_LIGHTS, 2, 125), Intersection(EMITTER_MAX_LIGHTS, 2, 126), // top left
+       Intersection(EMITTER_MAX_LIGHTS, 2, 789), Intersection(EMITTER_MAX_LIGHTS, 2, 791), // top right
+       Intersection(EMITTER_MAX_LIGHTS, 2, 522), Intersection(EMITTER_MAX_LIGHTS, 2, 525),  // right
+       Intersection(EMITTER_MAX_LIGHTS, 2, 260), Intersection(EMITTER_MAX_LIGHTS, 2, 263), // bottom right
      };
     Intersection middleNeurons[7] = {
-      Intersection(INTER_MAX_LIGHTS, 4, 614, 42), 
-      Intersection(INTER_MAX_LIGHTS, 4, 699, 350), 
-      Intersection(INTER_MAX_LIGHTS, 4, 437, 81),  
-      Intersection(INTER_MAX_LIGHTS, 4, 745, 174), 
-      Intersection(INTER_MAX_LIGHTS, 4, 839, 481), 
-      Intersection(INTER_MAX_LIGHTS, 4, 571, 220), 
-      Intersection(INTER_MAX_LIGHTS, 4, 879, 306) };
+      Intersection(INTER_MAX_LIGHTS, 4, 612, 42),  // bottom left
+      Intersection(INTER_MAX_LIGHTS, 4, 696, 347), 
+      Intersection(INTER_MAX_LIGHTS, 4, 434, 81),  
+      Intersection(INTER_MAX_LIGHTS, 4, 742, 172), // top
+      Intersection(INTER_MAX_LIGHTS, 4, 836, 478),
+      Intersection(INTER_MAX_LIGHTS, 4, 568, 218), 
+      Intersection(INTER_MAX_LIGHTS, 4, 876, 304) }; // bottom right
     Intersection innerNeurons[7] = {
-      Intersection(INTER_MAX_LIGHTS, 4, 600, 322), 
-      Intersection(INTER_MAX_LIGHTS, 4, 55, 336), 
-      Intersection(INTER_MAX_LIGHTS, 4, 711, 69), 
-      Intersection(INTER_MAX_LIGHTS, 4, 726, 451), 
-      Intersection(INTER_MAX_LIGHTS, 4, 465, 193), 
-      Intersection(INTER_MAX_LIGHTS, 4, 852, 208), 
-      Intersection(INTER_MAX_LIGHTS, 4, 866, 585) };
+      Intersection(INTER_MAX_LIGHTS, 4, 597, 320), 
+      Intersection(INTER_MAX_LIGHTS, 4, 55, 334), 
+      Intersection(INTER_MAX_LIGHTS, 4, 708, 69), 
+      Intersection(INTER_MAX_LIGHTS, 4, 723, 448),  // top left
+      Intersection(INTER_MAX_LIGHTS, 4, 462, 191), 
+      Intersection(INTER_MAX_LIGHTS, 4, 849, 206),  // right 
+      Intersection(INTER_MAX_LIGHTS, 4, 863, 582) }; // bottom right
 
     Connection zeroConnections[7];
     Connection outerConnections[14];
