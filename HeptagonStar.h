@@ -24,10 +24,10 @@ class HeptagonStar {
     Intersection middleNeurons[7] = {
       Intersection(INTER_MAX_LIGHTS, 4, 612, 42),  // bottom left
       Intersection(INTER_MAX_LIGHTS, 4, 696, 347), 
-      Intersection(INTER_MAX_LIGHTS, 4, 434, 81),  
+      Intersection(INTER_MAX_LIGHTS, 4, 434, 81),  // upper left
       Intersection(INTER_MAX_LIGHTS, 4, 742, 172), // top
       Intersection(INTER_MAX_LIGHTS, 4, 836, 478),
-      Intersection(INTER_MAX_LIGHTS, 4, 568, 218), 
+      Intersection(INTER_MAX_LIGHTS, 4, 568, 218),  // right
       Intersection(INTER_MAX_LIGHTS, 4, 876, 304) }; // bottom right
     Intersection innerNeurons[7] = {
       Intersection(INTER_MAX_LIGHTS, 4, 597, 320), 
@@ -35,7 +35,7 @@ class HeptagonStar {
       Intersection(INTER_MAX_LIGHTS, 4, 708, 69), 
       Intersection(INTER_MAX_LIGHTS, 4, 723, 448),  // top left
       Intersection(INTER_MAX_LIGHTS, 4, 462, 191), 
-      Intersection(INTER_MAX_LIGHTS, 4, 849, 206),  // right 
+      Intersection(INTER_MAX_LIGHTS, 4, 848, 206),  // right 
       Intersection(INTER_MAX_LIGHTS, 4, 863, 582) }; // bottom right
 
     Connection zeroConnections[7];
@@ -52,6 +52,8 @@ class HeptagonStar {
     #ifdef HD_TEST
     bool intersections[PIXEL_COUNT] = {false};
     bool isIntersection(int i);
+    bool connections[PIXEL_COUNT] = {false};
+    bool isConnection(int i);
     #endif
 
 };

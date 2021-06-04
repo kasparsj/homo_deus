@@ -10,7 +10,8 @@ NeoGamma<NeoGammaTableMethod> colorGamma;
 NeoPixelBus<NeoGrbFeature, NeoWs2813Method> strip(PIXEL_COUNT, PIXEL_PIN);
 HeptagonStar heptagon;
 Emitter *emitter;
-bool showIntersections = true;
+bool showIntersections = false;
+bool showConnections = false;
 
 void setup() {
   Serial.begin(115200);
@@ -45,6 +46,9 @@ void draw() {
     if (showIntersections) {
       color.B = (heptagon.isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
     }
+    if (showConnections) {
+      color.G = (heptagon.isConnection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
+    }
     #endif
     strip.SetPixelColor(i, color);
   }
@@ -75,6 +79,12 @@ void readSerial() {
       case 'i':
         showIntersections = !showIntersections;
         break;
+      case 'c':
+        showConnections = !showConnections;
+        break;
+      case 'd':
+        emitter->debug();
+        break;
       #endif
       case '1':
       case '2':
@@ -86,7 +96,7 @@ void readSerial() {
   }
 }
 
-void printHeap() {
+void printHeap() {    
   static unsigned long lastDebug = 0;
   unsigned long ms = millis();
   if (ms - lastDebug > 10000) {

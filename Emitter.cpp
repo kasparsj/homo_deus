@@ -105,3 +105,25 @@ void Emitter::update() {
     }
   }
 }
+
+#ifdef HD_TEST
+void Emitter::debug() {
+  for (int i=0; i<MAX_LIGHT_LISTS; i++) {
+    if (lightLists[i] == NULL) continue;
+    String lights = "";
+    for (int j=0; j<lightLists[i]->numLights; j++) {
+      if (lightLists[i]->lights[j] == NULL || lightLists[i]->lights[j]->isExpired) {
+        continue;
+      }
+      else {
+        lights += j;
+        lights += ", ";
+      }
+    }
+    Serial.print("LightList");
+    Serial.print(i);
+    Serial.print(" active lights: ");
+    Serial.println(lights);
+  }
+}
+#endif

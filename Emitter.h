@@ -25,17 +25,16 @@ class Emitter {
     int randomLength();
     float randomBriThresh();
     void emit();
-
     void emitNew(int which, float speed, int life, int length);
-    
     void emitNew(int which) {
       emitNew(which, randomSpeed(), randomLife(), randomLength());
     }
-    
     void emitNew() {
       emitNew(randomModel(), randomSpeed(), randomLife(), randomLength());
     }
-
     void update();
+    #ifdef HD_TEST
+    void debug();
+    #endif
 
 };

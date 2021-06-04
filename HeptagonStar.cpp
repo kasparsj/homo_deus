@@ -46,6 +46,16 @@ void HeptagonStar::setup() {
     }
     intersections[outerNeurons[i].topPixel] = true;
   }
+  for (int i=0; i<14; i++) {
+    if (i < 7) {
+      connections[innerConnections[i].fromPixel] = true;
+      connections[innerConnections[i].toPixel] = true;
+    }
+    connections[outerConnections[i].fromPixel] = true;
+    connections[outerConnections[i].toPixel] = true;
+    connections[middleConnections[i].fromPixel] = true;
+    connections[middleConnections[i].toPixel] = true;
+  }
   #endif
   
   #ifdef HD_DEBUG
@@ -74,5 +84,8 @@ void HeptagonStar::update() {
 #ifdef HD_TEST
 bool HeptagonStar::isIntersection(int i) {
   return intersections[i];
+}
+bool HeptagonStar::isConnection(int i) {
+  return connections[i];
 }
 #endif
