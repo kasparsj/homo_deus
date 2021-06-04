@@ -17,7 +17,9 @@ void LightList::setupRandom(int numLights, boolean linked) {
   setup(numLights);
   for (int i=0; i<numLights; i++) {
     Light *linkedPrev = linked && i > 0 ? get(i - 1) : 0;
-    set(i, new Light(random(1.0), speed, life, model, linkedPrev));
+    Light *light = new Light(random(1.0), speed, life, model, linkedPrev);
+    light->id = i;
+    set(i, light);
   }
 }
 
@@ -25,9 +27,11 @@ void LightList::setupNoise(int numLights, float threshold) {
   setup(numLights);
   float noiseId = random(100000);
   for (int i=0; i<numLights; i++) {
-    Light *linkedPrev = linked && i > 0 ? get(i - 1) : 0;
     float whiteNoise = LightList::fastNoise.GetWhiteNoiseInt(noiseId, i);
-    set(i, new Light(threshold + ((whiteNoise + 1.0) / 2.0) * (1.0 - threshold), speed, life, model, linkedPrev));
+    Light *linkedPrev = linked && i > 0 ? get(i - 1) : 0;
+    Light *light = new Light(threshold + ((whiteNoise + 1.0) / 2.0) * (1.0 - threshold), speed, life, model, linkedPrev);
+    light->id = i;
+    set(i, light);
   }
 }
 

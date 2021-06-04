@@ -10,6 +10,7 @@ class Light {
     static const float SPEED;
     static const int LIFE;
     
+    int id;
     float brightness;
     float speed;
     float position;

@@ -117,11 +117,17 @@ void Emitter::debug() {
       }
       else {
         lights += j;
+        lights += "(";
+        lights += lightLists[i]->lights[j]->pixel1;
+        lights += ")";
         lights += ", ";
       }
     }
     Serial.print("LightList");
     Serial.print(i);
+    Serial.print("(");
+    Serial.print(lightLists[i]->numLights);
+    Serial.print(")");
     Serial.print(" active lights: ");
     Serial.println(lights);
   }

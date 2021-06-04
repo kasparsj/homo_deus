@@ -120,18 +120,20 @@ Port* Intersection::sendOut(int i) {
       }
     }
   }
-  else {
+  if (port == NULL) {
     port = choosePort(light->model, light->inPort);
-    #ifdef HD_DEBUG
-    if (port == NULL) {
-      Serial.print("Intersection ");
-      Serial.print(topPixel);
-      Serial.print(" choosePort returned NULL ");
-      Serial.print(" for model ");
-      Serial.println(light->model->id);
-    }
-    #endif
   }
+  #ifdef HD_DEBUG
+  if (port == NULL) {
+    Serial.print("Intersection ");
+    Serial.print(topPixel);
+    Serial.print(" choosePort returned NULL ");
+    Serial.print(" for model ");
+    Serial.print(light->model->id);
+    Serial.print(" with linkedPrev ");
+    Serial.println(light->linkedPrev != NULL);
+  }
+  #endif
   light->setOutPort(port);
   light->setInPort(NULL);
   light->position -= 1.f;

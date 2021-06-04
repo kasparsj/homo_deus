@@ -54,6 +54,8 @@ class HeptagonStar {
     bool isIntersection(int i);
     bool connections[PIXEL_COUNT] = {false};
     bool isConnection(int i);
+    void debugConnections();
+    void debugIntersections();
     #endif
 
 };

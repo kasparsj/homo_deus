@@ -82,15 +82,21 @@ void readSerial() {
       case 'c':
         showConnections = !showConnections;
         break;
-      case 'd':
+      case 'L':
         emitter->debug();
+        break;
+      case 'C':
+        heptagon.debugConnections();
+        break;
+      case 'I':
+        heptagon.debugIntersections();
         break;
       #endif
       case '1':
       case '2':
       case '3':
       case '4':
-        emitter->emitNew(incomingByte - '1', EMITTER_MIN_SPEED, EMITTER_MAX_LIFE, 1);
+        emitter->emitNew(incomingByte - '1');
         break;
     }
   }

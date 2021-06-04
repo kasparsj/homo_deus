@@ -88,4 +88,63 @@ bool HeptagonStar::isIntersection(int i) {
 bool HeptagonStar::isConnection(int i) {
   return connections[i];
 }
+void HeptagonStar::debugConnections() {
+  Serial.println("--- CONNECTIONS ---");
+  for (int i=0; i<14; i++) {
+    if (i < 7) {
+      Serial.print("Zero");
+      Serial.print(i);
+      Serial.print(": ");
+      Serial.print(zeroConnections[i].freeLight);
+      Serial.print(" / ");
+      Serial.println(zeroConnections[i].maxLights);
+
+      Serial.print("Inner");
+      Serial.print(i);
+      Serial.print(": ");
+      Serial.print(innerConnections[i].freeLight);
+      Serial.print(" / ");
+      Serial.println(innerConnections[i].maxLights);
+    } 
+    Serial.print("Outer");
+    Serial.print(i);
+    Serial.print(": ");
+    Serial.print(outerConnections[i].freeLight);
+    Serial.print(" / ");
+    Serial.println(outerConnections[i].maxLights);
+
+    Serial.print("Middle");
+    Serial.print(i);
+    Serial.print(": ");
+    Serial.print(middleConnections[i].freeLight);
+    Serial.print(" / ");
+    Serial.println(middleConnections[i].maxLights);
+  }
+}
+void HeptagonStar::debugIntersections() {
+  Serial.println("--- INTERSECTIONS ---");
+  for (int i=0; i<14; i++) {
+    if (i < 7) {
+      Serial.print("Middle");
+      Serial.print(i);
+      Serial.print(": ");
+      Serial.print(middleNeurons[i].freeLight);
+      Serial.print(" / ");
+      Serial.println(middleNeurons[i].maxLights);
+
+      Serial.print("Inner");
+      Serial.print(i);
+      Serial.print(": ");
+      Serial.print(innerNeurons[i].freeLight);
+      Serial.print(" / ");
+      Serial.println(innerNeurons[i].maxLights);
+    } 
+    Serial.print("Outer");
+    Serial.print(i);
+    Serial.print(": ");
+    Serial.print(outerNeurons[i].freeLight);
+    Serial.print(" / ");
+    Serial.println(outerNeurons[i].maxLights);
+  }
+}
 #endif
