@@ -77,7 +77,10 @@ void readSerial() {
         break;
       #endif
       case '1':
-        emitter->emitNew(M_OUTER_STAR, EMITTER_MIN_SPEED, EMITTER_MAX_LIFE, 1);
+      case '2':
+      case '3':
+      case '4':
+        emitter->emitNew(incomingByte - '1', EMITTER_MIN_SPEED, EMITTER_MAX_LIFE, 1);
         break;
     }
   }

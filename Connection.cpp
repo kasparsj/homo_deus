@@ -12,7 +12,8 @@ void Connection::setup(Intersection *from, Intersection *to) {
   pixelDir = to->topPixel > from->topPixel ? 1 : -1;
   fromPixel = from->topPixel + pixelDir;
   toPixel = to->topPixel - pixelDir;
-  numLeds = abs(fromPixel - toPixel) > 4 ? abs(fromPixel - toPixel) + 1 : 0;
+  int diff = abs(fromPixel - toPixel);
+  numLeds = diff > 4 && diff < (PIXEL_COUNT - 5) ? diff + 1 : 0;
   if (from->bottomPixel > -1) {
     if (abs(from->bottomPixel - to->topPixel) < numLeds) {
       pixelDir = to->topPixel > from->bottomPixel ? 1 : -1;
