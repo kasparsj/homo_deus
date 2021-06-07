@@ -1,8 +1,8 @@
 #define HD_DEBUG
 #define HD_TEST
 #define HD_OPTIMIZED
-#define PIXEL_COUNT1 525
-#define PIXEL_COUNT2 394
+#define PIXEL_COUNT1 524
+#define PIXEL_COUNT2 395
 #define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2)
 #define PIXEL_PIN1 14
 #define PIXEL_PIN2 26
@@ -17,8 +17,8 @@
 #define EMITTER_MAX_LIFE 1440 // frames
 #define EMITTER_MIN_BRI 0.75f
 #define EMITTER_MAX_BRI 1.0f
-#define EMITTER_MIN_NEXT 5000 // ms, ~143 frames (avg fps is 35)
-#define EMITTER_MAX_NEXT 30000 // ms, ~857 frames (avg fps is 35)
+#define EMITTER_MIN_NEXT 2000 // ms, ~125 frames (avg fps is 62.5)
+#define EMITTER_MAX_NEXT 30000 // ms, ~1875 frames (avg fps is 62.5)
 #define MAX_PORTS 90 // 85
 #define NUM_MODELS 4
 #define MAX_LIGHT_LISTS 20
