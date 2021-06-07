@@ -23,11 +23,14 @@ float Emitter::randomBriThresh() {
   return EMITTER_MIN_BRI + random(max(EMITTER_MAX_BRI - EMITTER_MIN_BRI, 0.f));
 }
 
-void Emitter::emit() {
-  int ms = millis();
+int Emitter::randomNextEmit() {
+  return EMITTER_MIN_NEXT + random(max(EMITTER_MAX_NEXT - EMITTER_MIN_NEXT, 0));
+}
+
+void Emitter::emit(unsigned long ms) {
   if (enabled && nextEmit <= ms) {
     emitNew();
-    nextEmit = (int) (ms + (30 + random(250) * 1000/60));
+    nextEmit = ms + randomNextEmit();
   }
 }
 

@@ -1,19 +1,24 @@
 #define HD_DEBUG
 #define HD_TEST
 #define HD_OPTIMIZED
-#define PIXEL_COUNT 919
-#define PIXEL_PIN 14
-#define BUTTON_PIN 26
+#define PIXEL_COUNT1 525
+#define PIXEL_COUNT2 394
+#define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2)
+#define PIXEL_PIN1 14
+#define PIXEL_PIN2 26
+#define BUTTON_PIN 25
 #define INTER_MAX_LIGHTS 100
 #define EMITTER_MAX_LIGHTS 100
-#define EMITTER_MIN_SPEED 1.f
-#define EMITTER_MAX_SPEED 5.f
+#define EMITTER_MIN_SPEED 0.5f
+#define EMITTER_MAX_SPEED 10.f
 #define EMITTER_MIN_LENGTH 1
 #define EMITTER_MAX_LENGTH 30
-#define EMITTER_MIN_LIFE 120
-#define EMITTER_MAX_LIFE 1440
+#define EMITTER_MIN_LIFE 120 // frames
+#define EMITTER_MAX_LIFE 1440 // frames
 #define EMITTER_MIN_BRI 0.75f
 #define EMITTER_MAX_BRI 1.0f
+#define EMITTER_MIN_NEXT 5000 // ms, ~143 frames (avg fps is 35)
+#define EMITTER_MAX_NEXT 30000 // ms, ~857 frames (avg fps is 35)
 #define MAX_PORTS 90 // 85
 #define NUM_MODELS 4
 #define MAX_LIGHT_LISTS 20

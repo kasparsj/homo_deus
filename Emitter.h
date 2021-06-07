@@ -24,7 +24,8 @@ class Emitter {
     int randomModel();
     int randomLength();
     float randomBriThresh();
-    void emit();
+    int randomNextEmit();
+    void emit(unsigned long millis);
     void emitNew(int which, float speed, int life, int length);
     void emitNew(int which, float speed) {
       emitNew(which, speed, randomLife(), randomLength());

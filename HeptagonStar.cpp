@@ -64,7 +64,7 @@ void HeptagonStar::setup() {
 }
 
 void HeptagonStar::update() {
-  for (int k=0; k<2; k++) { // increase to 3 if needed
+  for (int k=0; k<3; k++) {
     for (int i=0; i<14; i++) {
       if (i < 7) {
         zeroConnections[i].update();
