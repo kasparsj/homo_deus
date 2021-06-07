@@ -43,7 +43,9 @@ void Emitter::emitNew(int which, float speed, int life, int length) {
       lightLists[i]->setLinked(true);
       lightLists[i]->setLife(life);
       //lightLists[i]->setupNoise(length, randomBriThresh());
-      lightLists[i]->setupFull(length, RgbColor(random(255), random(255), random(255)));
+      int trail = speed * max(1.f, length / 2.f);
+      lightLists[i]->setTrail(trail);
+      lightLists[i]->setupFull(max(1, length - trail), RgbColor(random(255), random(255), random(255)));
       switch (which) {
         case M_DEFAULT:
           break;

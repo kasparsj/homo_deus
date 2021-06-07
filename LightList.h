@@ -17,6 +17,7 @@ class LightList {
     bool linked;
     Model *model;
     int numLights = 0;
+    int trail = 0;
     Light **lights;
     
     LightList(float speed) {
@@ -50,5 +51,9 @@ class LightList {
     void setModel(Model *model);
     void setSpeed(float speed);
     void setLife(int numFrames);
+
+    void setTrail(int length) {
+      trail = length;
+    }
   
 };

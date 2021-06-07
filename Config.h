@@ -18,7 +18,7 @@
 #define EMITTER_MIN_BRI 0.75f
 #define EMITTER_MAX_BRI 1.0f
 #define EMITTER_MIN_NEXT 2000 // ms, ~125 frames (avg fps is 62.5)
-#define EMITTER_MAX_NEXT 30000 // ms, ~1875 frames (avg fps is 62.5)
+#define EMITTER_MAX_NEXT 20000 // ms, ~1250 frames (avg fps is 62.5)
 #define MAX_PORTS 90 // 85
 #define NUM_MODELS 4
 #define MAX_LIGHT_LISTS 20

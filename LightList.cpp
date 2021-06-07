@@ -36,14 +36,22 @@ void LightList::setupNoise(int numLights, float threshold) {
 }
 
 void LightList::setupFull(int numLights, RgbColor color) {
-  setup(numLights);
+  setup(numLights + trail);
   for (int i=0; i<numLights; i++) {
     Light *linkedPrev = linked && i > 0 ? get(i - 1) : 0;
     Light *light = new Light(1.0, speed, life, model, linkedPrev);
     light->setColor(color);
     light->id = i;
     set(i, light);
-  }  
+  }
+  for (int i=0; i<trail; i++) {
+    Light *linkedPrev = linked ? get(numLights + i - 1) : 0;
+    Light *light = new Light(1.0, speed, life, model, linkedPrev);
+    uint8_t dim = 255 - (255 / (trail + 1)) * (i + 1);
+    light->setColor(color.Dim(dim));
+    light->id = numLights + i;
+    set(numLights + i, light);
+  }
 }
 
 void LightList::setModel(Model *model) {
