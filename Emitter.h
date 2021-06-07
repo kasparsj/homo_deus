@@ -11,7 +11,10 @@ class Emitter {
     Intersection *intersections;
     LightList *lightLists[MAX_LIGHT_LISTS] = {0};
     long int nextEmit = 0;
-    float pixelValues[PIXEL_COUNT];
+    int pixelValuesR[PIXEL_COUNT];
+    int pixelValuesG[PIXEL_COUNT];
+    int pixelValuesB[PIXEL_COUNT];
+    int pixelDiv[PIXEL_COUNT];
     bool enabled = false;
     
     Emitter(Model (&models)[NUM_MODELS], Intersection (&intersections)[14]) {

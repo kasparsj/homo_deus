@@ -42,7 +42,8 @@ void Emitter::emitNew(int which, float speed, int life, int length) {
       lightLists[i]->setModel(&models[which]);
       lightLists[i]->setLinked(true);
       lightLists[i]->setLife(life);
-      lightLists[i]->setupNoise(length, randomBriThresh());
+      //lightLists[i]->setupNoise(length, randomBriThresh());
+      lightLists[i]->setupFull(length, RgbColor(random(255), random(255), random(255)));
       switch (which) {
         case M_DEFAULT:
           break;
@@ -67,7 +68,10 @@ void Emitter::emitNew(int which, float speed, int life, int length) {
 }
 
 void Emitter::update() {
-  memset(pixelValues, 0, sizeof(pixelValues));
+  memset(pixelValuesR, 0, sizeof(pixelValuesR));
+  memset(pixelValuesG, 0, sizeof(pixelValuesG));
+  memset(pixelValuesB, 0, sizeof(pixelValuesB));
+  memset(pixelDiv, 0, sizeof(pixelDiv));
   for (int i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     bool allExpired = true;
@@ -85,10 +89,18 @@ void Emitter::update() {
       }
       allExpired = false;
       if (lightLists[i]->lights[j]->pixel1 >= 0) {
-        pixelValues[lightLists[i]->lights[j]->pixel1] += lightLists[i]->lights[j]->pixel1Bri;
+        RgbColor color = lightLists[i]->lights[j]->getColor(lightLists[i]->lights[j]->pixel1Bri);
+        pixelValuesR[lightLists[i]->lights[j]->pixel1] += color.R;
+        pixelValuesG[lightLists[i]->lights[j]->pixel1] += color.G;
+        pixelValuesB[lightLists[i]->lights[j]->pixel1] += color.B;
+        pixelDiv[lightLists[i]->lights[j]->pixel1]++;
       }
       if (lightLists[i]->lights[j]->pixel2 >= 0) {
-        pixelValues[lightLists[i]->lights[j]->pixel2] += lightLists[i]->lights[j]->pixel2Bri;
+        RgbColor color = lightLists[i]->lights[j]->getColor(lightLists[i]->lights[j]->pixel2Bri);
+        pixelValuesR[lightLists[i]->lights[j]->pixel2] += color.R;
+        pixelValuesG[lightLists[i]->lights[j]->pixel2] += color.G;
+        pixelValuesB[lightLists[i]->lights[j]->pixel2] += color.B;
+        pixelDiv[lightLists[i]->lights[j]->pixel2]++;
       }
       lightLists[i]->lights[j]->update();
     }

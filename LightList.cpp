@@ -35,6 +35,17 @@ void LightList::setupNoise(int numLights, float threshold) {
   }
 }
 
+void LightList::setupFull(int numLights, RgbColor color) {
+  setup(numLights);
+  for (int i=0; i<numLights; i++) {
+    Light *linkedPrev = linked && i > 0 ? get(i - 1) : 0;
+    Light *light = new Light(1.0, speed, life, model, linkedPrev);
+    light->setColor(color);
+    light->id = i;
+    set(i, light);
+  }  
+}
+
 void LightList::setModel(Model *model) {
   this->model = model;
   for (int i=0; i<numLights; i++) {

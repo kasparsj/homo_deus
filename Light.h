@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Port.h"
+#include <NeoPixelBus.h>
 
 class Model;
 
@@ -16,6 +17,7 @@ class Light {
     float position;
     int age = 0;
     int life;
+    RgbColor color;
     Model *model = 0;
     Light *linkedPrev = 0;
     Port *inPort = 0;
@@ -36,6 +38,15 @@ class Light {
     }
     
     Light() : Light(1.0) {
+    }
+
+    RgbColor getColor(float brightness = 1.f) {
+      // todo: multiply by brightness
+      return color;
+    }
+
+    void setColor(RgbColor color) {
+      this->color = color;
     }
     
     void setModel(Model *model) {

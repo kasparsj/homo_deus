@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FastNoise.h"
+#include <NeoPixelBus.h>
 
 class Model;
 class Light;
@@ -35,6 +36,7 @@ class LightList {
     void setupNoise(int numLights) {
       return setupNoise(numLights, 0.0);
     }
+    void setupFull(int numLights, RgbColor color);
 
     Light* get(int i) {
       return lights[i];

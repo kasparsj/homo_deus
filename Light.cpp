@@ -11,6 +11,7 @@ Light::Light(float brightness, float speed, int life, Model *model, Light *linke
   this->life = life;
   this->model = model;
   this->linkedPrev = linkedPrev;
+  this->color = RgbColor(255, 255, 255);
   position = -1;
 }
 
