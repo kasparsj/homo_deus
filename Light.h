@@ -20,6 +20,7 @@ class Light {
     Light *linkedPrev = 0;
     Port *inPort = 0;
     Port *outPort = 0;
+    Port *outPorts[28] = {0};
     int pixel1 = -1;
     int pixel2 = -1;
     float pixel1Bri = 0;
@@ -50,10 +51,8 @@ class Light {
     void setInPort(Port *port) {
       inPort = port;
     }
-    
-    void setOutPort(Port *port) {
-      outPort = port;
-    }
+
+    void setOutPort(Port *port, int intersectionId = -1);
 
     void resetPixels();
   

@@ -65,32 +65,12 @@ void Connection::addLight(Light *light) {
 void Connection::update() {
   if (numLeds == 0) return;
   for (int i=0; i<freeLight; i++) {
-    Light *light = lights[i];
-    if (light != NULL) {
-      light->resetPixels();
-      // hack: fix rounding error
-      float pos = round(light->position * 1000) / 1000.0;
-      if (pos < numLeds) {
-        // todo: outPort can be NULL
-        if (light->outPort == NULL) {
-          Serial.print("light: ");
-          Serial.print(light->id);
-          Serial.print("outport NULL, connection: ");
-          Serial.print(fromPixel);
-          Serial.print(" - ");
-          Serial.println(toPixel);
-        }
-        int ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
-        light->pixel1 = fromPixel + (ledIdx * pixelDir);
-        light->pixel1Bri = light->brightness;
-        //light->pixel2 = 
-      }
-      else {
-        outgoing(light);
-        queueRemove(i);
-      }
-    }
+    updateLight(i);
   }
+  postUpdate();
+}
+
+void Connection::postUpdate() {
   for (int i=(freeRemove-1); i>=0; i--) {
     if (removeLights[i] >= 0) {
       removeLight(removeLights[i]);
@@ -99,6 +79,34 @@ void Connection::update() {
   }
   freeLight -= freeRemove;
   freeRemove = 0;
+}
+
+void Connection::updateLight(int i) {
+  Light *light = lights[i];
+  if (light != NULL) {
+    light->resetPixels();
+    // hack: fix rounding error
+    float pos = round(light->position * 1000) / 1000.0;
+    if (pos < numLeds) {
+      // todo: outPort can be NULL
+      if (light->outPort == NULL) {
+        Serial.print("light: ");
+        Serial.print(light->id);
+        Serial.print("outport NULL, connection: ");
+        Serial.print(fromPixel);
+        Serial.print(" - ");
+        Serial.println(toPixel);
+      }
+      int ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
+      light->pixel1 = fromPixel + (ledIdx * pixelDir);
+      light->pixel1Bri = light->brightness;
+      //light->pixel2 = 
+    }
+    else {
+      outgoing(light);
+      queueRemove(i);
+    }
+  }
 }
 
 void Connection::queueRemove(int i) {

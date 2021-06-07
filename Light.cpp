@@ -25,3 +25,10 @@ void Light::resetPixels() {
   pixel2 = -1;
   pixel2Bri = 0;
 }
+
+void Light::setOutPort(Port *port, int intersectionId) {
+  outPort = port;
+  if (intersectionId > -1) {
+    outPorts[intersectionId] = port;
+  }
+}

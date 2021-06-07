@@ -78,12 +78,6 @@ void Emitter::update() {
         }
         delete lightLists[i]->lights[j];
         lightLists[i]->lights[j] = NULL;
-        #ifdef HD_DEBUG
-        Serial.print("Deleted light");
-        Serial.print(i);
-        Serial.print(" ");
-        Serial.println(j);
-        #endif
         continue;
       }
       allExpired = false;

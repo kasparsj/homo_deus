@@ -64,20 +64,22 @@ void HeptagonStar::setup() {
 }
 
 void HeptagonStar::update() {
-  for (int i=0; i<14; i++) {
-    if (i < 7) {
-      zeroConnections[i].update();
-      innerConnections[i].update();
+  for (int k=0; k<2; k++) { // increase to 3 if needed
+    for (int i=0; i<14; i++) {
+      if (i < 7) {
+        zeroConnections[i].update();
+        innerConnections[i].update();
+      }
+      outerConnections[i].update();
+      middleConnections[i].update();
     }
-    outerConnections[i].update();
-    middleConnections[i].update();
-  }
-  for (int i=0; i<14; i++) {
-    if (i < 7) {
-      middleNeurons[i].update();
-      innerNeurons[i].update();          
+    for (int i=0; i<14; i++) {
+      if (i < 7) {
+        middleNeurons[i].update();
+        innerNeurons[i].update();          
+      }
+      outerNeurons[i].update();
     }
-    outerNeurons[i].update();
   }
 }
 
@@ -126,21 +128,21 @@ void HeptagonStar::debugIntersections() {
   for (int i=0; i<14; i++) {
     if (i < 7) {
       Serial.print("Middle");
-      Serial.print(i);
+      Serial.print(middleNeurons[i].id);
       Serial.print(": ");
       Serial.print(middleNeurons[i].freeLight);
       Serial.print(" / ");
       Serial.println(middleNeurons[i].maxLights);
 
       Serial.print("Inner");
-      Serial.print(i);
+      Serial.print(innerNeurons[i].id);
       Serial.print(": ");
       Serial.print(innerNeurons[i].freeLight);
       Serial.print(" / ");
       Serial.println(innerNeurons[i].maxLights);
     } 
     Serial.print("Outer");
-    Serial.print(i);
+    Serial.print(outerNeurons[i].id);
     Serial.print(": ");
     Serial.print(outerNeurons[i].freeLight);
     Serial.print(" / ");

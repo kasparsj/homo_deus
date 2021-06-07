@@ -33,7 +33,7 @@ class HeptagonStar {
       Intersection(INTER_MAX_LIGHTS, 4, 597, 320), 
       Intersection(INTER_MAX_LIGHTS, 4, 55, 334), 
       Intersection(INTER_MAX_LIGHTS, 4, 708, 69), 
-      Intersection(INTER_MAX_LIGHTS, 4, 723, 448),  // top left
+      Intersection(INTER_MAX_LIGHTS, 4, 722, 448),  // top left
       Intersection(INTER_MAX_LIGHTS, 4, 462, 191), 
       Intersection(INTER_MAX_LIGHTS, 4, 848, 206),  // right 
       Intersection(INTER_MAX_LIGHTS, 4, 863, 582) }; // bottom right

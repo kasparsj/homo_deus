@@ -28,5 +28,7 @@ class Connection {
     void queueRemove(int i);
     void removeLight(int i);
     void update();
+    void postUpdate();
+    void updateLight(int i);
     void outgoing(Light *light);
 };

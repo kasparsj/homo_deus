@@ -26,6 +26,9 @@ class Emitter {
     float randomBriThresh();
     void emit();
     void emitNew(int which, float speed, int life, int length);
+    void emitNew(int which, float speed) {
+      emitNew(which, speed, randomLife(), randomLength());
+    }
     void emitNew(int which) {
       emitNew(which, randomSpeed(), randomLife(), randomLength());
     }

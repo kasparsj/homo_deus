@@ -3,7 +3,10 @@
 #include "Model.h"
 #include <Arduino.h>
 
+int Intersection::nextId = 0;
+
 Intersection::Intersection(int maxLights, int numPorts, int topPixel, int bottomPixel) {
+  this->id = nextId++;
   this->numPorts = numPorts;
   this->topPixel = topPixel;
   this->bottomPixel = bottomPixel;
@@ -49,29 +52,15 @@ void Intersection::addLight(Light *light) {
 
 void Intersection::update() {
   for (int i=0; i<freeLight; i++) {
-    Light *light = lights[i];
-    if (light != NULL && !light->isExpired) {
-      light->resetPixels();
-      if (light->position >= 0.f) {
-        light->pixel1 = topPixel;
-        light->pixel1Bri = light->brightness;
-      }
-      if (light->shouldExpire()) {
-        if (light->position >= 1.f) {
-          light->isExpired = true;
-          queueRemove(i);
-        }
-      }
-      else if (light->position >= 1.f) {
-        // neurons are updated after connections
-        queueOutgoing(light);
-        queueRemove(i);
-      }        
-    }
+    updateLight(i);
   }
+  postUpdate();
+}
+
+void Intersection::postUpdate() {
   for (int i=0; i<freeOutgoing; i++) {
     if (outgoingLights[i] != NULL) {
-      sendOut(i);
+      sendOut(i); 
     }
   }
   freeOutgoing = 0;
@@ -83,6 +72,28 @@ void Intersection::update() {
   }
   freeLight -= freeRemove;
   freeRemove = 0;
+}
+
+void Intersection::updateLight(int i) {
+  Light *light = lights[i];
+  if (light != NULL && !light->isExpired) {
+    light->resetPixels();
+    if (light->position >= 0.f) {
+      light->pixel1 = topPixel;
+      light->pixel1Bri = light->brightness;
+    }
+    if (light->shouldExpire()) {
+      if (light->position >= 1.f) {
+        light->isExpired = true;
+        queueRemove(i);
+      }
+    }
+    else if (light->position >= 1.f) {
+      // neurons are updated after connections
+      queueOutgoing(light);
+      queueRemove(i);
+    }        
+  }
 }
 
 void Intersection::queueOutgoing(Light *light) {
@@ -109,15 +120,15 @@ Port* Intersection::sendOut(int i) {
   Light *light = outgoingLights[i];
   Port *port = NULL;
   if (light->linkedPrev != NULL) {
-    port = light->linkedPrev->outPort;
-    if (port == NULL) {
-      int maxOutgoing = freeOutgoing;
-      for (int k=0; k<maxOutgoing; k++) {
-        if (outgoingLights[k] == light->linkedPrev) {
-          port = sendOut(k);
-          break;
-        }
+    int maxOutgoing = freeOutgoing;
+    for (int k=0; k<maxOutgoing; k++) {
+      if (outgoingLights[k] == light->linkedPrev) {
+        port = sendOut(k);
+        break;
       }
+    }
+    if (port == NULL) {
+      port = light->linkedPrev->outPorts[id];
     }
   }
   if (port == NULL) {
@@ -134,13 +145,13 @@ Port* Intersection::sendOut(int i) {
     Serial.println(light->linkedPrev != NULL);
   }
   #endif
-  light->setOutPort(port);
+  light->setOutPort(port, id);
   light->setInPort(NULL);
   light->position -= 1.f;
-  if (port != NULL) {
+  outgoingLights[i] = NULL;
+  if (port != NULL) { 
     port->connection->addLight(light);
   }
-  outgoingLights[i] = NULL;
   return port;
 }
 

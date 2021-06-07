@@ -8,7 +8,10 @@
 class Intersection {
 
   public:
+
+    static int nextId;
   
+    int id;
     int numPorts;
     Port **ports; // 2 or 4 ports
     int topPixel;
@@ -36,6 +39,8 @@ class Intersection {
     void removeLight(int i);
     Port* sendOut(int i);
     void update();
+    void postUpdate();
+    void updateLight(int i);
     float sumW(Model *model, Port *incoming);
     Port *randomPort(Port *incoming);
     Port *choosePort(Model *model, Port *incoming);
