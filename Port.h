@@ -9,9 +9,9 @@ class Port {
 
   public:
 
-    static uint16_t lastId;
+    static uint8_t lastId;
 
-    uint16_t id;
+    uint8_t id;
     Connection *connection;
     Intersection *intersection;
     bool direction;

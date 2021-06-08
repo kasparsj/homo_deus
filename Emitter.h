@@ -11,9 +11,9 @@ class Emitter {
     Intersection *intersections;
     LightList *lightLists[MAX_LIGHT_LISTS] = {0};
     unsigned long nextEmit = 0;
-    uint8_t pixelValuesR[PIXEL_COUNT];
-    uint8_t pixelValuesG[PIXEL_COUNT];
-    uint8_t pixelValuesB[PIXEL_COUNT];
+    uint16_t pixelValuesR[PIXEL_COUNT];
+    uint16_t pixelValuesG[PIXEL_COUNT];
+    uint16_t pixelValuesB[PIXEL_COUNT];
     uint8_t pixelDiv[PIXEL_COUNT];
     bool enabled = false;
     

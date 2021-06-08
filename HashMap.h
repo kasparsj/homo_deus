@@ -145,9 +145,9 @@ class HashMap
     ||
     || @return The index of the key, or -1 if key does not exist
     */
-    unsigned int indexOf(K key)
+    int indexOf(K key)
     {
-      for (int i = 0; i < currentIndex; i++)
+      for (unsigned int i = 0; i < currentIndex; i++)
       {
         if (cb_comparator)
         {
@@ -178,7 +178,7 @@ class HashMap
     */
     bool contains(K key)
     {
-      for (int i = 0; i < currentIndex; i++)
+      for (unsigned int i = 0; i < currentIndex; i++)
       {
         if (cb_comparator)
         {
@@ -228,7 +228,7 @@ class HashMap
     K keys[capacity];
     V values[capacity];
     V nil;
-    int currentIndex;
+    unsigned int currentIndex;
     comparator cb_comparator;
 };
 
