@@ -51,9 +51,9 @@ class HeptagonStar {
 
     #ifdef HD_TEST
     bool intersections[PIXEL_COUNT] = {false};
-    bool isIntersection(int i);
+    bool isIntersection(uint16_t i);
     bool connections[PIXEL_COUNT] = {false};
-    bool isConnection(int i);
+    bool isConnection(uint16_t i);
     void debugConnections();
     void debugIntersections();
     #endif

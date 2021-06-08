@@ -5,24 +5,24 @@
 
 uint8_t Intersection::nextId = 0;
 
-Intersection::Intersection(int maxLights, int numPorts, int topPixel, int bottomPixel) {
+Intersection::Intersection(uint16_t maxLights, uint8_t numPorts, uint16_t topPixel, uint16_t bottomPixel) {
   this->id = nextId++;
   this->numPorts = numPorts;
   this->topPixel = topPixel;
   this->bottomPixel = bottomPixel;
   this->maxLights = maxLights;
   this->lights = new Light*[maxLights]();
-  for (int i=0; i<maxLights; i++) {
+  for (uint16_t i=0; i<maxLights; i++) {
     lights[i] = NULL;
   }
   this->ports = new Port*[numPorts]();
-  for (int i=0; i<numPorts; i++) {
+  for (uint8_t i=0; i<numPorts; i++) {
     ports[i] = NULL;
   }
 }
 
 void Intersection::addPort(Port *p) {
-  for (int i=0; i<numPorts; i++) {
+  for (uint8_t i=0; i<numPorts; i++) {
     if (ports[i] == NULL) {
       ports[i] = p;
       p->intersection = this;
@@ -32,7 +32,7 @@ void Intersection::addPort(Port *p) {
 }
 
 void Intersection::emit(LightList *lightList) {
-  for (int i=0; i<lightList->numLights; i++) {
+  for (uint16_t i=0; i<lightList->numLights; i++) {
     Light *light = lightList->get(i);
     light->position = i * -1;
     light->life += ceil(1.0 / light->speed * i);
@@ -51,20 +51,20 @@ void Intersection::addLight(Light *light) {
 }
 
 void Intersection::update() {
-  for (int i=0; i<freeLight; i++) {
+  for (uint16_t i=0; i<freeLight; i++) {
     updateLight(i);
   }
   postUpdate();
 }
 
 void Intersection::postUpdate() {
-  for (int i=0; i<freeOutgoing; i++) {
+  for (uint16_t i=0; i<freeOutgoing; i++) {
     if (outgoingLights[i] != NULL) {
       sendOut(i); 
     }
   }
   freeOutgoing = 0;
-  for (int i=(freeRemove-1); i>=0; i--) {
+  for (int16_t i=(freeRemove-1); i>=0; i--) {
     if (removeLights[i] >= 0) {
       removeLight(removeLights[i]);
       removeLights[i] = -1;
@@ -74,7 +74,7 @@ void Intersection::postUpdate() {
   freeRemove = 0;
 }
 
-void Intersection::updateLight(int i) {
+void Intersection::updateLight(uint16_t i) {
   Light *light = lights[i];
   if (light != NULL && !light->isExpired) {
     light->resetPixels();
@@ -106,7 +106,7 @@ void Intersection::queueOutgoing(Light *light) {
   }
 }
 
-void Intersection::queueRemove(int i) {
+void Intersection::queueRemove(uint16_t i) {
   if (freeRemove < MAX_OUTGOING_LIGHTS) {
     removeLights[freeRemove] = i;
     freeRemove++;    
@@ -116,12 +116,12 @@ void Intersection::queueRemove(int i) {
   }
 }
 
-Port* Intersection::sendOut(int i) {
+Port* Intersection::sendOut(uint16_t i) {
   Light *light = outgoingLights[i];
   Port *port = NULL;
   if (light->linkedPrev != NULL) {
-    int maxOutgoing = freeOutgoing;
-    for (int k=0; k<maxOutgoing; k++) {
+    uint16_t maxOutgoing = freeOutgoing;
+    for (uint16_t k=0; k<maxOutgoing; k++) {
       if (outgoingLights[k] == light->linkedPrev) {
         port = sendOut(k);
         break;
@@ -155,9 +155,9 @@ Port* Intersection::sendOut(int i) {
   return port;
 }
 
-void Intersection::removeLight(int i) {
+void Intersection::removeLight(uint16_t i) {
   if (i < (freeLight - freeRemove)) {
-    for (int j=1; j <= freeRemove; j++) {
+    for (uint16_t j=1; j <= freeRemove; j++) {
       if (lights[(freeLight - j)] != NULL) {
         lights[i] = lights[(freeLight - j)];
         lights[(freeLight - j)] = NULL;
@@ -172,7 +172,7 @@ void Intersection::removeLight(int i) {
 
 float Intersection::sumW(Model *model, Port *incoming) {
   float sum = 0;
-  for (int i=0; i<numPorts; i++) {
+  for (uint8_t i=0; i<numPorts; i++) {
     Port *port = ports[i];
     #ifdef HD_DEBUG
     if (port == NULL) {
@@ -202,7 +202,7 @@ Port *Intersection::choosePort(Model *model, Port *incoming) {
       return randomPort(incoming);
     }
     float rnd = random(sum * 1000) / 1000.f;
-    for (int i=0; i<numPorts; i++) {
+    for (uint8_t i=0; i<numPorts; i++) {
        Port *port = ports[i];
        #ifdef HD_DEBUG
        if (port == NULL) {

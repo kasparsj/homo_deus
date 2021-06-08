@@ -2,17 +2,17 @@
 #include <Arduino.h>
 
 void HeptagonStar::setup() {
-  for (int i=0; i<7; i++) {
+  for (uint8_t i=0; i<7; i++) {
     zeroConnections[i].setup(&outerNeurons[i*2], &outerNeurons[i*2+1]);
   }
-  for (int i=0; i<7; i++) {
+  for (uint8_t i=0; i<7; i++) {
     Intersection *outerNeuron1 = &outerNeurons[i*2+1];
     Intersection *outerNeuron2 = &outerNeurons[((i+1)*2) % 14];
     outerConnections[i*2].setup(outerNeuron1, &middleNeurons[i]);
     outerConnections[i*2+1].setup(outerNeuron2, &middleNeurons[i]);
   }
 
-  for (int i=0; i<7; i++) {
+  for (uint8_t i=0; i<7; i++) {
     Intersection *middleNeuron1 = &middleNeurons[i];
     Intersection *middleNeuron2 = &middleNeurons[(i-1+7) % 7];
     Connection *middleConnection1 = &middleConnections[i*2];
@@ -27,7 +27,7 @@ void HeptagonStar::setup() {
     models[M_INNER_CIRCLE].put(middleConnection2, 1);
   }
   
-  for (int i=0; i<7; i++) {
+  for (uint8_t i=0; i<7; i++) {
     Intersection *innerNeuron1 = &innerNeurons[i];
     Intersection *innerNeuron2 = &innerNeurons[(i+1) % 7];
     Connection *innerConnection = &innerConnections[i];
@@ -39,7 +39,7 @@ void HeptagonStar::setup() {
   }
   
   #ifdef HD_TEST
-  for (int i=0; i<14; i++) {
+  for (uint8_t i=0; i<14; i++) {
     if (i < 7) {
       intersections[middleNeurons[i].topPixel] = true;
       intersections[middleNeurons[i].bottomPixel] = true;
@@ -48,7 +48,7 @@ void HeptagonStar::setup() {
     }
     intersections[outerNeurons[i].topPixel] = true;
   }
-  for (int i=0; i<14; i++) {
+  for (uint8_t i=0; i<14; i++) {
     if (i < 7) {
       connections[innerConnections[i].fromPixel] = true;
       connections[innerConnections[i].toPixel] = true;
@@ -66,8 +66,8 @@ void HeptagonStar::setup() {
 }
 
 void HeptagonStar::update() {
-  for (int k=0; k<3; k++) {
-    for (int i=0; i<14; i++) {
+  for (uint8_t k=0; k<3; k++) {
+    for (uint8_t i=0; i<14; i++) {
       if (i < 7) {
         zeroConnections[i].update();
         innerConnections[i].update();
@@ -75,7 +75,7 @@ void HeptagonStar::update() {
       outerConnections[i].update();
       middleConnections[i].update();
     }
-    for (int i=0; i<14; i++) {
+    for (uint8_t i=0; i<14; i++) {
       if (i < 7) {
         middleNeurons[i].update();
         innerNeurons[i].update();          
@@ -86,15 +86,15 @@ void HeptagonStar::update() {
 }
 
 #ifdef HD_TEST
-bool HeptagonStar::isIntersection(int i) {
+bool HeptagonStar::isIntersection(uint16_t i) {
   return intersections[i];
 }
-bool HeptagonStar::isConnection(int i) {
+bool HeptagonStar::isConnection(uint16_t i) {
   return connections[i];
 }
 void HeptagonStar::debugConnections() {
   Serial.println("--- CONNECTIONS ---");
-  for (int i=0; i<14; i++) {
+  for (uint8_t i=0; i<14; i++) {
     if (i < 7) {
       Serial.print("Zero");
       Serial.print(i);
@@ -127,7 +127,7 @@ void HeptagonStar::debugConnections() {
 }
 void HeptagonStar::debugIntersections() {
   Serial.println("--- INTERSECTIONS ---");
-  for (int i=0; i<14; i++) {
+  for (uint8_t i=0; i<14; i++) {
     if (i < 7) {
       Serial.print("Middle");
       Serial.print(middleNeurons[i].id);

@@ -8,12 +8,12 @@ class Model {
 
   public:
 
-    int id;
+    uint8_t id;
     float defaultW;
     // todo: perhaps better use HashMap
     Weight *weights[MAX_PORTS] = {0};
     
-    Model(int id, float defaultW) {
+    Model(uint8_t id, float defaultW) {
       this->id = id;
       this->defaultW = defaultW;
     }

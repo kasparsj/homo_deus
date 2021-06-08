@@ -85,17 +85,17 @@ void update() {
 }
 
 void draw() {
-  for (int i=0; i<PIXEL_COUNT1; i++) {
+  for (uint16_t i=0; i<PIXEL_COUNT1; i++) {
     strip1.SetPixelColor(i, getColor(i));
   }
-  for (int i=0; i<PIXEL_COUNT2; i++) {
+  for (uint16_t i=0; i<PIXEL_COUNT2; i++) {
     strip2.SetPixelColor(i, getColor(PIXEL_COUNT1+i));
   }
   strip1.Show();
   strip2.Show();
 }
 
-RgbColor getColor(int i) {
+RgbColor getColor(uint16_t i) {
   RgbColor color = RgbColor(0, 0, 0);
   if (emitter->pixelDiv[i]) {
     color.R = min(emitter->pixelValuesR[i] / emitter->pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
@@ -176,13 +176,13 @@ void readSerial() {
 #ifdef HD_OSC
 void onOscReceived(const OscMessage& m) {
   if (m.size() > 0) {
-    int which = m.arg<int>(0);
+    uint8_t which = m.arg<uint8_t>(0);
     if (m.size() > 1) {
       float speed = m.arg<float>(1);
       if (m.size() > 2) {
-        int life = m.arg<int>(2);
+        uint16_t life = m.arg<uint16_t>(2);
         if (m.size() > 3) {
-          int length = m.arg<int>(3);
+          uint16_t length = m.arg<uint16_t>(3);
           emitter->emitNew(which, speed, life, length);
         }
         else {
