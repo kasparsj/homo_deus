@@ -210,7 +210,7 @@ class HashMap
       int index = indexOf(key);
       if (contains(key))
       {
-        for (int i = index; i < capacity - 1; i++)
+        for (unsigned int i = index; i < capacity - 1; i++)
         {
           keys[i] = keys[i + 1];
           values[i] = values[i + 1];

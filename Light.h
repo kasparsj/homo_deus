@@ -22,10 +22,11 @@ class Light {
     Light *linkedPrev = 0;
     Port *inPort = 0;
     Port *outPort = 0;
-    Port *outPorts[7] = {0}; // 4 bytes * 7
-    uint8_t outPortsInt[7] = {-1};
-    uint16_t pixel1 = -1;
-    // uint16_t pixel2 = -1; // 4 bytes
+    Port *outPorts[28] = {0}; // 4 bytes * 7
+    // todo: implement
+    //int8_t outPortsInt[7] = {-1};
+    int16_t pixel1 = -1;
+    // int16_t pixel2 = -1; // 4 bytes
     float pixel1Bri = 0;
     // float pixel2Bri = 0; // 4 bytes
     bool isExpired = false;
@@ -66,7 +67,7 @@ class Light {
       inPort = port;
     }
 
-    void setOutPort(Port *port, uint8_t intersectionId = -1);
+    void setOutPort(Port *port, int8_t intersectionId = -1);
 
     void resetPixels();
   

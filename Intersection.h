@@ -15,16 +15,16 @@ class Intersection {
     uint8_t numPorts;
     Port **ports; // 2 or 4 ports
     uint16_t topPixel;
-    uint16_t bottomPixel;
+    int16_t bottomPixel;
     Light **lights;
     uint16_t maxLights;
     uint16_t freeLight = 0;
     Light *outgoingLights[MAX_OUTGOING_LIGHTS] = {0};
     uint16_t freeOutgoing = 0;
-    uint16_t removeLights[MAX_OUTGOING_LIGHTS] = {-1};
+    int16_t removeLights[MAX_OUTGOING_LIGHTS] = {-1};
     uint16_t freeRemove = 0;
-    
-    Intersection(uint16_t maxLights, uint8_t numPorts, uint16_t topPixel, uint16_t bottomPixel = -1);
+
+    Intersection(uint16_t maxLights, uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel = -1);
   
     ~Intersection() {
       delete[] ports;

@@ -27,7 +27,7 @@ void Light::resetPixels() {
   // pixel2Bri = 0;
 }
 
-void Light::setOutPort(Port *port, uint8_t intersectionId) {
+void Light::setOutPort(Port *port, int8_t intersectionId) {
   outPort = port;
   if (intersectionId > -1) {
     outPorts[intersectionId] = port;

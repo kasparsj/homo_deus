@@ -5,7 +5,7 @@
 
 uint8_t Intersection::nextId = 0;
 
-Intersection::Intersection(uint16_t maxLights, uint8_t numPorts, uint16_t topPixel, uint16_t bottomPixel) {
+Intersection::Intersection(uint16_t maxLights, uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel) {
   this->id = nextId++;
   this->numPorts = numPorts;
   this->topPixel = topPixel;
@@ -127,7 +127,7 @@ Port* Intersection::sendOut(uint16_t i) {
         break;
       }
     }
-    if (port == NULL) {
+    if (port == NULL) {    
       port = light->linkedPrev->outPorts[id];
     }
   }

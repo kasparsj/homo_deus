@@ -85,16 +85,10 @@ void Emitter::emitNew(uint8_t which, float speed, uint16_t life, uint16_t length
 }
 
 void Emitter::update() {
-  for (uint16_t i = 0; i < PIXEL_COUNT; i++) {
-    pixelValuesR[i] = 0;
-    pixelValuesG[i] = 0;
-    pixelValuesB[i] = 0;
-    pixelDiv[i] = 0;
-  }
-  // memset(pixelValuesR, 0, sizeof(pixelValuesR));
-  // memset(pixelValuesG, 0, sizeof(pixelValuesG));
-  // memset(pixelValuesB, 0, sizeof(pixelValuesB));
-  // memset(pixelDiv, 0, sizeof(pixelDiv));
+  memset(pixelValuesR, 0, sizeof(pixelValuesR));
+  memset(pixelValuesG, 0, sizeof(pixelValuesG));
+  memset(pixelValuesB, 0, sizeof(pixelValuesB));
+  memset(pixelDiv, 0, sizeof(pixelDiv));
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     bool allExpired = true;

@@ -27,3 +27,4 @@
 #define MAX_OUTGOING_LIGHTS 50
 #define HD_WIFI
 #define HD_OSC
+

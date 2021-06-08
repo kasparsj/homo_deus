@@ -151,7 +151,7 @@ void readSerial() {
         showConnections = !showConnections;
         break;
       case 'l':
-      Serial.printf("Total %d lights\n", emitter->numLights());
+        Serial.printf("Total %d lights\n", emitter->numLights());
         break;
       case 'L':
         emitter->debug();
