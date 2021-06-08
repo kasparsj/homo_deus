@@ -8,7 +8,7 @@ class Weight {
 
   public:
     float w;
-    HashMap<int, float, MAX_CONDITIONAL_WEIGHTS> conditional;
+    HashMap<uint16_t, float, MAX_CONDITIONAL_WEIGHTS> conditional;
     
     Weight(float w) {
       this->w = w;

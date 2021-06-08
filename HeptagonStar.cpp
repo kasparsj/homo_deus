@@ -23,6 +23,8 @@ void HeptagonStar::setup() {
     middleConnection2->setup(middleNeuron2, &innerNeurons[i]);
     models[M_STAR].put(middleConnection2->fromPort, middleNeuron2->ports[0], 1);
     models[M_OUTER_STAR].put(middleConnection2, 0);
+    models[M_INNER_CIRCLE].put(middleConnection1, 1);
+    models[M_INNER_CIRCLE].put(middleConnection2, 1);
   }
   
   for (int i=0; i<7; i++) {

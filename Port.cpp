@@ -3,7 +3,7 @@
 #include "Config.h"
 #include <Arduino.h>
 
-int Port::lastId = 0;
+uint16_t Port::lastId = 0;
 
 Port::Port(Connection *connection, Intersection *intersection, bool direction) {
   this->id = lastId;

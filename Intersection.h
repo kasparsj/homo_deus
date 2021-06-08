@@ -9,20 +9,20 @@ class Intersection {
 
   public:
 
-    static int nextId;
+    static uint8_t nextId;
   
-    int id;
-    int numPorts;
+    uint8_t id;
+    uint8_t numPorts;
     Port **ports; // 2 or 4 ports
-    int topPixel;
-    int bottomPixel;
+    uint16_t topPixel;
+    uint16_t bottomPixel;
     Light **lights;
-    int maxLights;
-    int freeLight = 0;
+    uint16_t maxLights;
+    uint16_t freeLight = 0;
     Light *outgoingLights[MAX_OUTGOING_LIGHTS] = {0};
-    int freeOutgoing = 0;
-    int removeLights[MAX_OUTGOING_LIGHTS] = {-1};
-    int freeRemove = 0;
+    uint16_t freeOutgoing = 0;
+    uint16_t removeLights[MAX_OUTGOING_LIGHTS] = {-1};
+    uint16_t freeRemove = 0;
     
     Intersection(int maxLights, int numPorts, int topPixel, int bottomPixel = -1);
   

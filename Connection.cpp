@@ -9,39 +9,39 @@ void Connection::setup(Intersection *from, Intersection *to) {
   fromPort = new Port(this, from, false);
   toPort = new Port(this, to, true);    
     
-  pixelDir = to->topPixel > from->topPixel ? 1 : -1;
-  fromPixel = from->topPixel + pixelDir;
-  toPixel = to->topPixel - pixelDir;
+  pixelDir = to->topPixel > from->topPixel;
+  fromPixel = from->topPixel + (pixelDir ? 1 : -1);
+  toPixel = to->topPixel - (pixelDir ? 1 : -1);
   int diff = abs(fromPixel - toPixel);
   numLeds = diff > 4 && diff < (PIXEL_COUNT - 4) ? diff + 1 : 0;
   if (from->bottomPixel > -1) {
     if (abs(from->bottomPixel - to->topPixel) < numLeds) {
-      pixelDir = to->topPixel > from->bottomPixel ? 1 : -1;
-      fromPixel = from->bottomPixel + pixelDir;
-      toPixel = to->topPixel - pixelDir;
+      pixelDir = to->topPixel > from->bottomPixel;
+      fromPixel = from->bottomPixel + (pixelDir ? 1 : -1);
+      toPixel = to->topPixel - (pixelDir ? 1 : -1);
       numLeds = abs(fromPixel - toPixel) + 1;
     }
   }
   if (to->bottomPixel > -1) {
     if (abs(from->topPixel - to->bottomPixel) < numLeds) {
-      pixelDir = to->bottomPixel > from->topPixel ? 1 : -1;
-      fromPixel = from->topPixel + pixelDir;
-      toPixel =  to->bottomPixel - pixelDir;
+      pixelDir = to->bottomPixel > from->topPixel;
+      fromPixel = from->topPixel + (pixelDir ? 1 : -1);
+      toPixel =  to->bottomPixel - (pixelDir ? 1 : -1);
       numLeds = abs(fromPixel - toPixel) + 1;
     }
   }
   if (from->bottomPixel > -1 && to->bottomPixel > -1) {
     if (abs(from->bottomPixel - to->bottomPixel) < numLeds) {
-      pixelDir = to->bottomPixel > from->bottomPixel ? 1 : -1;
-      fromPixel = from->bottomPixel + pixelDir;
-      toPixel = to->bottomPixel - pixelDir;
+      pixelDir = to->bottomPixel > from->bottomPixel;
+      fromPixel = from->bottomPixel + (pixelDir ? 1 : -1);
+      toPixel = to->bottomPixel - (pixelDir ? 1 : -1);
       numLeds = abs(fromPixel - toPixel) + 1;
     }
   }
   if (numLeds > 0) {
     maxLights = numLeds * 5;
     lights = new Light*[maxLights]();
-    for (int i=0; i<maxLights; i++) {
+    for (uint16_t i=0; i<maxLights; i++) {
       lights[i] = NULL;
     }    
   }
@@ -54,7 +54,10 @@ void Connection::addLight(Light *light) {
       freeLight++;
     }
     else {
-      Serial.println("Connection addLight no free slot");
+      Serial.print("Connection addLight no free slot: ");
+      Serial.print(fromPixel);
+      Serial.print(" - ");
+      Serial.println(toPixel);
     }
   }
   else {
@@ -64,14 +67,14 @@ void Connection::addLight(Light *light) {
 
 void Connection::update() {
   if (numLeds == 0) return;
-  for (int i=0; i<freeLight; i++) {
+  for (uint16_t i=0; i<freeLight; i++) {
     updateLight(i);
   }
   postUpdate();
 }
 
 void Connection::postUpdate() {
-  for (int i=(freeRemove-1); i>=0; i--) {
+  for (int16_t i=(freeRemove-1); i>=0; i--) {
     if (removeLights[i] >= 0) {
       removeLight(removeLights[i]);
       removeLights[i] = -1;
@@ -81,7 +84,7 @@ void Connection::postUpdate() {
   freeRemove = 0;
 }
 
-void Connection::updateLight(int i) {
+void Connection::updateLight(uint16_t i) {
   Light *light = lights[i];
   if (light != NULL) {
     light->resetPixels();
@@ -90,15 +93,15 @@ void Connection::updateLight(int i) {
     if (pos < numLeds) {
       // todo: outPort can be NULL
       if (light->outPort == NULL) {
-        Serial.print("light: ");
-        Serial.print(light->id);
+        //Serial.print("light: ");
+        //Serial.print(light->id);
         Serial.print("outport NULL, connection: ");
         Serial.print(fromPixel);
         Serial.print(" - ");
         Serial.println(toPixel);
       }
-      int ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
-      light->pixel1 = fromPixel + (ledIdx * pixelDir);
+      uint16_t ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
+      light->pixel1 = fromPixel + (ledIdx * (pixelDir ? 1 : -1));
       light->pixel1Bri = light->brightness;
       //light->pixel2 = 
     }
@@ -109,7 +112,7 @@ void Connection::updateLight(int i) {
   }
 }
 
-void Connection::queueRemove(int i) {
+void Connection::queueRemove(uint16_t i) {
   if (freeRemove < MAX_OUTGOING_LIGHTS) {
     removeLights[freeRemove] = i;
     freeRemove++;    
@@ -119,9 +122,9 @@ void Connection::queueRemove(int i) {
   }
 }
 
-void Connection::removeLight(int i) {
+void Connection::removeLight(uint16_t i) {
   if (i < (freeLight - freeRemove)) {
-    for (int j=1; j <= freeRemove; j++) {
+    for (uint16_t j=1; j <= freeRemove; j++) {
       if (lights[(freeLight - j)] != NULL) {
         lights[i] = lights[(freeLight - j)];
         lights[(freeLight - j)] = NULL;

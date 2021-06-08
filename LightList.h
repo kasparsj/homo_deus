@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FastNoise.h"
+//#include "FastNoise.h"
 #include <NeoPixelBus.h>
 
 class Model;
@@ -10,14 +10,14 @@ class LightList {
 
   public:
 
-    static FastNoise fastNoise;
+    //static FastNoise fastNoise;
   
     float speed;
-    int life;
+    uint16_t life;
     bool linked;
     Model *model;
-    int numLights = 0;
-    int trail = 0;
+    uint16_t numLights = 0;
+    uint16_t trail = 0;
     Light **lights;
     
     LightList(float speed) {
@@ -31,28 +31,28 @@ class LightList {
       delete lights;
     }
 
-    void setup(int numLights);
-    void setupRandom(int numLights, bool linked = true);
-    void setupNoise(int numLights, float threshold);
-    void setupNoise(int numLights) {
-      return setupNoise(numLights, 0.0);
-    }
-    void setupFull(int numLights, RgbColor color);
+    void setup(uint16_t numLights);
+    void setupRandom(uint16_t numLights, bool linked = true);
+    // void setupNoise(uint16_t numLights, float threshold);
+    // void setupNoise(uint16_t numLights) {
+    //   return setupNoise(numLights, 0.0);
+    // }
+    void setupFull(uint16_t numLights, RgbColor color);
 
-    Light* get(int i) {
+    Light* get(uint16_t i) {
       return lights[i];
     }
 
-    void set(int i, Light* light) {
+    void set(uint16_t i, Light* light) {
       lights[i] = light;
     }
     
     void setLinked(bool linked);
     void setModel(Model *model);
     void setSpeed(float speed);
-    void setLife(int numFrames);
+    void setLife(uint16_t numFrames);
 
-    void setTrail(int length) {
+    void setTrail(uint16_t length) {
       trail = length;
     }
   

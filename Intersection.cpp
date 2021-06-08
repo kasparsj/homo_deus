@@ -3,7 +3,7 @@
 #include "Model.h"
 #include <Arduino.h>
 
-int Intersection::nextId = 0;
+uint8_t Intersection::nextId = 0;
 
 Intersection::Intersection(int maxLights, int numPorts, int topPixel, int bottomPixel) {
   this->id = nextId++;
@@ -46,7 +46,7 @@ void Intersection::addLight(Light *light) {
     freeLight++;
   }
   else {
-    Serial.println("Intersection addLight no free slot");
+    Serial.printf("Intersection %d addLight no free slot\n", topPixel);
   }
 }
 

@@ -9,29 +9,30 @@ class Light {
 
   public:
     static const float SPEED;
-    static const int LIFE;
+    static const uint16_t LIFE;
     
-    int id;
+    //uint16_t id;
     float brightness;
     float speed;
     float position;
-    int age = 0;
-    int life;
-    RgbColor color;
+    uint16_t age = 0;
+    uint16_t life;
+    RgbColor color; // 3 bytes
     Model *model = 0;
     Light *linkedPrev = 0;
     Port *inPort = 0;
     Port *outPort = 0;
-    Port *outPorts[28] = {0};
-    int pixel1 = -1;
-    int pixel2 = -1;
+    Port *outPorts[7] = {0}; // 4 bytes * 7
+    uint8_t outPortsInt[7] = {-1};
+    uint16_t pixel1 = -1;
+    // uint16_t pixel2 = -1; // 4 bytes
     float pixel1Bri = 0;
-    float pixel2Bri = 0;
+    // float pixel2Bri = 0; // 4 bytes
     bool isExpired = false;
     
-    Light(float brightness, float speed, int life, Model *model, Light *linkedPrev);
+    Light(float brightness, float speed, uint16_t life, Model *model, Light *linkedPrev);
     
-    Light(float brightness, float speed, int life) : Light(brightness, speed, life, 0, 0) {
+    Light(float brightness, float speed, uint16_t life) : Light(brightness, speed, life, 0, 0) {
     }
     
     Light(float brightness) : Light(brightness, SPEED, LIFE) {
@@ -41,8 +42,10 @@ class Light {
     }
 
     RgbColor getColor(float brightness = 1.f) {
-      // todo: multiply by brightness
-      return color;
+      if (brightness == 1.f) {
+        return color;
+      }
+      return color.Dim(255 - 255 * brightness);
     }
 
     void setColor(RgbColor color) {
@@ -63,7 +66,7 @@ class Light {
       inPort = port;
     }
 
-    void setOutPort(Port *port, int intersectionId = -1);
+    void setOutPort(Port *port, uint8_t intersectionId = -1);
 
     void resetPixels();
   

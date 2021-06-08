@@ -5,6 +5,14 @@
 #include "Config.h"
 #include "HeptagonStar.h"
 #include "Emitter.h"
+#include "esp_bt.h"
+
+#ifdef HD_WIFI
+#include <WiFi.h>
+#endif
+#ifdef HD_OSC
+#include <ArduinoOSC.h>
+#endif
 
 NeoGamma<NeoGammaTableMethod> colorGamma;
 NeoPixelBus<NeoGrbFeature, NeoWs2813Method> strip1(PIXEL_COUNT1, PIXEL_PIN1);
@@ -17,7 +25,7 @@ unsigned long prevMillis = 0;
 float fps = 0.f;
 
 void setup() {
-  Serial.begin(115200);
+  setupComms();
 
   heptagon.setup();
 
@@ -35,6 +43,35 @@ void setup() {
 
   #ifdef HD_DEBUG
   Serial.println("setup complete");
+  #endif
+}
+
+void setupComms() {
+  Serial.begin(115200);
+
+  esp_bt_controller_mem_release(ESP_BT_MODE_BTDM);
+
+  #ifdef HD_WIFI
+
+  #ifdef ESP_PLATFORM
+  WiFi.disconnect(true, true);  // disable wifi, erase ap info
+  delay(1000);
+  WiFi.mode(WIFI_STA);
+  #endif
+
+  WiFi.begin("VA37-3", "fdsa4321");
+  //WiFi.config(ip, gateway, subnet);
+  while (WiFi.status() != WL_CONNECTED) {
+      Serial.print(".");
+      delay(500);
+  }
+  Serial.print("WiFi connected, IP = ");
+  Serial.println(WiFi.localIP());
+
+  #endif
+
+  #ifdef HD_OSC
+  OscWiFi.subscribe(54321, "/emit", onOscReceived);
   #endif
 }
 
@@ -77,8 +114,13 @@ RgbColor getColor(int i) {
 }
 
 void loop() {
+  #ifdef HD_OSC
+  OscWiFi.update();
+  #endif
+
   update();
   draw();
+
   #ifdef HD_DEBUG
   readSerial();
   #endif
@@ -108,6 +150,9 @@ void readSerial() {
       case 'c':
         showConnections = !showConnections;
         break;
+      case 'l':
+      Serial.printf("Total %d lights\n", emitter->numLights());
+        break;
       case 'L':
         emitter->debug();
         break;
@@ -127,3 +172,30 @@ void readSerial() {
     }
   }
 }
+
+#ifdef HD_OSC
+void onOscReceived(const OscMessage& m) {
+  if (m.size() > 0) {
+    int which = m.arg<int>(0);
+    if (m.size() > 1) {
+      float speed = m.arg<float>(1);
+      if (m.size() > 2) {
+        int life = m.arg<int>(2);
+        if (m.size() > 3) {
+          int length = m.arg<int>(3);
+          emitter->emitNew(which, speed, life, length);
+        }
+        else {
+          emitter->emitNew(which, speed, life);
+        }
+      }
+      else {
+        emitter->emitNew(which, speed);
+      }
+    }
+    else {
+      emitter->emitNew(which);
+    }
+  }
+}
+#endif

@@ -7,23 +7,23 @@ float Emitter::randomSpeed() {
   return EMITTER_MIN_SPEED + random(max(EMITTER_MAX_SPEED - EMITTER_MIN_SPEED, 0.f));
 }
 
-int Emitter::randomLife() {
-  return EMITTER_MIN_LIFE + (int) random(max(EMITTER_MAX_LIFE - EMITTER_MIN_LIFE, 0));
+uint16_t Emitter::randomLife() {
+  return EMITTER_MIN_LIFE + (uint16_t) random(max(EMITTER_MAX_LIFE - EMITTER_MIN_LIFE, 0));
 }
 
-int Emitter::randomModel() {
+uint8_t Emitter::randomModel() {
   return floor(random(NUM_MODELS));
 }
 
-int Emitter::randomLength() {
-  return (int) (EMITTER_MIN_LENGTH + random(max(EMITTER_MAX_LENGTH - EMITTER_MIN_LENGTH, 0)));
+uint16_t Emitter::randomLength() {
+  return (uint16_t) (EMITTER_MIN_LENGTH + random(max(EMITTER_MAX_LENGTH - EMITTER_MIN_LENGTH, 0)));
 }
 
 float Emitter::randomBriThresh() {
   return EMITTER_MIN_BRI + random(max(EMITTER_MAX_BRI - EMITTER_MIN_BRI, 0.f));
 }
 
-int Emitter::randomNextEmit() {
+uint16_t Emitter::randomNextEmit() {
   return EMITTER_MIN_NEXT + random(max(EMITTER_MAX_NEXT - EMITTER_MIN_NEXT, 0));
 }
 
@@ -34,8 +34,8 @@ void Emitter::emit(unsigned long ms) {
   }
 }
 
-void Emitter::emitNew(int which, float speed, int life, int length) {
-  for (int i=0; i<MAX_LIGHT_LISTS; i++) {
+void Emitter::emitNew(uint8_t which, float speed, uint16_t life, uint16_t length, RgbColor color) {
+  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) {
       lightLists[i] = new LightList();
       lightLists[i]->setSpeed(speed);
@@ -43,20 +43,35 @@ void Emitter::emitNew(int which, float speed, int life, int length) {
       lightLists[i]->setLinked(true);
       lightLists[i]->setLife(life);
       //lightLists[i]->setupNoise(length, randomBriThresh());
-      int trail = speed * max(1.f, length / 2.f);
+      uint16_t trail = min((int) (speed * max(1, length / 2)), max(EMITTER_MAX_LENGTH, EMITTER_MAX_LIGHTS) - 1);
       lightLists[i]->setTrail(trail);
-      lightLists[i]->setupFull(max(1, length - trail), RgbColor(random(255), random(255), random(255)));
-      switch (which) {
-        case M_DEFAULT:
+      lightLists[i]->setupFull(max(1, length - trail), color);
+      // switch (which) {
+      //   case M_DEFAULT:
+      //     break;
+      //   case M_INNER_CIRCLE:
+      //     break;
+      //   case M_STAR:
+      //     break;
+      //   case M_OUTER_STAR:
+      //     break;
+      // }
+      uint8_t r = random(14);
+      bool emitted = false;
+      for (uint8_t j=0; j<14; j++) {
+        uint8_t k = (r + j) % 14;
+        if (intersections[k].freeLight == 0) {
+          intersections[k].emit(lightLists[i]);
+          emitted = true;
           break;
-        case M_INNER_CIRCLE:
-          break;
-        case M_STAR:
-          break;
-        case M_OUTER_STAR:
-          break;
+        }
       }
-      intersections[(int) random(14)].emit(lightLists[i]);
+      if (emitted) {
+        Serial.printf("Emitted %d lights\n", lightLists[i]->numLights);
+      }
+      else {
+        Serial.println("Emit failed");
+      }
       // todo: fix
       //OscMessage msg = new OscMessage("/hd/spawn");
       //msg.add(life / 50.f);
@@ -74,10 +89,10 @@ void Emitter::update() {
   memset(pixelValuesG, 0, sizeof(pixelValuesG));
   memset(pixelValuesB, 0, sizeof(pixelValuesB));
   memset(pixelDiv, 0, sizeof(pixelDiv));
-  for (int i=0; i<MAX_LIGHT_LISTS; i++) {
+  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     bool allExpired = true;
-    for (int j=0; j<lightLists[i]->numLights; j++) {
+    for (uint16_t j=0; j<lightLists[i]->numLights; j++) {
       if (lightLists[i]->lights[j] == NULL) {
         continue;
       }
@@ -97,13 +112,13 @@ void Emitter::update() {
         pixelValuesB[lightLists[i]->lights[j]->pixel1] += color.B;
         pixelDiv[lightLists[i]->lights[j]->pixel1]++;
       }
-      if (lightLists[i]->lights[j]->pixel2 >= 0) {
-        RgbColor color = lightLists[i]->lights[j]->getColor(lightLists[i]->lights[j]->pixel2Bri);
-        pixelValuesR[lightLists[i]->lights[j]->pixel2] += color.R;
-        pixelValuesG[lightLists[i]->lights[j]->pixel2] += color.G;
-        pixelValuesB[lightLists[i]->lights[j]->pixel2] += color.B;
-        pixelDiv[lightLists[i]->lights[j]->pixel2]++;
-      }
+      // if (lightLists[i]->lights[j]->pixel2 >= 0) {
+      //   RgbColor color = lightLists[i]->lights[j]->getColor(lightLists[i]->lights[j]->pixel2Bri);
+      //   pixelValuesR[lightLists[i]->lights[j]->pixel2] += color.R;
+      //   pixelValuesG[lightLists[i]->lights[j]->pixel2] += color.G;
+      //   pixelValuesB[lightLists[i]->lights[j]->pixel2] += color.B;
+      //   pixelDiv[lightLists[i]->lights[j]->pixel2]++;
+      // }
       lightLists[i]->lights[j]->update();
     }
     if (allExpired) {
@@ -118,11 +133,20 @@ void Emitter::update() {
 }
 
 #ifdef HD_TEST
+uint16_t Emitter::numLights() {
+  uint16_t totalLights = 0;
+  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
+    if (lightLists[i] == NULL) continue;
+    totalLights += lightLists[i]->numLights;
+  }
+  return totalLights;
+}
+
 void Emitter::debug() {
-  for (int i=0; i<MAX_LIGHT_LISTS; i++) {
+  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     String lights = "";
-    for (int j=0; j<lightLists[i]->numLights; j++) {
+    for (uint16_t j=0; j<lightLists[i]->numLights; j++) {
       if (lightLists[i]->lights[j] == NULL || lightLists[i]->lights[j]->isExpired) {
         continue;
       }

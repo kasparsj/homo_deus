@@ -10,11 +10,11 @@ class Emitter {
     Model *models;
     Intersection *intersections;
     LightList *lightLists[MAX_LIGHT_LISTS] = {0};
-    long int nextEmit = 0;
-    int pixelValuesR[PIXEL_COUNT];
-    int pixelValuesG[PIXEL_COUNT];
-    int pixelValuesB[PIXEL_COUNT];
-    int pixelDiv[PIXEL_COUNT];
+    unsigned long nextEmit = 0;
+    uint8_t pixelValuesR[PIXEL_COUNT];
+    uint8_t pixelValuesG[PIXEL_COUNT];
+    uint8_t pixelValuesB[PIXEL_COUNT];
+    uint8_t pixelDiv[PIXEL_COUNT];
     bool enabled = false;
     
     Emitter(Model (&models)[NUM_MODELS], Intersection (&intersections)[14]) {
@@ -23,17 +23,23 @@ class Emitter {
     }
     
     float randomSpeed();
-    int randomLife();
-    int randomModel();
-    int randomLength();
+    uint16_t randomLife();
+    uint8_t randomModel();
+    uint16_t randomLength();
     float randomBriThresh();
-    int randomNextEmit();
+    uint16_t randomNextEmit();
     void emit(unsigned long millis);
-    void emitNew(int which, float speed, int life, int length);
-    void emitNew(int which, float speed) {
+    void emitNew(uint8_t which, float speed, uint16_t life, uint16_t length, RgbColor color);
+    void emitNew(uint8_t which, float speed, uint16_t life, uint16_t length) {
+      emitNew(which, speed, life, length, RgbColor(random(255), random(255), random(255)));
+    }
+    void emitNew(uint8_t which, float speed, uint16_t life) {
+      emitNew(which, speed, life, randomLength());
+    }
+    void emitNew(uint8_t which, float speed) {
       emitNew(which, speed, randomLife(), randomLength());
     }
-    void emitNew(int which) {
+    void emitNew(uint8_t which) {
       emitNew(which, randomSpeed(), randomLife(), randomLength());
     }
     void emitNew() {
@@ -41,6 +47,7 @@ class Emitter {
     }
     void update();
     #ifdef HD_TEST
+    uint16_t numLights();
     void debug();
     #endif
 

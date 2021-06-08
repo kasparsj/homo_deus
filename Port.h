@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Arduino.h>
+
 class Connection;
 class Intersection;
 
@@ -7,9 +9,9 @@ class Port {
 
   public:
 
-    static int lastId;
+    static uint16_t lastId;
 
-    int id;
+    uint16_t id;
     Connection *connection;
     Intersection *intersection;
     bool direction;
