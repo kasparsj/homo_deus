@@ -39,7 +39,7 @@ void Connection::setup(Intersection *from, Intersection *to) {
     }
   }
   if (numLeds > 0) {
-    maxLights = numLeds * 5;
+    maxLights = numLeds * CONNECTION_MAX_MULT;
     lights = new Light*[maxLights]();
     for (uint16_t i=0; i<maxLights; i++) {
       lights[i] = NULL;

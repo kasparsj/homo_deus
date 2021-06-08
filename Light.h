@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Config.h"
 #include "Port.h"
 #include <NeoPixelBus.h>
 
@@ -22,9 +23,8 @@ class Light {
     Light *linkedPrev = 0;
     Port *inPort = 0;
     Port *outPort = 0;
-    Port *outPorts[28] = {0}; // 4 bytes * 7
-    // todo: implement
-    //int8_t outPortsInt[7] = {-1};
+    Port *outPorts[OUT_PORTS_MEMORY] = {0}; // 4 bytes * 7
+    int8_t outPortsInt[OUT_PORTS_MEMORY] = {-1};
     int16_t pixel1 = -1;
     // int16_t pixel2 = -1; // 4 bytes
     float pixel1Bri = 0;
@@ -67,6 +67,7 @@ class Light {
       inPort = port;
     }
 
+    Port* getOutPort(uint8_t intersectionId);
     void setOutPort(Port *port, int8_t intersectionId = -1);
 
     void resetPixels();

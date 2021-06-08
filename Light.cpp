@@ -27,9 +27,23 @@ void Light::resetPixels() {
   // pixel2Bri = 0;
 }
 
+Port* Light::getOutPort(uint8_t intersectionId) {
+  for (uint8_t i=0; i<OUT_PORTS_MEMORY; i++) {
+    if (outPortsInt[i] == intersectionId) {
+      return outPorts[i];
+    }
+  }
+  return NULL;
+}
+
 void Light::setOutPort(Port *port, int8_t intersectionId) {
   outPort = port;
   if (intersectionId > -1) {
-    outPorts[intersectionId] = port;
+    for (uint8_t i=(OUT_PORTS_MEMORY-1); i>0; i--) {
+      outPorts[i] = outPorts[i-1];
+      outPortsInt[i] = outPortsInt[i-1];
+    }
+    outPorts[0] = port;
+    outPortsInt[0] = intersectionId;
   }
 }

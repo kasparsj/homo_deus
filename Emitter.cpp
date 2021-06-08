@@ -56,20 +56,19 @@ void Emitter::emitNew(uint8_t which, float speed, uint16_t life, uint16_t length
       //   case M_OUTER_STAR:
       //     break;
       // }
+      Serial.printf("Will emit %d lights, bringing total to %d\n", lightLists[i]->numLights, totalLights + lightLists[i]->numLights);
       uint8_t r = random(14);
       bool emitted = false;
       for (uint8_t j=0; j<14; j++) {
         uint8_t k = (r + j) % 14;
         if (intersections[k].freeLight == 0) {
           intersections[k].emit(lightLists[i]);
+          totalLights += lightLists[i]->numLights;
           emitted = true;
           break;
         }
       }
-      if (emitted) {
-        Serial.printf("Emitted %d lights\n", lightLists[i]->numLights);
-      }
-      else {
+      if (!emitted) {
         Serial.println("Emit failed");
       }
       // todo: fix
@@ -122,6 +121,7 @@ void Emitter::update() {
       lightLists[i]->lights[j]->update();
     }
     if (allExpired) {
+      totalLights -= lightLists[i]->numLights;
       delete lightLists[i];
       lightLists[i] = NULL;
       #ifdef HD_DEBUG
@@ -133,15 +133,6 @@ void Emitter::update() {
 }
 
 #ifdef HD_TEST
-uint16_t Emitter::numLights() {
-  uint16_t totalLights = 0;
-  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
-    if (lightLists[i] == NULL) continue;
-    totalLights += lightLists[i]->numLights;
-  }
-  return totalLights;
-}
-
 void Emitter::debug() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;

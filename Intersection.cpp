@@ -128,7 +128,7 @@ Port* Intersection::sendOut(uint16_t i) {
       }
     }
     if (port == NULL) {    
-      port = light->linkedPrev->outPorts[id];
+      port = light->linkedPrev->getOutPort(id);
     }
   }
   if (port == NULL) {
