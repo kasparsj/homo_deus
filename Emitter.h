@@ -51,6 +51,7 @@ class Emitter {
       emitNew(randomModel(), randomSpeed(), randomLife(), randomLength());
     }
     void update();
+    void colorAll();
     void splitAll();
     void stopAll();
     #ifdef HD_TEST

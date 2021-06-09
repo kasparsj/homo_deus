@@ -138,6 +138,13 @@ void Emitter::update() {
   }
 }
 
+void Emitter::colorAll() {
+  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
+    if (lightLists[i] == NULL) continue;
+    lightLists[i]->setColor(randomColor());
+  }
+}
+
 void Emitter::splitAll() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;

@@ -145,6 +145,9 @@ void readSerial() {
       case '.':
         emitter->stopAll();
         break;
+      case '*':
+        emitter->colorAll();
+        break;        
       case 's':
         emitter->splitAll();
         break;
@@ -238,7 +241,7 @@ void onColor(const OscMessage &m) {
     }
   }
   else {
-    // todo: change color all?
+    emitter->colorAll();
   }
 }
 

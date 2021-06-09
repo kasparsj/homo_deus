@@ -94,5 +94,6 @@ void LightList::split() {
     for (uint8_t i=0; i<numSplits; i++) {
       get((i+1)*(numLights/(numSplits+1)))->linkedPrev = NULL;
     }
+    // todo: modify trail
   }
 }
