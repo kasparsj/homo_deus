@@ -59,8 +59,8 @@ void Intersection::update() {
 
 void Intersection::postUpdate() {
   for (uint16_t i=0; i<freeOutgoing; i++) {
-    if (outgoingLights[i] >= 0) {
-      sendOut(outgoingLights[i]); 
+    if (outgoingLights[i] != NULL) {
+      sendOut(i); 
     }
   }
   freeOutgoing = 0;
@@ -90,15 +90,15 @@ void Intersection::updateLight(uint16_t i) {
     }
     else if (light->position >= 1.f) {
       // neurons are updated after connections
-      queueOutgoing(i);
+      queueOutgoing(light);
       queueRemove(i);
     }        
   }
 }
 
-void Intersection::queueOutgoing(uint16_t i) {
+void Intersection::queueOutgoing(Light *light) {
   if (freeOutgoing < MAX_OUTGOING_LIGHTS) {
-    outgoingLights[freeOutgoing] = i;
+    outgoingLights[freeOutgoing] = light;
     freeOutgoing++;  
   }
   else {
@@ -117,13 +117,13 @@ void Intersection::queueRemove(uint16_t i) {
 }
 
 Port* Intersection::sendOut(uint16_t i) {
-  Light *light = lights[i];
+  Light *light = outgoingLights[i];
   Port *port = NULL;
   if (light->linkedPrev != NULL) {
     uint16_t maxOutgoing = freeOutgoing;
     for (uint16_t k=0; k<maxOutgoing; k++) {
-      if (outgoingLights[k] >= 0 && lights[outgoingLights[k]] == light->linkedPrev) {
-        port = sendOut(outgoingLights[k]);
+      if (outgoingLights[k] == light->linkedPrev) {
+        port = sendOut(k);
         break;
       }
     }
@@ -148,7 +148,7 @@ Port* Intersection::sendOut(uint16_t i) {
   light->setOutPort(port, id);
   light->setInPort(NULL);
   light->position -= 1.f;
-  outgoingLights[i] = -1;
+  outgoingLights[i] = NULL;
   if (port != NULL) { 
     port->connection->addLight(light);
   }
