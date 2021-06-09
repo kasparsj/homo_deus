@@ -20,7 +20,7 @@
 #define EMITTER_MIN_NEXT 2000 // ms, ~125 frames (avg fps is 62.5)
 #define EMITTER_MAX_NEXT 20000 // ms, ~1250 frames (avg fps is 62.5)
 #define MAX_PORTS 90 // 85
-#define NUM_MODELS 5
+#define NUM_MODELS 7
 #define MAX_LIGHT_LISTS 20
 #define MAX_BRIGHTNESS 255
 #define MAX_CONDITIONAL_WEIGHTS 10

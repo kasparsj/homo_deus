@@ -1,16 +1,13 @@
 #pragma once
 
 #include "Config.h"
-#include "Intersection.h"
+#include "Model.h"
 
 class Emitter {
 
   public:
   
     Model *models;
-    Intersection *outer;
-    Intersection *middle;
-    Intersection *inner;
     LightList *lightLists[MAX_LIGHT_LISTS] = {0};
     uint16_t totalLights = 0;
     unsigned long nextEmit = 0;
@@ -21,11 +18,8 @@ class Emitter {
     bool enabled = false;
     uint8_t currentPalette = 0;
     
-    Emitter(Model (&models)[NUM_MODELS], Intersection (&outer)[14], Intersection (&middle)[7], Intersection (&inner)[7]) {
+    Emitter(Model (&models)[NUM_MODELS]) {
       this->models = models;
-      this->outer = outer;
-      this->middle = middle;
-      this->inner = inner;
     }
     
     float randomSpeed();

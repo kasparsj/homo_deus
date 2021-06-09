@@ -11,6 +11,8 @@ enum HeptagonStarModel {
   M_OUTER_STAR, 
   M_INNER_CIRCLE,
   M_STAR_COLOR,
+  M_HORNS,
+  M_HALO,
 };
 
 class HeptagonStar {
@@ -50,11 +52,13 @@ class HeptagonStar {
     Connection innerConnections[7];
   
     Model models[NUM_MODELS] = { 
-      Model(M_DEFAULT, 1), 
-      Model(M_STAR, 0), 
-      Model(M_OUTER_STAR, 1), 
-      Model(M_INNER_CIRCLE, 0),
-      Model(M_STAR_COLOR, 0, 14),
+      Model(M_DEFAULT, 1, 14), 
+      Model(M_STAR, 0, 14), 
+      Model(M_OUTER_STAR, 1, 14), 
+      Model(M_INNER_CIRCLE, 0, 14),
+      Model(M_STAR_COLOR, 0, 14, 14),
+      Model(M_HORNS, 0, 9),
+      Model(M_HALO, 0, 3),
     };
   
     HeptagonStar() {}

@@ -3,6 +3,7 @@
 #include "Weight.h"
 #include "Port.h"
 #include "Connection.h"
+#include "Intersection.h"
 #include <NeoPixelBus.h>
 
 class Light;
@@ -15,12 +16,19 @@ class Model {
     float defaultW;
     // todo: perhaps better use HashMap
     Weight *weights[MAX_PORTS] = {0};
+    uint8_t numEmitters;
+    Intersection **emitters;
     uint8_t numColorPorts;
     Port **colorPorts;
     
-    Model(uint8_t id, float defaultW, uint8_t numColorPorts = 0) {
+    Model(uint8_t id, float defaultW, uint8_t numEmitters, uint8_t numColorPorts = 0) {
       this->id = id;
       this->defaultW = defaultW;
+      this->numEmitters = numEmitters;
+      this->emitters = new Intersection*[numEmitters]();
+      for (uint8_t i=0; i<numEmitters; i++) {
+        this->emitters[i] = NULL;
+      }
       this->numColorPorts = numColorPorts;
       if (numColorPorts > 0) {
         this->colorPorts = new Port*[numColorPorts]();
@@ -70,6 +78,31 @@ class Model {
         weights[outgoing->id] = weight;
       }
       return weight;
+    }
+
+    void addEmitter(Intersection *emitter) {
+      for (uint8_t i=0; i<numEmitters; i++) {
+        if (emitters[i] == NULL) {
+          this->emitters[i] = emitter;
+          return;
+        }
+      }
+      Serial.printf("Model %d cannot add emitter\n", id);
+    }
+
+    uint8_t getFreeEmitter() {
+      uint8_t r = random(numEmitters);
+      for (uint8_t i=0; i<numEmitters; i++) {
+        uint8_t j = (r + i) % numEmitters;
+        if (emitters[j]->freeLight == 0) {
+          return j;
+        }
+      }
+      return -1;
+    }
+
+    void emit(uint8_t i, LightList *lightList) {
+      emitters[i]->emit(lightList);
     }
 
     void addColorPort(Port *port) {

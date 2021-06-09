@@ -37,7 +37,7 @@ void setup() {
 
   pinMode(BUTTON_PIN, INPUT);
 
-  emitter = new Emitter(heptagon.models, heptagon.outerNeurons, heptagon.middleNeurons, heptagon.innerNeurons);
+  emitter = new Emitter(heptagon.models);
 
   #ifdef HD_DEBUG
   Serial.println("setup complete");
@@ -185,6 +185,8 @@ void readSerial() {
       case '3':
       case '4':
       case '5':
+      case '6':
+      case '7':
         emitter->emitLinked(incomingByte - '1');
         break;
       case '+':

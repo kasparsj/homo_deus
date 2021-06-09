@@ -43,6 +43,29 @@ void HeptagonStar::setup() {
     models[M_OUTER_STAR].put(innerConnection, 0);
     models[M_INNER_CIRCLE].put(innerConnection, 1);
   }
+
+  for (uint8_t i=0; i<14; i++) {
+    models[M_DEFAULT].addEmitter(&outerNeurons[i]);
+    models[M_STAR].addEmitter(&outerNeurons[i]);
+    models[M_OUTER_STAR].addEmitter(&outerNeurons[i]);
+    models[M_STAR_COLOR].addEmitter(&outerNeurons[i]);
+    if (i<7) {
+      models[M_INNER_CIRCLE].addEmitter(&middleNeurons[i]);
+      models[M_INNER_CIRCLE].addEmitter(&innerNeurons[i]);
+    }    
+  }
+
+  models[M_HORNS].addEmitter(&outerNeurons[3]);
+  models[M_HORNS].addEmitter(&outerNeurons[4]);
+  models[M_HORNS].addEmitter(&middleNeurons[2]);
+  models[M_HORNS].addEmitter(&middleNeurons[3]);
+  models[M_HORNS].addEmitter(&middleNeurons[4]);
+  models[M_HORNS].addEmitter(&innerNeurons[3]);
+  models[M_HORNS].addEmitter(&innerNeurons[4]);
+
+  models[M_HALO].addEmitter(&middleNeurons[3]);
+  models[M_HALO].addEmitter(&innerNeurons[3]);
+  models[M_HALO].addEmitter(&innerNeurons[4]);
   
   #ifdef HD_TEST
   for (uint8_t i=0; i<14; i++) {
