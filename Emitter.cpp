@@ -35,6 +35,19 @@ void Emitter::emit(unsigned long ms) {
 }
 
 void Emitter::emitNew(uint8_t which, float speed, uint16_t life, uint16_t length, RgbColor color) {
+  uint8_t r = random(14);
+  int8_t k = -1;
+  for (uint8_t i=0; i<14; i++) {
+    uint8_t j = (r + i) % 14;
+    if (intersections[j].freeLight == 0) {
+      k = j;
+      break;
+    }
+  }
+  if (k == -1) {
+    Serial.println("Emit failed.");
+    return;
+  }
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) {
       lightLists[i] = new LightList();
@@ -46,41 +59,19 @@ void Emitter::emitNew(uint8_t which, float speed, uint16_t life, uint16_t length
       uint16_t trail = min((int) (speed * max(1, length / 2)), max(EMITTER_MAX_LENGTH, EMITTER_MAX_LIGHTS) - 1);
       lightLists[i]->setTrail(trail);
       lightLists[i]->setupFull(max(1, length - trail), color);
-      // switch (which) {
-      //   case M_DEFAULT:
-      //     break;
-      //   case M_INNER_CIRCLE:
-      //     break;
-      //   case M_STAR:
-      //     break;
-      //   case M_OUTER_STAR:
-      //     break;
-      // }
-      Serial.printf("Will emit %d lights, bringing total to %d\n", lightLists[i]->numLights, totalLights + lightLists[i]->numLights);
-      uint8_t r = random(14);
-      bool emitted = false;
-      for (uint8_t j=0; j<14; j++) {
-        uint8_t k = (r + j) % 14;
-        if (intersections[k].freeLight == 0) {
-          intersections[k].emit(lightLists[i]);
-          totalLights += lightLists[i]->numLights;
-          emitted = true;
-          break;
-        }
-      }
-      if (!emitted) {
-        Serial.println("Emit failed");
-      }
+      Serial.printf("Will emit %d lights, bringing total to %d\n", lightLists[i]->numLights, totalLights + lightLists[i]->numLights);      
+      intersections[k].emit(lightLists[i]);
+      totalLights += lightLists[i]->numLights;
       // todo: fix
       //OscMessage msg = new OscMessage("/hd/spawn");
       //msg.add(life / 50.f);
       //oscP5.send(msg, supercollider);
-      break;  
+      return;  
     }
   }
-  //#ifdef HD_DEBUG
-  //Serial.println("No free light lists");
-  //#endif
+  #ifdef HD_DEBUG
+  Serial.println("No free light lists");
+  #endif
 }
 
 void Emitter::update() {
