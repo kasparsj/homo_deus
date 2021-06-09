@@ -150,6 +150,9 @@ Port* Intersection::sendOut(uint16_t i) {
   light->position -= 1.f;
   outgoingLights[i] = NULL;
   if (port != NULL) { 
+    if (light->model->numColorPorts > 0 && light->model->checkColorPort(port)) {
+      light->color = light->model->changeColor(light);
+    }
     port->connection->addLight(light);
   }
   return port;

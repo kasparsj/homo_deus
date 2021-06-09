@@ -46,9 +46,9 @@ void LightList::setupFull(uint16_t numLights, RgbColor color) {
   }
   for (uint16_t i=0; i<trail; i++) {
     Light *linkedPrev = linked ? get(numLights + i - 1) : 0;
-    Light *light = new Light(1.0, speed, life, model, linkedPrev);
-    uint8_t dim = 255 - (255 / (trail + 1)) * (i + 1);
-    light->setColor(color.Dim(dim));
+    float bri = (255.f - (255.f / (trail + 1)) * (i + 1)) / 255.f;
+    Light *light = new Light(bri, speed, life, model, linkedPrev);
+    light->setColor(color);
     //light->id = numLights + i;
     set(numLights + i, light);
   }

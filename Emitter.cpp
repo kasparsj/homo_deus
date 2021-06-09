@@ -134,6 +134,18 @@ void Emitter::update() {
   }
 }
 
+void Emitter::stopAll() {
+  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
+    if (lightLists[i] == NULL) continue;
+    for (uint16_t j=0; j<lightLists[i]->numLights; j++) {
+      if (lightLists[i]->lights[j] == NULL || lightLists[i]->lights[j]->isExpired) {
+        continue;
+      }
+      lightLists[i]->lights[j]->life = 0;
+    }
+  }
+}
+
 #ifdef HD_TEST
 void Emitter::debug() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {

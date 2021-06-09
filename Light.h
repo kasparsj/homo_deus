@@ -26,8 +26,8 @@ class Light {
     Port *outPorts[OUT_PORTS_MEMORY] = {0}; // 4 bytes * 7
     int8_t outPortsInt[OUT_PORTS_MEMORY] = {-1};
     int16_t pixel1 = -1;
-    // int16_t pixel2 = -1; // 4 bytes
     float pixel1Bri = 0;
+    // int16_t pixel2 = -1; // 4 bytes
     // float pixel2Bri = 0; // 4 bytes
     bool isExpired = false;
     
@@ -46,7 +46,7 @@ class Light {
       if (brightness == 1.f) {
         return color;
       }
-      return color.Dim(255 - 255 * brightness);
+      return color.Dim(255 * brightness);
     }
 
     void setColor(RgbColor color) {

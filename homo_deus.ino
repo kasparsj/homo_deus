@@ -103,7 +103,7 @@ RgbColor getColor(uint16_t i) {
   }
   #ifdef HD_TEST
   if (showAll) {
-    color.R = MAX_BRIGHTNESS / 3;
+    color.R = MAX_BRIGHTNESS / 2;
   }
   if (showConnections) {
     color.G = (heptagon.isConnection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
@@ -135,9 +135,12 @@ void readSerial() {
       case 'r':
         ESP.restart();
         break;
-      case 's':
+      case 'e':
         emitter->enabled = !emitter->enabled;
         Serial.printf("Emitter is %s", emitter->enabled ? "enabled" : "disabled");
+        break;
+      case 's':
+        emitter->stopAll();
         break;
       #ifdef HD_TEST
       case 'f':
@@ -172,6 +175,7 @@ void readSerial() {
       case '2':
       case '3':
       case '4':
+      case '5':
         emitter->emitNew(incomingByte - '1');
         break;
     }

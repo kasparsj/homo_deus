@@ -50,6 +50,7 @@ class Emitter {
       emitNew(randomModel(), randomSpeed(), randomLife(), randomLength());
     }
     void update();
+    void stopAll();
     #ifdef HD_TEST
     uint16_t numLights();
     void debug();

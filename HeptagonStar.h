@@ -5,7 +5,13 @@
 #include "Connection.h"
 #include "Model.h"
 
-enum HeptagonStarModel { M_DEFAULT, M_STAR, M_OUTER_STAR, M_INNER_CIRCLE };
+enum HeptagonStarModel { 
+  M_DEFAULT, 
+  M_STAR, 
+  M_OUTER_STAR, 
+  M_INNER_CIRCLE,
+  M_STAR_COLOR,
+};
 
 class HeptagonStar {
 
@@ -43,7 +49,13 @@ class HeptagonStar {
     Connection middleConnections[14];
     Connection innerConnections[7];
   
-    Model models[NUM_MODELS] = { Model(M_DEFAULT, 1), Model(M_STAR, 0), Model(M_OUTER_STAR, 1), Model(M_INNER_CIRCLE, 0) };
+    Model models[NUM_MODELS] = { 
+      Model(M_DEFAULT, 1), 
+      Model(M_STAR, 0), 
+      Model(M_OUTER_STAR, 1), 
+      Model(M_INNER_CIRCLE, 0),
+      Model(M_STAR_COLOR, 0, 14),
+    };
   
     HeptagonStar() {}
     void setup();

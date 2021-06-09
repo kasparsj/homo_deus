@@ -3,6 +3,9 @@
 #include "Weight.h"
 #include "Port.h"
 #include "Connection.h"
+#include <NeoPixelBus.h>
+
+class Light;
 
 class Model {
 
@@ -12,10 +15,19 @@ class Model {
     float defaultW;
     // todo: perhaps better use HashMap
     Weight *weights[MAX_PORTS] = {0};
+    uint8_t numColorPorts;
+    Port **colorPorts;
     
-    Model(uint8_t id, float defaultW) {
+    Model(uint8_t id, float defaultW, uint8_t numColorPorts = 0) {
       this->id = id;
       this->defaultW = defaultW;
+      this->numColorPorts = numColorPorts;
+      if (numColorPorts > 0) {
+        this->colorPorts = new Port*[numColorPorts]();
+        for (uint8_t i=0; i<numColorPorts; i++) {
+          this->colorPorts[i] = NULL;
+        }
+      }
     }
   
     ~Model() {
@@ -58,5 +70,30 @@ class Model {
         weights[outgoing->id] = weight;
       }
       return weight;
+    }
+
+    void addColorPort(Port *port) {
+      for (uint8_t i=0; i<numColorPorts; i++) {
+        if (colorPorts[i] == NULL) {
+          colorPorts[i] = port;
+          break;
+        }
+      }
+    }
+
+    bool checkColorPort(Port *port) {
+      for (uint8_t i=0; i<numColorPorts; i++) {
+        if (colorPorts[i] == port) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    RgbColor changeColor(Light *light) {
+      if (light->linkedPrev != NULL) {
+        return light->linkedPrev->color;
+      }
+      return RgbColor(random(255), random(255), random(255));
     }
 };
