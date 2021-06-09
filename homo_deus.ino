@@ -1,4 +1,3 @@
-//#include <NeoPixelBrightnessBus.h>
 #include <NeoPixelBus.h>
 #include "BluetoothSerial.h"
 
@@ -14,9 +13,9 @@
 #include <ArduinoOSC.h>
 #endif
 
-NeoGamma<NeoGammaTableMethod> colorGamma;
 NeoPixelBus<NeoGrbFeature, NeoWs2813Method> strip1(PIXEL_COUNT1, PIXEL_PIN1);
 NeoPixelBus<NeoGrbFeature, NeoEsp32Rmt5Ws2812xMethod> strip2(PIXEL_COUNT2, PIXEL_PIN2);
+NeoGamma<NeoGammaTableMethod> colorGamma;
 HeptagonStar heptagon;
 Emitter *emitter;
 bool showIntersections = false;
@@ -30,8 +29,6 @@ void setup() {
 
   heptagon.setup();
 
-  // todo: should not use BrightnessBus
-  // strip.SetBrightness(32);
   strip1.Begin();
   strip1.Show();
 
@@ -72,7 +69,8 @@ void setupComms() {
   #endif
 
   #ifdef HD_OSC
-  OscWiFi.subscribe(54321, "/emit", onOscReceived);
+  OscWiFi.subscribe(54321, "/emit", onEmit);
+  OscWiFi.subscribe(54321, "/palette", onPalette);
   #endif
 }
 
@@ -114,7 +112,7 @@ RgbColor getColor(uint16_t i) {
     color.B = (heptagon.isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
   #endif
-  return color;
+  return colorGamma.Correct(color);
 }
 
 void loop() {
@@ -181,7 +179,7 @@ void readSerial() {
 }
 
 #ifdef HD_OSC
-void onOscReceived(const OscMessage& m) {
+void onEmit(const OscMessage& m) {
   if (m.size() > 0) {
     uint8_t which = m.arg<uint8_t>(0);
     if (m.size() > 1) {
@@ -190,7 +188,13 @@ void onOscReceived(const OscMessage& m) {
         uint16_t life = m.arg<uint16_t>(2);
         if (m.size() > 3) {
           uint16_t length = m.arg<uint16_t>(3);
-          emitter->emitNew(which, speed, life, length);
+          if (m.size() > 4) {
+            uint8_t color = m.arg<uint8_t>(4);
+            emitter->emitNew(which, speed, life, length, color);
+          }
+          else {
+            emitter->emitNew(which, speed, life, length);
+          }
         }
         else {
           emitter->emitNew(which, speed, life);
@@ -203,6 +207,11 @@ void onOscReceived(const OscMessage& m) {
     else {
       emitter->emitNew(which);
     }
+  }
+}
+void onPalette(const OscMessage& m) {
+  if (m.size() > 0) {
+    emitter->currentPalette = m.arg<uint8_t>(0);
   }
 }
 #endif

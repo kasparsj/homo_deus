@@ -17,6 +17,7 @@ class Emitter {
     uint16_t pixelValuesB[PIXEL_COUNT];
     uint8_t pixelDiv[PIXEL_COUNT];
     bool enabled = false;
+    uint8_t currentPalette = 0;
     
     Emitter(Model (&models)[NUM_MODELS], Intersection (&intersections)[14]) {
       this->models = models;
@@ -29,10 +30,12 @@ class Emitter {
     uint16_t randomLength();
     float randomBriThresh();
     uint16_t randomNextEmit();
+    RgbColor randomColor();
     void emit(unsigned long millis);
     void emitNew(uint8_t which, float speed, uint16_t life, uint16_t length, RgbColor color);
+    void emitNew(uint8_t which, float speed, uint16_t life, uint16_t length, uint8_t color);
     void emitNew(uint8_t which, float speed, uint16_t life, uint16_t length) {
-      emitNew(which, speed, life, length, RgbColor(random(255), random(255), random(255)));
+      emitNew(which, speed, life, length, randomColor());
     }
     void emitNew(uint8_t which, float speed, uint16_t life) {
       emitNew(which, speed, life, randomLength());

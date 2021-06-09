@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "HeptagonStar.h"
 #include <Arduino.h>
+#include "Palettes.h"
 
 float Emitter::randomSpeed() {
   return EMITTER_MIN_SPEED + random(max(EMITTER_MAX_SPEED - EMITTER_MIN_SPEED, 0.f));
@@ -25,6 +26,10 @@ float Emitter::randomBriThresh() {
 
 uint16_t Emitter::randomNextEmit() {
   return EMITTER_MIN_NEXT + random(max(EMITTER_MAX_NEXT - EMITTER_MIN_NEXT, 0));
+}
+
+RgbColor Emitter::randomColor() {
+  return RgbColor(random(255), random(255), random(255));
 }
 
 void Emitter::emit(unsigned long ms) {
@@ -72,6 +77,12 @@ void Emitter::emitNew(uint8_t which, float speed, uint16_t life, uint16_t length
   #ifdef HD_DEBUG
   Serial.println("No free light lists");
   #endif
+}
+
+void Emitter::emitNew(uint8_t which, float speed, uint16_t life, uint16_t length, uint8_t color) {
+  const CRGBPalette16& palette = gGradientPalettes[currentPalette];
+  CRGB crgb = ColorFromPalette(palette, color);
+  emitNew(which, speed, life, length, RgbColor(crgb.r, crgb.g, crgb.b));
 }
 
 void Emitter::update() {
