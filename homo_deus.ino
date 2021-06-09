@@ -37,7 +37,7 @@ void setup() {
 
   pinMode(BUTTON_PIN, INPUT);
 
-  emitter = new Emitter(heptagon.models, heptagon.outerNeurons);
+  emitter = new Emitter(heptagon.models, heptagon.outerNeurons, heptagon.middleNeurons, heptagon.innerNeurons);
 
   #ifdef HD_DEBUG
   Serial.println("setup complete");
@@ -185,7 +185,10 @@ void readSerial() {
       case '3':
       case '4':
       case '5':
-        emitter->emitNew(incomingByte - '1');
+        emitter->emitLinked(incomingByte - '1');
+        break;
+      case '+':
+        emitter->emitSplatter();
         break;
     }
   }
@@ -203,22 +206,22 @@ void onEmit(const OscMessage& m) {
           uint16_t length = m.arg<uint16_t>(3);
           if (m.size() > 4) {
             uint8_t color = m.arg<uint8_t>(4);
-            emitter->emitNew(which, speed, life, length, color);
+            emitter->emitLinked(which, speed, life, length, color);
           }
           else {
-            emitter->emitNew(which, speed, life, length);
+            emitter->emitLinked(which, speed, life, length);
           }
         }
         else {
-          emitter->emitNew(which, speed, life);
+          emitter->emitLinked(which, speed, life);
         }
       }
       else {
-        emitter->emitNew(which, speed);
+        emitter->emitLinked(which, speed);
       }
     }
     else {
-      emitter->emitNew(which);
+      emitter->emitLinked(which);
     }
   }
 }

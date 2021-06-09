@@ -8,7 +8,9 @@ class Emitter {
   public:
   
     Model *models;
-    Intersection *intersections;
+    Intersection *outer;
+    Intersection *middle;
+    Intersection *inner;
     LightList *lightLists[MAX_LIGHT_LISTS] = {0};
     uint16_t totalLights = 0;
     unsigned long nextEmit = 0;
@@ -19,9 +21,11 @@ class Emitter {
     bool enabled = false;
     uint8_t currentPalette = 0;
     
-    Emitter(Model (&models)[NUM_MODELS], Intersection (&intersections)[14]) {
+    Emitter(Model (&models)[NUM_MODELS], Intersection (&outer)[14], Intersection (&middle)[7], Intersection (&inner)[7]) {
       this->models = models;
-      this->intersections = intersections;
+      this->outer = outer;
+      this->middle = middle;
+      this->inner = inner;
     }
     
     float randomSpeed();
@@ -33,22 +37,34 @@ class Emitter {
     RgbColor randomColor();
     RgbColor paletteColor(uint8_t color);
     void emit(unsigned long millis);
-    void emitNew(uint8_t which, float speed, uint16_t life, uint16_t length, RgbColor color);
-    void emitNew(uint8_t which, float speed, uint16_t life, uint16_t length, uint8_t color);
-    void emitNew(uint8_t which, float speed, uint16_t life, uint16_t length) {
-      emitNew(which, speed, life, length, randomColor());
+    void emitLinked(uint8_t model, float speed, uint16_t life, uint16_t length, RgbColor color);
+    void emitLinked(uint8_t model, float speed, uint16_t life, uint16_t length, uint8_t color) {
+      emitLinked(model, speed, life, length, paletteColor(color));
     }
-    void emitNew(uint8_t which, float speed, uint16_t life) {
-      emitNew(which, speed, life, randomLength());
+    void emitLinked(uint8_t model, float speed, uint16_t life, uint16_t length) {
+      emitLinked(model, speed, life, length, randomColor());
     }
-    void emitNew(uint8_t which, float speed) {
-      emitNew(which, speed, randomLife(), randomLength());
+    void emitLinked(uint8_t model, float speed, uint16_t life) {
+      emitLinked(model, speed, life, randomLength());
     }
-    void emitNew(uint8_t which) {
-      emitNew(which, randomSpeed(), randomLife(), randomLength());
+    void emitLinked(uint8_t model, float speed) {
+      emitLinked(model, speed, randomLife(), randomLength());
     }
-    void emitNew() {
-      emitNew(randomModel(), randomSpeed(), randomLife(), randomLength());
+    void emitLinked(uint8_t model) {
+      emitLinked(model, randomSpeed(), randomLife(), randomLength());
+    }
+    void emitLinked() {
+      emitLinked(randomModel(), randomSpeed(), randomLife(), randomLength());
+    }
+    void emitSplatter(float speed, uint16_t length, RgbColor color);
+    void emitSplatter(float speed, uint16_t length, uint8_t color) {
+      emitSplatter(speed, length, paletteColor(color));
+    }
+    void emitSplatter(float speed, uint16_t length) {
+      emitSplatter(speed, length, randomColor());
+    }
+    void emitSplatter() {
+      emitSplatter(randomSpeed(), randomLength());
     }
     void update();
     void colorAll();
