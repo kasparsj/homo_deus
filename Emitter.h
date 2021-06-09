@@ -31,6 +31,7 @@ class Emitter {
     float randomBriThresh();
     uint16_t randomNextEmit();
     RgbColor randomColor();
+    RgbColor paletteColor(uint8_t color);
     void emit(unsigned long millis);
     void emitNew(uint8_t which, float speed, uint16_t life, uint16_t length, RgbColor color);
     void emitNew(uint8_t which, float speed, uint16_t life, uint16_t length, uint8_t color);
@@ -50,6 +51,7 @@ class Emitter {
       emitNew(randomModel(), randomSpeed(), randomLife(), randomLength());
     }
     void update();
+    void splitAll();
     void stopAll();
     #ifdef HD_TEST
     uint16_t numLights();

@@ -57,7 +57,8 @@ void setupComms() {
   WiFi.mode(WIFI_STA);
   #endif
 
-  WiFi.begin("VA37-3", "fdsa4321");
+  //WiFi.begin("VA37-3", "fdsa4321");
+  WiFi.begin("Redmi", "marlena123");
   //WiFi.config(ip, gateway, subnet);
   while (WiFi.status() != WL_CONNECTED) {
       Serial.print(".");
@@ -69,8 +70,10 @@ void setupComms() {
   #endif
 
   #ifdef HD_OSC
-  OscWiFi.subscribe(54321, "/emit", onEmit);
-  OscWiFi.subscribe(54321, "/palette", onPalette);
+  OscWiFi.subscribe(OSC_PORT, "/emit", onEmit);
+  OscWiFi.subscribe(OSC_PORT, "/palette", onPalette);
+  OscWiFi.subscribe(OSC_PORT, "/color", onColor);
+  OscWiFi.subscribe(OSC_PORT, "/split", onSplit);
   #endif
 }
 
@@ -139,8 +142,11 @@ void readSerial() {
         emitter->enabled = !emitter->enabled;
         Serial.printf("Emitter is %s", emitter->enabled ? "enabled" : "disabled");
         break;
-      case 's':
+      case '.':
         emitter->stopAll();
+        break;
+      case 's':
+        emitter->splitAll();
         break;
       #ifdef HD_TEST
       case 'f':
@@ -213,9 +219,36 @@ void onEmit(const OscMessage& m) {
     }
   }
 }
+
 void onPalette(const OscMessage& m) {
   if (m.size() > 0) {
     emitter->currentPalette = m.arg<uint8_t>(0);
+  }
+}
+
+void onColor(const OscMessage &m) {
+  if (m.size() > 0) {
+    uint8_t i = m.arg<uint8_t>(0);
+    if (m.size() > 1) {
+      uint8_t color = m.arg<uint8_t>(1);
+      emitter->lightLists[i]->setColor(emitter->paletteColor(color));
+    }
+    else {
+      emitter->lightLists[i]->setColor(emitter->randomColor());
+    }
+  }
+  else {
+    // todo: change color all?
+  }
+}
+
+void onSplit(const OscMessage &m) {
+  if (m.size() > 0) {
+    uint8_t i = m.arg<uint8_t>(0);
+    emitter->lightLists[i]->split();
+  }
+  else {
+    emitter->splitAll();
   }
 }
 #endif

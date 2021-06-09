@@ -81,3 +81,18 @@ void LightList::setLife(uint16_t numFrames) {
     get(i)->life = numFrames;
   }
 }
+
+void LightList::setColor(RgbColor color) {
+  for (uint16_t i=0; i<numLights; i++) {
+    get(i)->setColor(color);
+  }
+}
+
+void LightList::split() {
+  numSplits++;
+  if (numSplits < numLights) {
+    for (uint8_t i=0; i<numSplits; i++) {
+      get((i+1)*(numLights/(numSplits+1)))->linkedPrev = NULL;
+    }
+  }
+}

@@ -19,6 +19,7 @@ class LightList {
     uint16_t numLights = 0;
     uint16_t trail = 0;
     Light **lights;
+    uint8_t numSplits = 0;
     
     LightList(float speed) {
       this->speed = speed;
@@ -51,9 +52,10 @@ class LightList {
     void setModel(Model *model);
     void setSpeed(float speed);
     void setLife(uint16_t numFrames);
-
+    void setColor(RgbColor color);
     void setTrail(uint16_t length) {
       trail = length;
     }
+    void split();
   
 };

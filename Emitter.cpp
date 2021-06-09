@@ -32,6 +32,12 @@ RgbColor Emitter::randomColor() {
   return RgbColor(random(255), random(255), random(255));
 }
 
+RgbColor Emitter::paletteColor(uint8_t color) {
+  const CRGBPalette16& palette = gGradientPalettes[currentPalette];
+  CRGB crgb = ColorFromPalette(palette, color);
+  return RgbColor(crgb.r, crgb.g, crgb.b);  
+}
+
 void Emitter::emit(unsigned long ms) {
   if (enabled && nextEmit <= ms) {
     emitNew();
@@ -80,9 +86,7 @@ void Emitter::emitNew(uint8_t which, float speed, uint16_t life, uint16_t length
 }
 
 void Emitter::emitNew(uint8_t which, float speed, uint16_t life, uint16_t length, uint8_t color) {
-  const CRGBPalette16& palette = gGradientPalettes[currentPalette];
-  CRGB crgb = ColorFromPalette(palette, color);
-  emitNew(which, speed, life, length, RgbColor(crgb.r, crgb.g, crgb.b));
+  emitNew(which, speed, life, length, paletteColor(color));
 }
 
 void Emitter::update() {
@@ -131,6 +135,13 @@ void Emitter::update() {
       Serial.println(i);
       #endif
     }
+  }
+}
+
+void Emitter::splitAll() {
+  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
+    if (lightLists[i] == NULL) continue;
+    lightLists[i]->split();
   }
 }
 

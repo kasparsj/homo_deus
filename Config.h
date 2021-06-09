@@ -32,4 +32,5 @@
 #define UPDATES_PER_FRAME 3
 #define HD_WIFI
 #define HD_OSC
+#define OSC_PORT 54321
 
