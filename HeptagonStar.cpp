@@ -66,7 +66,7 @@ void HeptagonStar::setup() {
 }
 
 void HeptagonStar::update() {
-  for (uint8_t k=0; k<3; k++) {
+  for (uint8_t k=0; k<UPDATES_PER_FRAME; k++) {
     for (uint8_t i=0; i<14; i++) {
       if (i < 7) {
         zeroConnections[i].update();
@@ -96,30 +96,22 @@ void HeptagonStar::debugConnections() {
   Serial.println("--- CONNECTIONS ---");
   for (uint8_t i=0; i<14; i++) {
     if (i < 7) {
-      Serial.print("Zero");
-      Serial.print(i);
-      Serial.print(": ");
+      Serial.printf("Zero %d - %d: ", zeroConnections[i].fromPixel, zeroConnections[i].toPixel);
       Serial.print(zeroConnections[i].freeLight);
       Serial.print(" / ");
       Serial.println(zeroConnections[i].maxLights);
 
-      Serial.print("Inner");
-      Serial.print(i);
-      Serial.print(": ");
+      Serial.printf("Inner %d - %d: ", innerConnections[i].fromPixel, innerConnections[i].toPixel);
       Serial.print(innerConnections[i].freeLight);
       Serial.print(" / ");
       Serial.println(innerConnections[i].maxLights);
     } 
-    Serial.print("Outer");
-    Serial.print(i);
-    Serial.print(": ");
+    Serial.printf("Outer %d - %d: ", outerConnections[i].fromPixel, outerConnections[i].toPixel);
     Serial.print(outerConnections[i].freeLight);
     Serial.print(" / ");
     Serial.println(outerConnections[i].maxLights);
 
-    Serial.print("Middle");
-    Serial.print(i);
-    Serial.print(": ");
+    Serial.printf("Middle %d - %d: ", middleConnections[i].fromPixel, middleConnections[i].toPixel);
     Serial.print(middleConnections[i].freeLight);
     Serial.print(" / ");
     Serial.println(middleConnections[i].maxLights);

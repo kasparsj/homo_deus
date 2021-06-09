@@ -14,7 +14,7 @@ class Connection {
     Port *fromPort;
     Port *toPort;
     Light **lights;
-    uint8_t numLeds;
+    uint8_t numLeds = 0;
     uint16_t maxLights = 0;
     uint16_t freeLight = 0;
     bool pixelDir;

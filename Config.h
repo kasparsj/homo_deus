@@ -27,6 +27,7 @@
 #define MAX_OUTGOING_LIGHTS 70
 #define CONNECTION_MAX_MULT 7
 #define OUT_PORTS_MEMORY 3
+#define UPDATES_PER_FRAME 3
 #define HD_WIFI
 #define HD_OSC
 

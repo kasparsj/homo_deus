@@ -26,7 +26,7 @@ class HeptagonStar {
       Intersection(INTER_MAX_LIGHTS, 4, 696, 347), 
       Intersection(INTER_MAX_LIGHTS, 4, 434, 81),  // upper left
       Intersection(INTER_MAX_LIGHTS, 4, 742, 172), // top
-      Intersection(INTER_MAX_LIGHTS, 4, 836, 478),
+      Intersection(INTER_MAX_LIGHTS, 4, 836, 478), // upper right
       Intersection(INTER_MAX_LIGHTS, 4, 568, 218),  // right
       Intersection(INTER_MAX_LIGHTS, 4, 876, 304) }; // bottom right
     Intersection innerNeurons[7] = {
@@ -34,7 +34,7 @@ class HeptagonStar {
       Intersection(INTER_MAX_LIGHTS, 4, 55, 334), 
       Intersection(INTER_MAX_LIGHTS, 4, 708, 69), 
       Intersection(INTER_MAX_LIGHTS, 4, 722, 448),  // top left
-      Intersection(INTER_MAX_LIGHTS, 4, 462, 191), 
+      Intersection(INTER_MAX_LIGHTS, 4, 462, 191), // top right
       Intersection(INTER_MAX_LIGHTS, 4, 848, 206),  // right 
       Intersection(INTER_MAX_LIGHTS, 4, 863, 582) }; // bottom right
 

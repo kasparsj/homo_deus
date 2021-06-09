@@ -21,6 +21,7 @@ HeptagonStar heptagon;
 Emitter *emitter;
 bool showIntersections = false;
 bool showConnections = false;
+bool showAll = false;
 unsigned long prevMillis = 0;
 float fps = 0.f;
 
@@ -103,6 +104,9 @@ RgbColor getColor(uint16_t i) {
     color.B = min(emitter->pixelValuesB[i] / emitter->pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
   }
   #ifdef HD_TEST
+  if (showAll) {
+    color.R = MAX_BRIGHTNESS / 3;
+  }
   if (showConnections) {
     color.G = (heptagon.isConnection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
@@ -143,6 +147,9 @@ void readSerial() {
         break;
       case 'h':
         Serial.printf("Free heap: %d\n", ESP.getFreeHeap());
+        break;
+      case 'a':
+        showAll = !showAll;
         break;
       case 'i':
         showIntersections = !showIntersections;

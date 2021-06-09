@@ -13,32 +13,33 @@ void Connection::setup(Intersection *from, Intersection *to) {
   fromPixel = from->topPixel + (pixelDir ? 1 : -1);
   toPixel = to->topPixel - (pixelDir ? 1 : -1);
   uint16_t diff = abs(fromPixel - toPixel);
-  numLeds = diff > 4 && diff < (PIXEL_COUNT - 4) ? diff + 1 : 0;
+  uint16_t leds = diff > 4 && diff < (PIXEL_COUNT - 4) ? diff + 1 : 0;
   if (from->bottomPixel > -1) {
-    if (abs(from->bottomPixel - to->topPixel) < numLeds) {
+    if (abs(from->bottomPixel - to->topPixel) < leds) {
       pixelDir = to->topPixel > from->bottomPixel;
       fromPixel = from->bottomPixel + (pixelDir ? 1 : -1);
       toPixel = to->topPixel - (pixelDir ? 1 : -1);
-      numLeds = abs(fromPixel - toPixel) + 1;
+      leds = abs(fromPixel - toPixel) + 1;
     }
   }
   if (to->bottomPixel > -1) {
-    if (abs(from->topPixel - to->bottomPixel) < numLeds) {
+    if (abs(from->topPixel - to->bottomPixel) < leds) {
       pixelDir = to->bottomPixel > from->topPixel;
       fromPixel = from->topPixel + (pixelDir ? 1 : -1);
-      toPixel =  to->bottomPixel - (pixelDir ? 1 : -1);
-      numLeds = abs(fromPixel - toPixel) + 1;
+      toPixel = to->bottomPixel - (pixelDir ? 1 : -1);
+      leds = abs(fromPixel - toPixel) + 1;
     }
   }
   if (from->bottomPixel > -1 && to->bottomPixel > -1) {
-    if (abs(from->bottomPixel - to->bottomPixel) < numLeds) {
+    if (abs(from->bottomPixel - to->bottomPixel) < leds) {
       pixelDir = to->bottomPixel > from->bottomPixel;
       fromPixel = from->bottomPixel + (pixelDir ? 1 : -1);
       toPixel = to->bottomPixel - (pixelDir ? 1 : -1);
-      numLeds = abs(fromPixel - toPixel) + 1;
+      leds = abs(fromPixel - toPixel) + 1;
     }
   }
-  if (numLeds > 0) {
+  if (leds > 0) {
+    numLeds = leds;
     maxLights = numLeds * CONNECTION_MAX_MULT;
     lights = new Light*[maxLights]();
     for (uint16_t i=0; i<maxLights; i++) {
@@ -70,10 +71,6 @@ void Connection::update() {
   for (uint16_t i=0; i<freeLight; i++) {
     updateLight(i);
   }
-  postUpdate();
-}
-
-void Connection::postUpdate() {
   for (int16_t i=(freeRemove-1); i>=0; i--) {
     if (removeLights[i] >= 0) {
       removeLight(removeLights[i]);
@@ -90,7 +87,7 @@ void Connection::updateLight(uint16_t i) {
     light->resetPixels();
     // hack: fix rounding error
     float pos = round(light->position * 1000) / 1000.0;
-    if (pos < numLeds) {
+    if (pos < numLeds) {      
       // todo: outPort can be NULL
       if (light->outPort == NULL) {
         //Serial.print("light: ");
@@ -103,7 +100,6 @@ void Connection::updateLight(uint16_t i) {
       uint16_t ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
       light->pixel1 = fromPixel + (ledIdx * (pixelDir ? 1 : -1));
       light->pixel1Bri = light->brightness;
-      //light->pixel2 = 
     }
     else {
       outgoing(light);
