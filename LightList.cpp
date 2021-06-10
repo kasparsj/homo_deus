@@ -75,7 +75,7 @@ void LightList::setSpeed(float speed) {
   }
 }
 
-void LightList::setLife(uint16_t numFrames) {
+void LightList::setLife(int16_t numFrames) {
   this->life = numFrames;
   for (uint16_t i=0; i<numLights; i++) {
     (*this)[i]->life = numFrames;

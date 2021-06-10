@@ -12,8 +12,9 @@ class LightList {
 
     //static FastNoise fastNoise;
   
+    uint8_t noteId;
     float speed;
-    uint16_t life;
+    int16_t life;
     bool linked;
     Model *model;
     uint16_t numLights = 0;
@@ -52,7 +53,7 @@ class LightList {
     void setLinked(bool linked);
     void setModel(Model *model);
     void setSpeed(float speed);
-    void setLife(uint16_t numFrames);
+    void setLife(int16_t numFrames);
     void setColor(RgbColor color);
     void setTrail(uint16_t length) {
       trail = length;

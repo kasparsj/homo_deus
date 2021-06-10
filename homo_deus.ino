@@ -72,6 +72,8 @@ void setupComms() {
 
   #ifdef HD_OSC
   OscWiFi.subscribe(OSC_PORT, "/emit", onEmit);
+  OscWiFi.subscribe(OSC_PORT, "/note_on", onNoteOn);
+  OscWiFi.subscribe(OSC_PORT, "/note_off", onNoteOff);
   OscWiFi.subscribe(OSC_PORT, "/palette", onPalette);
   OscWiFi.subscribe(OSC_PORT, "/color", onColor);
   OscWiFi.subscribe(OSC_PORT, "/split", onSplit);
@@ -215,32 +217,74 @@ void readSerial() {
 #ifdef HD_OSC
 void onEmit(const OscMessage& m) {
   if (m.size() > 0) {
-    uint8_t which = m.arg<uint8_t>(0);
+    uint8_t model = m.arg<uint8_t>(0);
     if (m.size() > 1) {
       float speed = m.arg<float>(1);
       if (m.size() > 2) {
-        int16_t life = m.arg<int16_t>(2);
+        uint16_t length = m.arg<uint16_t>(2);
+        if (m.size() > 3) {
+          uint8_t color = m.arg<uint8_t>(3);
+          if (m.size() > 4) {
+            int16_t life = m.arg<int16_t>(4);
+            uint8_t i = emitter->emitLinked(model, speed, length, color);
+            emitter->lightLists[i]->setLife(life);
+          }
+          else {
+            emitter->emitLinked(model, speed, length);
+          }
+        }
+        else {
+          emitter->emitLinked(model, speed);
+        }
+      }
+      else {
+        emitter->emitLinked(model, speed);
+      }
+    }
+    else {
+      emitter->emitLinked(model);
+    }
+  }
+}
+
+void onNoteOn(const OscMessage& m) {
+  if (m.size() > 0) {
+    uint16_t noteId = m.arg<uint16_t>(0);
+    uint8_t i = 0;
+    if (m.size() > 1) {
+      uint8_t model = m.arg<uint8_t>(1);
+      if (m.size() > 2) {
+        float speed = m.arg<float>(2);
         if (m.size() > 3) {
           uint16_t length = m.arg<uint16_t>(3);
           if (m.size() > 4) {
             uint8_t color = m.arg<uint8_t>(4);
-            emitter->emitLinked(which, speed, life, length, color);
+            i = emitter->emitLinked(model, speed, length, color);
           }
           else {
-            emitter->emitLinked(which, speed, life, length);
+            i = emitter->emitLinked(model, speed, length);
           }
         }
         else {
-          emitter->emitLinked(which, speed, life);
+          i = emitter->emitLinked(model, speed);
         }
       }
       else {
-        emitter->emitLinked(which, speed);
+        i = emitter->emitLinked(model);
       }
     }
     else {
-      emitter->emitLinked(which);
+      i = emitter->emitLinked(emitter->randomModel());
     }
+    emitter->lightLists[i]->setLife(-1);
+    emitter->lightLists[i]->noteId = noteId;
+  }
+}
+
+void onNoteOff(const OscMessage& m) {
+  if (m.size() > 0) {
+    uint16_t noteId = m.arg<uint16_t>(0);
+    emitter->stopNote(noteId);
   }
 }
 

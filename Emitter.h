@@ -31,39 +31,37 @@ class Emitter {
     RgbColor randomColor();
     RgbColor paletteColor(uint8_t color);
     void emit(unsigned long millis);
-    void emitLinked(uint8_t model, float speed, int16_t life, uint16_t length, RgbColor color);
-    void emitLinked(uint8_t model, float speed, int16_t life, uint16_t length, uint8_t color) {
-      emitLinked(model, speed, life, length, paletteColor(color));
+    int8_t emitLinked(uint8_t model, float speed, uint16_t length, RgbColor color);
+    int8_t emitLinked(uint8_t model, float speed, uint16_t length, uint8_t color) {
+      return emitLinked(model, speed, length, paletteColor(color));
     }
-    void emitLinked(uint8_t model, float speed, int16_t life, uint16_t length) {
-      emitLinked(model, speed, life, length, randomColor());
+    int8_t emitLinked(uint8_t model, float speed, uint16_t length) {
+      return emitLinked(model, speed, length, randomColor());
     }
-    void emitLinked(uint8_t model, float speed, int16_t life) {
-      emitLinked(model, speed, life, randomLength());
+    int8_t emitLinked(uint8_t model, float speed) {
+      return emitLinked(model, speed, randomLength());
     }
-    void emitLinked(uint8_t model, float speed) {
-      emitLinked(model, speed, randomLife(), randomLength());
+    int8_t emitLinked(uint8_t model) {
+      return emitLinked(model, randomSpeed(), randomLength());
     }
-    void emitLinked(uint8_t model) {
-      emitLinked(model, randomSpeed(), randomLife(), randomLength());
+    int8_t emitLinked() {
+      return emitLinked(randomModel(), randomSpeed(), randomLength());
     }
-    void emitLinked() {
-      emitLinked(randomModel(), randomSpeed(), randomLife(), randomLength());
+    int8_t emitSplatter(float speed, uint16_t length, RgbColor color);
+    int8_t emitSplatter(float speed, uint16_t length, uint8_t color) {
+      return emitSplatter(speed, length, paletteColor(color));
     }
-    void emitSplatter(float speed, uint16_t length, RgbColor color);
-    void emitSplatter(float speed, uint16_t length, uint8_t color) {
-      emitSplatter(speed, length, paletteColor(color));
+    int8_t emitSplatter(float speed, uint16_t length) {
+      return emitSplatter(speed, length, randomColor());
     }
-    void emitSplatter(float speed, uint16_t length) {
-      emitSplatter(speed, length, randomColor());
-    }
-    void emitSplatter() {
-      emitSplatter(randomSpeed(), randomLength());
+    int8_t emitSplatter() {
+      return emitSplatter(randomSpeed(), randomLength());
     }
     void update();
     void colorAll();
     void splitAll();
     void stopAll();
+    void stopNote(uint8_t i);
     #ifdef HD_TEST
     uint16_t numLights();
     void debug();

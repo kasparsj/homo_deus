@@ -49,12 +49,12 @@ void Emitter::emit(unsigned long ms) {
   }
 }
 
-void Emitter::emitLinked(uint8_t which, float speed, int16_t life, uint16_t length, RgbColor color) {
+int8_t Emitter::emitLinked(uint8_t which, float speed, uint16_t length, RgbColor color) {
   Model *model = &models[which];
   uint8_t k = model->getFreeEmitter();
   if (k == -1) {
     Serial.println("emitLinked failed, no free emitter.");
-    return;
+    return -1;
   }
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) {
@@ -62,7 +62,7 @@ void Emitter::emitLinked(uint8_t which, float speed, int16_t life, uint16_t leng
       lightLists[i]->setSpeed(speed);
       lightLists[i]->setModel(model);
       lightLists[i]->setLinked(true);
-      lightLists[i]->setLife(life);
+      lightLists[i]->setLife(randomLife());
       //lightLists[i]->setupNoise(length, randomBriThresh());
       uint16_t trail = min((int) (speed * max(1, length / 2)), max(EMITTER_MAX_LENGTH, EMITTER_MAX_LIGHTS) - 1);
       lightLists[i]->setTrail(trail);
@@ -75,20 +75,21 @@ void Emitter::emitLinked(uint8_t which, float speed, int16_t life, uint16_t leng
       //#ifdef HD_OSC
       //OscWiFi.publish(SC_HOST, SC_PORT, "/linked", i);
       //#endif
-      return;  
+      return i;
     }
   }
   #ifdef HD_DEBUG
   Serial.println("No free light lists");
   #endif
+  return -1;
 }
 
-void Emitter::emitSplatter(float speed, uint16_t length, RgbColor color) {
+int8_t Emitter::emitSplatter(float speed, uint16_t length, RgbColor color) {
   Model *model = &models[0];
   uint8_t k = model->getFreeEmitter();
   if (k == -1) {
     Serial.println("emitSplatter failed, no free emitter.");
-    return;
+    return -1;
   }
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) {
@@ -109,12 +110,13 @@ void Emitter::emitSplatter(float speed, uint16_t length, RgbColor color) {
       //#ifdef HD_OSC
       //OscWiFi.publish(SC_HOST, SC_PORT, "/splatter", i);
       //#endif
-      return;  
+      return i;  
     }
   }
   #ifdef HD_DEBUG
   Serial.println("No free light lists");
   #endif
+  return -1;
 }
 
 void Emitter::update() {
@@ -183,11 +185,15 @@ void Emitter::splitAll() {
 void Emitter::stopAll() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
-    for (uint16_t j=0; j<lightLists[i]->numLights; j++) {
-      if (lightLists[i]->lights[j] == NULL || lightLists[i]->lights[j]->isExpired) {
-        continue;
-      }
-      lightLists[i]->lights[j]->life = 0;
+    lightLists[i]->setLife(0);
+  }
+}
+
+void Emitter::stopNote(uint8_t noteId) {
+  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
+    if (lightLists[i] == NULL) continue;
+    if (lightLists[i]->noteId == noteId) {
+      lightLists[i]->setLife(0);
     }
   }
 }
