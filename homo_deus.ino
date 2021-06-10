@@ -20,6 +20,7 @@ HeptagonStar heptagon;
 Emitter *emitter;
 bool showIntersections = false;
 bool showConnections = false;
+bool showPalette = false;
 bool showAll = false;
 unsigned long prevMillis = 0;
 float fps = 0.f;
@@ -114,6 +115,9 @@ RgbColor getColor(uint16_t i) {
   if (showIntersections) {
     color.B = (heptagon.isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
+  if (showPalette && i < 256) {
+    color = emitter->paletteColor(i);
+  }
   #endif
   return colorGamma.Correct(color);
 }
@@ -166,6 +170,18 @@ void readSerial() {
         break;
       case 'c':
         showConnections = !showConnections;
+        break;
+      case 'p':
+        showPalette = !showPalette;
+        break;
+      case '>':
+        if (emitter->currentPalette < 32)
+        emitter->currentPalette++;
+        break;
+      case '<':
+        if (emitter->currentPalette > 0) {
+          emitter->currentPalette--;
+        }
         break;
       case 'l':
         Serial.printf("Total %d lights\n", emitter->totalLights);
