@@ -5,7 +5,7 @@
 const float Light::SPEED = 1.0;
 const uint16_t Light::LIFE = 60;
 
-Light::Light(float brightness, float speed, uint16_t life, Model *model, Light *linkedPrev) {
+Light::Light(float brightness, float speed, int16_t life, Model *model, Light *linkedPrev) {
   this->brightness = brightness;
   this->speed = speed;
   this->life = life;

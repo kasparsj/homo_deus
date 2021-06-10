@@ -17,7 +17,7 @@ class Light {
     float speed;
     float position;
     uint16_t age = 0;
-    uint16_t life;
+    int16_t life;
     RgbColor color; // 3 bytes
     Model *model = 0;
     Light *linkedPrev = 0;
@@ -31,9 +31,9 @@ class Light {
     // float pixel2Bri = 0; // 4 bytes
     bool isExpired = false;
     
-    Light(float brightness, float speed, uint16_t life, Model *model, Light *linkedPrev);
+    Light(float brightness, float speed, int16_t life, Model *model, Light *linkedPrev);
     
-    Light(float brightness, float speed, uint16_t life) : Light(brightness, speed, life, 0, 0) {
+    Light(float brightness, float speed, int16_t life) : Light(brightness, speed, life, 0, 0) {
     }
     
     Light(float brightness) : Light(brightness, SPEED, LIFE) {
@@ -60,6 +60,9 @@ class Light {
     void update();
     
     bool shouldExpire() {
+      if (life < 0) {
+        return false;
+      }
       return age >= life;
     }
     

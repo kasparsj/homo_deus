@@ -19,6 +19,7 @@ class LightList {
     uint16_t numLights = 0;
     uint16_t trail = 0;
     Light **lights;
+    uint16_t numEmitted = 0;
     uint8_t numSplits = 0;
     
     LightList(float speed) {
@@ -40,12 +41,12 @@ class LightList {
     // }
     void setupFull(uint16_t numLights, RgbColor color);
 
-    Light* get(uint16_t i) {
+    Light* operator [] (uint16_t i) const {
       return lights[i];
     }
 
-    void set(uint16_t i, Light* light) {
-      lights[i] = light;
+    Light*& operator [] (uint16_t i) {
+      return lights[i];
     }
     
     void setLinked(bool linked);

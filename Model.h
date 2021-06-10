@@ -94,6 +94,7 @@ class Model {
       uint8_t r = random(numEmitters);
       for (uint8_t i=0; i<numEmitters; i++) {
         uint8_t j = (r + i) % numEmitters;
+        // todo: maybe better check light lists?
         if (emitters[j]->freeLight == 0) {
           return j;
         }
@@ -102,7 +103,7 @@ class Model {
     }
 
     void emit(uint8_t i, LightList *lightList) {
-      emitters[i]->emit(lightList);
+      emitters[i]->add(lightList);
     }
 
     void addColorPort(Port *port) {

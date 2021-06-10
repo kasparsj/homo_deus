@@ -28,7 +28,6 @@ class Connection {
     void queueRemove(uint16_t i);
     void removeLight(uint16_t i);
     void update();
-    void postUpdate();
     void updateLight(uint16_t i);
     void outgoing(Light *light);
 };

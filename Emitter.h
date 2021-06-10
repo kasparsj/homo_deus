@@ -23,7 +23,7 @@ class Emitter {
     }
     
     float randomSpeed();
-    uint16_t randomLife();
+    int16_t randomLife();
     uint8_t randomModel();
     uint16_t randomLength();
     float randomBriThresh();
@@ -31,14 +31,14 @@ class Emitter {
     RgbColor randomColor();
     RgbColor paletteColor(uint8_t color);
     void emit(unsigned long millis);
-    void emitLinked(uint8_t model, float speed, uint16_t life, uint16_t length, RgbColor color);
-    void emitLinked(uint8_t model, float speed, uint16_t life, uint16_t length, uint8_t color) {
+    void emitLinked(uint8_t model, float speed, int16_t life, uint16_t length, RgbColor color);
+    void emitLinked(uint8_t model, float speed, int16_t life, uint16_t length, uint8_t color) {
       emitLinked(model, speed, life, length, paletteColor(color));
     }
-    void emitLinked(uint8_t model, float speed, uint16_t life, uint16_t length) {
+    void emitLinked(uint8_t model, float speed, int16_t life, uint16_t length) {
       emitLinked(model, speed, life, length, randomColor());
     }
-    void emitLinked(uint8_t model, float speed, uint16_t life) {
+    void emitLinked(uint8_t model, float speed, int16_t life) {
       emitLinked(model, speed, life, randomLength());
     }
     void emitLinked(uint8_t model, float speed) {

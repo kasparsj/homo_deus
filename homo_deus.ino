@@ -203,7 +203,7 @@ void onEmit(const OscMessage& m) {
     if (m.size() > 1) {
       float speed = m.arg<float>(1);
       if (m.size() > 2) {
-        uint16_t life = m.arg<uint16_t>(2);
+        int16_t life = m.arg<int16_t>(2);
         if (m.size() > 3) {
           uint16_t length = m.arg<uint16_t>(3);
           if (m.size() > 4) {

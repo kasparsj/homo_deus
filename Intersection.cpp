@@ -26,14 +26,35 @@ void Intersection::addPort(Port *p) {
   }
 }
 
-void Intersection::emit(LightList *lightList) {
-  // todo: don't add all lights, add only neccessary, add rest on update
-  // todo: need to save lightList though
-  for (uint16_t i=0; i<lightList->numLights; i++) {
-    Light *light = lightList->get(i);
-    light->position = i * -1;
-    light->life += ceil(1.0 / light->speed * i);
-    addLight(light);
+void Intersection::add(LightList *lightList) {
+  for (uint8_t j=0; j<EMITTER_MAX_LIGHT_LISTS; j++) {
+    if (lightLists[j] == NULL) {
+      for (uint16_t i=0; i<lightList->numLights; i++) {
+        Light *light = (*lightList)[i];
+        light->position = i * -1;
+        light->life += ceil(1.0 / light->speed * i);
+      }
+      lightLists[j] = lightList;
+      return;
+    }
+  }
+  Serial.printf("Intersection %d addLightList no free slot\n", topPixel);
+}
+
+void Intersection::emit(uint8_t k) {
+  LightList *lightList = lightLists[k];
+  if (lightList->numEmitted < lightList->numLights) {
+    for (uint8_t i=lightList->numEmitted; i<lightList->numLights; i++) {
+      Light *light = (*lightList)[i];
+      if (light->position < 0) {
+        break;
+      }
+      lightList->numEmitted++;
+      addLight(light);
+    }
+  }
+  else {
+    lightLists[k] = NULL;
   }
 }
 
@@ -48,13 +69,14 @@ void Intersection::addLight(Light *light) {
 }
 
 void Intersection::update() {
+  for (uint16_t i=0; i<EMITTER_MAX_LIGHT_LISTS; i++) {
+    if (lightLists[i] != NULL) {
+      emit(i);
+    }
+  }
   for (uint16_t i=0; i<freeLight; i++) {
     updateLight(i);
   }
-  postUpdate();
-}
-
-void Intersection::postUpdate() {
   for (uint16_t i=0; i<freeOutgoing; i++) {
     if (outgoingLights[i] != NULL) {
       sendOut(i); 

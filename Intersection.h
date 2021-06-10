@@ -17,7 +17,12 @@ class Intersection {
     uint16_t topPixel;
     int16_t bottomPixel;
     Light *lights[EMITTER_MAX_LIGHTS] = {0};
+    #if EMITTER_MAX_LIGHTS > 255
     uint16_t freeLight = 0;
+    #else
+    uint8_t freeLight = 0;
+    #endif
+    LightList *lightLists[EMITTER_MAX_LIGHT_LISTS] = {0};
     Light *outgoingLights[MAX_OUTGOING_LIGHTS] = {0};
     uint16_t freeOutgoing = 0;
     int16_t removeLights[MAX_OUTGOING_LIGHTS] = {-1};
@@ -31,14 +36,14 @@ class Intersection {
     }
     
     void addPort(Port *p);
-    void emit(LightList *lightList);
+    void add(LightList *lightList);
+    void emit(uint8_t i);
     void addLight(Light *light);
     void queueOutgoing(Light *light);
     void queueRemove(uint16_t i);
     void removeLight(uint16_t i);
     Port* sendOut(uint16_t i);
     void update();
-    void postUpdate();
     void updateLight(uint16_t i);
     float sumW(Model *model, Port *incoming);
     Port *randomPort(Port *incoming);

@@ -12,7 +12,7 @@ float Emitter::randomSpeed() {
   return EMITTER_MIN_SPEED + random(max(EMITTER_MAX_SPEED - EMITTER_MIN_SPEED, 0.f));
 }
 
-uint16_t Emitter::randomLife() {
+int16_t Emitter::randomLife() {
   return EMITTER_MIN_LIFE + (uint16_t) random(max(EMITTER_MAX_LIFE - EMITTER_MIN_LIFE, 0));
 }
 
@@ -49,7 +49,7 @@ void Emitter::emit(unsigned long ms) {
   }
 }
 
-void Emitter::emitLinked(uint8_t which, float speed, uint16_t life, uint16_t length, RgbColor color) {
+void Emitter::emitLinked(uint8_t which, float speed, int16_t life, uint16_t length, RgbColor color) {
   Model *model = &models[which];
   uint8_t k = model->getFreeEmitter();
   if (k == -1) {
