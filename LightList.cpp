@@ -57,6 +57,7 @@ void LightList::setupFull(uint16_t numLights, RgbColor color) {
 void LightList::setModel(Model *model) {
   this->model = model;
   for (int i=0; i<numLights; i++) {
+    if ((*this)[i] == NULL) continue;
     (*this)[i]->model = model; 
   }
 }
@@ -64,6 +65,7 @@ void LightList::setModel(Model *model) {
 void LightList::setLinked(bool linked) {
   this->linked = linked;
   for (uint16_t i=1; i<numLights; i++) {
+    if ((*this)[i] == NULL) continue;
     (*this)[i]->linkedPrev = linked ? (*this)[i-1] : 0; 
   }
 }
@@ -71,6 +73,7 @@ void LightList::setLinked(bool linked) {
 void LightList::setSpeed(float speed) {
   this->speed = speed;
   for (uint16_t i=0; i<numLights; i++) {
+    if ((*this)[i] == NULL) continue;
     (*this)[i]->speed = speed;
   }
 }
@@ -78,12 +81,14 @@ void LightList::setSpeed(float speed) {
 void LightList::setLife(int16_t numFrames) {
   this->life = numFrames;
   for (uint16_t i=0; i<numLights; i++) {
+    if ((*this)[i] == NULL) continue;
     (*this)[i]->life = numFrames;
   }
 }
 
 void LightList::setColor(RgbColor color) {
   for (uint16_t i=0; i<numLights; i++) {
+    if ((*this)[i] == NULL) continue;
     (*this)[i]->setColor(color);
   }
 }
@@ -93,6 +98,7 @@ void LightList::split() {
   if (numSplits < numLights) {
     for (uint8_t i=0; i<numSplits; i++) {
       uint16_t split = (i+1)*(numLights/(numSplits+1));
+      if ((*this)[split] == NULL) continue;
       (*this)[split]->linkedPrev = NULL;
     }
     // todo: modify trail

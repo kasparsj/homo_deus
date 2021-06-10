@@ -223,15 +223,16 @@ void onEmit(const OscMessage& m) {
       if (m.size() > 2) {
         uint16_t length = m.arg<uint16_t>(2);
         if (m.size() > 3) {
-          uint8_t color = m.arg<uint8_t>(3);
+          int16_t life = m.arg<int16_t>(3);
+          uint8_t i;
           if (m.size() > 4) {
-            int16_t life = m.arg<int16_t>(4);
-            uint8_t i = emitter->emitLinked(model, speed, length, color);
-            emitter->lightLists[i]->setLife(life);
+            uint8_t color = m.arg<uint8_t>(4);
+            i = emitter->emitLinked(model, speed, length, color);
           }
           else {
-            emitter->emitLinked(model, speed, length);
+            i = emitter->emitLinked(model, speed, length);
           }
+          emitter->lightLists[i]->setLife(life);
         }
         else {
           emitter->emitLinked(model, speed);
@@ -285,6 +286,9 @@ void onNoteOff(const OscMessage& m) {
   if (m.size() > 0) {
     uint16_t noteId = m.arg<uint16_t>(0);
     emitter->stopNote(noteId);
+  }
+  else {
+    emitter->stopAll();
   }
 }
 
