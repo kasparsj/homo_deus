@@ -59,10 +59,10 @@ void HeptagonStar::setup() {
   models[M_HORNS].put(&outerConnections[6], 1);
   models[M_HORNS].put(&outerConnections[7], 1);
   models[M_HORNS].put(&outerConnections[8], 1);
-  models[M_HORNS].put(&middleConnections[5], 1);
   models[M_HORNS].put(&middleConnections[6], 1);
   models[M_HORNS].put(&middleConnections[7], 1);
   models[M_HORNS].put(&middleConnections[8], 1);
+  models[M_HORNS].put(&middleConnections[9], 1);
   //models[M_HORNS].put(&innerConnections[3], 1);
   models[M_HORNS].addEmitter(&outerNeurons[6]);
   models[M_HORNS].addEmitter(&outerNeurons[7]);
@@ -76,7 +76,7 @@ void HeptagonStar::setup() {
 
   models[M_HALO].put(&innerConnections[3], 1);
   models[M_HALO].put(&middleConnections[6], 1);
-  models[M_HALO].put(&middleConnections[7], 1);
+  models[M_HALO].put(&middleConnections[9], 1);
   models[M_HALO].addEmitter(&middleNeurons[3]);
   models[M_HALO].addEmitter(&innerNeurons[3]);
   models[M_HALO].addEmitter(&innerNeurons[4]);

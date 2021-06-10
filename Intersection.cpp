@@ -27,6 +27,8 @@ void Intersection::addPort(Port *p) {
 }
 
 void Intersection::emit(LightList *lightList) {
+  // todo: don't add all lights, add only neccessary, add rest on update
+  // todo: need to save lightList though
   for (uint16_t i=0; i<lightList->numLights; i++) {
     Light *light = lightList->get(i);
     light->position = i * -1;
