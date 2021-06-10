@@ -55,14 +55,28 @@ void HeptagonStar::setup() {
     }    
   }
 
-  models[M_HORNS].addEmitter(&outerNeurons[3]);
-  models[M_HORNS].addEmitter(&outerNeurons[4]);
+  models[M_HORNS].put(&outerConnections[5], 1);
+  models[M_HORNS].put(&outerConnections[6], 1);
+  models[M_HORNS].put(&outerConnections[7], 1);
+  models[M_HORNS].put(&outerConnections[8], 1);
+  models[M_HORNS].put(&middleConnections[5], 1);
+  models[M_HORNS].put(&middleConnections[6], 1);
+  models[M_HORNS].put(&middleConnections[7], 1);
+  models[M_HORNS].put(&middleConnections[8], 1);
+  //models[M_HORNS].put(&innerConnections[3], 1);
+  models[M_HORNS].addEmitter(&outerNeurons[6]);
+  models[M_HORNS].addEmitter(&outerNeurons[7]);
+  models[M_HORNS].addEmitter(&outerNeurons[8]);
+  models[M_HORNS].addEmitter(&outerNeurons[9]);
   models[M_HORNS].addEmitter(&middleNeurons[2]);
   models[M_HORNS].addEmitter(&middleNeurons[3]);
   models[M_HORNS].addEmitter(&middleNeurons[4]);
   models[M_HORNS].addEmitter(&innerNeurons[3]);
   models[M_HORNS].addEmitter(&innerNeurons[4]);
 
+  models[M_HALO].put(&innerConnections[3], 1);
+  models[M_HALO].put(&middleConnections[6], 1);
+  models[M_HALO].put(&middleConnections[7], 1);
   models[M_HALO].addEmitter(&middleNeurons[3]);
   models[M_HALO].addEmitter(&innerNeurons[3]);
   models[M_HALO].addEmitter(&innerNeurons[4]);
@@ -154,22 +168,16 @@ void HeptagonStar::debugIntersections() {
       Serial.print(middleNeurons[i].id);
       Serial.print(": ");
       Serial.print(middleNeurons[i].freeLight);
-      Serial.print(" / ");
-      Serial.println(middleNeurons[i].maxLights);
 
       Serial.print("Inner");
       Serial.print(innerNeurons[i].id);
       Serial.print(": ");
       Serial.print(innerNeurons[i].freeLight);
-      Serial.print(" / ");
-      Serial.println(innerNeurons[i].maxLights);
     } 
     Serial.print("Outer");
     Serial.print(outerNeurons[i].id);
     Serial.print(": ");
     Serial.print(outerNeurons[i].freeLight);
-    Serial.print(" / ");
-    Serial.println(outerNeurons[i].maxLights);
   }
 }
 #endif

@@ -5,16 +5,11 @@
 
 uint8_t Intersection::nextId = 0;
 
-Intersection::Intersection(uint16_t maxLights, uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel) {
+Intersection::Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel) {
   this->id = nextId++;
   this->numPorts = numPorts;
   this->topPixel = topPixel;
   this->bottomPixel = bottomPixel;
-  this->maxLights = maxLights;
-  this->lights = new Light*[maxLights]();
-  for (uint16_t i=0; i<maxLights; i++) {
-    lights[i] = NULL;
-  }
   this->ports = new Port*[numPorts]();
   for (uint8_t i=0; i<numPorts; i++) {
     ports[i] = NULL;
@@ -41,7 +36,7 @@ void Intersection::emit(LightList *lightList) {
 }
 
 void Intersection::addLight(Light *light) {
-  if (freeLight < maxLights) {
+  if (freeLight < EMITTER_MAX_LIGHTS) {
     lights[freeLight] = light;
     freeLight++;
   }
