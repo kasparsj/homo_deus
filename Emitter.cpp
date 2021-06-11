@@ -13,7 +13,7 @@ float Emitter::randomSpeed() {
 }
 
 int16_t Emitter::randomLife() {
-  return EMITTER_MIN_LIFE + (uint16_t) random(max(EMITTER_MAX_LIFE - EMITTER_MIN_LIFE, 0));
+  return EMITTER_MIN_LIFE + random(max(EMITTER_MAX_LIFE - EMITTER_MIN_LIFE, 0));
 }
 
 uint8_t Emitter::randomModel() {
@@ -49,7 +49,8 @@ void Emitter::autoEmit(unsigned long ms) {
   }
 }
 
-int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder order, bool linked, int8_t life, RgbColor color) {
+int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder order, bool linked, int16_t life, RgbColor color) {
+  Serial.println(life);
   Model *model = &models[which];
   uint8_t k = model->getFreeEmitter();
   if (k == -1) {
@@ -77,8 +78,8 @@ int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder orde
       }
       lightLists[i]->setup(max(1, length - trail), color, brightness);
       #ifdef HD_DEBUG
-      Serial.printf("emitting %d lights (%d/%.1f/%d), total: %d\n", 
-        lightLists[i]->numLights, which, speed, length, totalLights + lightLists[i]->numLights);      
+      Serial.printf("emitting %d lights (%d/%.1f/%d/%d), total: %d\n", 
+        lightLists[i]->numLights, which, speed, length, life, totalLights + lightLists[i]->numLights);      
       #endif
       model->emit(k, lightLists[i]);
       totalLights += lightLists[i]->numLights;

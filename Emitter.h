@@ -31,11 +31,11 @@ class Emitter {
     RgbColor randomColor();
     RgbColor paletteColor(uint8_t color);
     void autoEmit(unsigned long millis);
-    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, bool linked, int8_t life, RgbColor color);
-    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, bool linked, int8_t life, uint8_t color) {
+    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, bool linked, int16_t life, RgbColor color);
+    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, bool linked, int16_t life, uint8_t color) {
       return emit(model, speed, length, order, linked, life, paletteColor(color));
     }
-    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, bool linked, int8_t life) {
+    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, bool linked, int16_t life) {
       return emit(model, speed, length, order, linked, life, randomColor());
     }
     int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, bool linked) {
