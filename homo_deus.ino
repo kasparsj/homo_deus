@@ -85,7 +85,7 @@ void update() {
   gMillis = millis();
   fps = 1000.f / float(gMillis - gPrevMillis);
   gPrevMillis = gMillis;
-  emitter->emit(gMillis);
+  emitter->autoEmit(gMillis);
   heptagon.update();
   emitter->update();
 }
@@ -146,8 +146,8 @@ void readSerial() {
         ESP.restart();
         break;
       case 'e':
-        emitter->enabled = !emitter->enabled;
-        Serial.printf("Emitter is %s", emitter->enabled ? "enabled" : "disabled");
+        emitter->autoEnabled = !emitter->autoEnabled;
+        Serial.printf("AutoEmitter is %s", emitter->autoEnabled ? "enabled" : "disabled");
         break;
       case '.':
         emitter->stopAll();
@@ -206,10 +206,10 @@ void readSerial() {
       case '5':
       case '6':
       case '7':
-        emitter->emitLinked(incomingByte - '1');
+        emitter->emit(incomingByte - '1');
         break;
       case '+':
-        emitter->emitSplatter();
+        emitter->splatter();
         break;
       case '*':
         emitter->emitRandom();
@@ -227,27 +227,33 @@ void onEmit(const OscMessage& m) {
       if (m.size() > 2) {
         uint16_t length = m.arg<uint16_t>(2);
         if (m.size() > 3) {
-          int16_t life = m.arg<int16_t>(3);
-          uint8_t i;
+          ListOrder order = static_cast<ListOrder>(m.arg<uint8_t>(3));
           if (m.size() > 4) {
-            uint8_t color = m.arg<uint8_t>(4);
-            i = emitter->emitLinked(model, speed, length, color);
+            int16_t life = m.arg<int16_t>(4);
+            uint8_t i;
+            if (m.size() > 5) {
+              uint8_t color = m.arg<uint8_t>(5);
+              i = emitter->emit(model, speed, length, order, color);
+            }
+            else {
+              i = emitter->emit(model, speed, length, order);
+            }
+            emitter->lightLists[i]->setLife(life);            
           }
           else {
-            i = emitter->emitLinked(model, speed, length);
+            emitter->emit(model, speed, length, order);
           }
-          emitter->lightLists[i]->setLife(life);
         }
         else {
-          emitter->emitLinked(model, speed);
+          emitter->emit(model, speed);
         }
       }
       else {
-        emitter->emitLinked(model, speed);
+        emitter->emit(model, speed);
       }
     }
     else {
-      emitter->emitLinked(model);
+      emitter->emit(model);
     }
   }
 }
@@ -263,23 +269,29 @@ void onNoteOn(const OscMessage& m) {
         if (m.size() > 3) {
           uint16_t length = m.arg<uint16_t>(3);
           if (m.size() > 4) {
-            uint8_t color = m.arg<uint8_t>(4);
-            i = emitter->emitLinked(model, speed, length, color);
+            ListOrder order = static_cast<ListOrder>(m.arg<uint8_t>(4));
+            if (m.size() > 5) {
+              uint8_t color = m.arg<uint8_t>(5);
+              i = emitter->emit(model, speed, length, order, color);
+            }
+            else {
+              i = emitter->emit(model, speed, length, order);
+            }
           }
           else {
-            i = emitter->emitLinked(model, speed, length);
+            i = emitter->emit(model, speed, length);
           }
         }
         else {
-          i = emitter->emitLinked(model, speed);
+          i = emitter->emit(model, speed);
         }
       }
       else {
-        i = emitter->emitLinked(model);
+        i = emitter->emit(model);
       }
     }
     else {
-      i = emitter->emitLinked(emitter->randomModel());
+      i = emitter->emit(emitter->randomModel());
     }
     emitter->lightLists[i]->setLife(-1);
     emitter->lightLists[i]->noteId = noteId;

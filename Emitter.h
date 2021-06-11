@@ -15,7 +15,7 @@ class Emitter {
     uint16_t pixelValuesG[PIXEL_COUNT];
     uint16_t pixelValuesB[PIXEL_COUNT];
     uint8_t pixelDiv[PIXEL_COUNT];
-    bool enabled = false;
+    bool autoEnabled = false;
     uint8_t currentPalette = 0;
     
     Emitter(Model (&models)[NUM_MODELS]) {
@@ -30,42 +30,38 @@ class Emitter {
     uint16_t randomNextEmit();
     RgbColor randomColor();
     RgbColor paletteColor(uint8_t color);
-    void emit(unsigned long millis);
-    int8_t emitLinked(uint8_t model, float speed, uint16_t length, RgbColor color);
-    int8_t emitLinked(uint8_t model, float speed, uint16_t length, uint8_t color) {
-      return emitLinked(model, speed, length, paletteColor(color));
+    void autoEmit(unsigned long millis);
+    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, RgbColor color);
+    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, uint8_t color) {
+      return emit(model, speed, length, order, paletteColor(color));
     }
-    int8_t emitLinked(uint8_t model, float speed, uint16_t length) {
-      return emitLinked(model, speed, length, randomColor());
+    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order) {
+      return emit(model, speed, length, order, randomColor());
     }
-    int8_t emitLinked(uint8_t model, float speed) {
-      return emitLinked(model, speed, randomLength());
+    int8_t emit(uint8_t model, float speed, uint16_t length) {
+      return emit(model, speed, length, LIST_SEQUENTIAL);
     }
-    int8_t emitLinked(uint8_t model) {
-      return emitLinked(model, randomSpeed(), randomLength());
+    int8_t emit(uint8_t model, float speed) {
+      return emit(model, speed, randomLength());
     }
-    int8_t emitLinked() {
-      return emitLinked(randomModel(), randomSpeed(), randomLength());
+    int8_t emit(uint8_t model) {
+      return emit(model, randomSpeed(), randomLength());
     }
-    int8_t emitSplatter(float speed, uint16_t length, RgbColor color);
-    int8_t emitSplatter(float speed, uint16_t length, uint8_t color) {
-      return emitSplatter(speed, length, paletteColor(color));
-    }
-    int8_t emitSplatter(float speed, uint16_t length) {
-      return emitSplatter(speed, length, randomColor());
-    }
-    int8_t emitSplatter() {
-      return emitSplatter(randomSpeed(), randomLength());
-    }
-    int8_t emitRandom(uint8_t model, uint16_t length, RgbColor color);
-    int8_t emitRandom(uint8_t model, uint16_t length, uint8_t color) {
-      return emitRandom(model, length, paletteColor(color));
-    }
-    int8_t emitRandom(uint8_t model, uint16_t length) {
-      return emitRandom(model, length, randomColor());
+    int8_t emit() {
+      return emit(randomModel(), randomSpeed(), randomLength());
     }
     int8_t emitRandom() {
-      return emitRandom(randomModel(), randomLength());
+      return emit(randomModel(), 0, randomLength(), LIST_RANDOM);
+    }
+    int8_t splatter(float speed, uint16_t length, RgbColor color);
+    int8_t splatter(float speed, uint16_t length, uint8_t color) {
+      return splatter(speed, length, paletteColor(color));
+    }
+    int8_t splatter(float speed, uint16_t length) {
+      return splatter(speed, length, randomColor());
+    }
+    int8_t splatter() {
+      return splatter(randomSpeed(), randomLength());
     }
     void update();
     void colorAll();
