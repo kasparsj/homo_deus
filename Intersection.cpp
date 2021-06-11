@@ -50,7 +50,7 @@ void Intersection::emit(uint8_t k) {
       addLight(light);
     }
   }
-  else {
+  if (lightList->numEmitted >= lightList->numLights) {
     lightLists[k] = NULL;
   }
 }

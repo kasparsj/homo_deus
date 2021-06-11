@@ -68,7 +68,8 @@ int8_t Emitter::emitLinked(uint8_t which, float speed, uint16_t length, RgbColor
       lightLists[i]->setTrail(trail);
       lightLists[i]->setup(max(1, length - trail), color);
       #ifdef HD_DEBUG
-      Serial.printf("emitLinked %d lights, bringing total to %d\n", lightLists[i]->numLights, totalLights + lightLists[i]->numLights);      
+      Serial.printf("emitLinked %d lights (%d/%.1f/%d), total: %d\n", 
+        lightLists[i]->numLights, which, speed, length, totalLights + lightLists[i]->numLights);      
       #endif
       model->emit(k, lightLists[i]);
       totalLights += lightLists[i]->numLights;
