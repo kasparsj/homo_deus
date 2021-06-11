@@ -13,6 +13,7 @@ enum HeptagonStarModel {
   M_STAR_COLOR,
   M_HORNS,
   M_HALO,
+  M_SPLATTER,
 };
 
 class HeptagonStar {
@@ -59,6 +60,7 @@ class HeptagonStar {
       Model(M_STAR_COLOR, 0, 14, 14),
       Model(M_HORNS, 0, 9),
       Model(M_HALO, 0, 3),
+      Model(M_SPLATTER, 1, 14), 
     };
   
     HeptagonStar() {}

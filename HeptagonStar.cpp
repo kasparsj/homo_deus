@@ -52,6 +52,8 @@ void HeptagonStar::setup() {
     if (i<7) {
       models[M_INNER_CIRCLE].addEmitter(&middleNeurons[i]);
       models[M_INNER_CIRCLE].addEmitter(&innerNeurons[i]);
+      models[M_SPLATTER].addEmitter(&middleNeurons[i]);
+      models[M_SPLATTER].addEmitter(&innerNeurons[i]);
     }    
   }
 

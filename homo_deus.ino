@@ -209,7 +209,7 @@ void readSerial() {
         emitter->emit(incomingByte - '1');
         break;
       case '+':
-        emitter->splatter();
+        emitter->emitSplatter();
         break;
       case '*':
         emitter->emitRandom();
@@ -229,16 +229,20 @@ void onEmit(const OscMessage& m) {
         if (m.size() > 3) {
           ListOrder order = static_cast<ListOrder>(m.arg<uint8_t>(3));
           if (m.size() > 4) {
-            int16_t life = m.arg<int16_t>(4);
-            uint8_t i;
+            bool linked = m.arg<bool>(4);
             if (m.size() > 5) {
-              uint8_t color = m.arg<uint8_t>(5);
-              i = emitter->emit(model, speed, length, order, color);
+              int16_t life = m.arg<int16_t>(5);
+              if (m.size() > 6) {
+                uint8_t color = m.arg<uint8_t>(6);
+                emitter->emit(model, speed, length, order, linked, life, color);
+              }
+              else {
+                emitter->emit(model, speed, length, order, linked, life);
+              }
             }
             else {
-              i = emitter->emit(model, speed, length, order);
+              emitter->emit(model, speed, length, order, linked);
             }
-            emitter->lightLists[i]->setLife(life);            
           }
           else {
             emitter->emit(model, speed, length, order);
@@ -271,8 +275,14 @@ void onNoteOn(const OscMessage& m) {
           if (m.size() > 4) {
             ListOrder order = static_cast<ListOrder>(m.arg<uint8_t>(4));
             if (m.size() > 5) {
-              uint8_t color = m.arg<uint8_t>(5);
-              i = emitter->emit(model, speed, length, order, color);
+              bool linked = m.arg<bool>(5);
+              if (m.size() > 6) {
+                uint8_t color = m.arg<uint8_t>(6);
+                i = emitter->emit(model, speed, length, order, linked, -1, color);
+              }
+              else {
+                i = emitter->emit(model, speed, length, order, linked, -1);
+              }
             }
             else {
               i = emitter->emit(model, speed, length, order);
