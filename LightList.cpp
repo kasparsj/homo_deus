@@ -5,7 +5,7 @@
 
 //FastNoise LightList::fastNoise;
 
-void LightList::setup(uint16_t numLights) {
+void LightList::init(uint16_t numLights) {
   this->numLights = numLights;
   lights = new Light*[numLights]();
   for (uint16_t i=0; i<numLights; i++) {
@@ -13,33 +13,11 @@ void LightList::setup(uint16_t numLights) {
   }
 }
 
-void LightList::setupRandom(uint16_t numLights, bool linked) {
-  setup(numLights);
+void LightList::setup(uint16_t numLights, RgbColor color, float brightness) {
+  init(numLights + trail);
   for (uint16_t i=0; i<numLights; i++) {
     Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : 0;
-    Light *light = new Light(random(1.0), speed, life, model, linkedPrev);
-    //light->id = i;
-    (*this)[i] = light;
-  }
-}
-
-// void LightList::setupNoise(uint16_t numLights, float threshold) {
-//   setup(numLights);
-//   float noiseId = random(100000);
-//   for (uint16_t i=0; i<numLights; i++) {
-//     float whiteNoise = LightList::fastNoise.GetWhiteNoiseInt(noiseId, i);
-//     Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : 0;
-//     Light *light = new Light(threshold + ((whiteNoise + 1.0) / 2.0) * (1.0 - threshold), speed, life, model, linkedPrev);
-//     light->id = i;
-//     (*this)[i] = light;
-//   }
-// }
-
-void LightList::setupFull(uint16_t numLights, RgbColor color) {
-  setup(numLights + trail);
-  for (uint16_t i=0; i<numLights; i++) {
-    Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : 0;
-    Light *light = new Light(1.0, speed, life, model, linkedPrev);
+    Light *light = new Light(brightness, speed, life, model, linkedPrev);
     light->setColor(color);
     //light->id = i;
     (*this)[i] = light;
@@ -47,7 +25,7 @@ void LightList::setupFull(uint16_t numLights, RgbColor color) {
   for (uint16_t i=0; i<trail; i++) {
     Light *linkedPrev = linked ? (*this)[numLights + i - 1] : 0;
     float bri = (255.f - (255.f / (trail + 1)) * (i + 1)) / 255.f;
-    Light *light = new Light(bri, speed, life, model, linkedPrev);
+    Light *light = new Light(brightness * bri, speed, life, model, linkedPrev);
     light->setColor(color);
     //light->id = numLights + i;
     (*this)[numLights + i] = light;
@@ -91,6 +69,30 @@ void LightList::setColor(RgbColor color) {
     if ((*this)[i] == NULL) continue;
     (*this)[i]->setColor(color);
   }
+}
+
+void LightList::initEmit() {
+  for (uint16_t i=0; i<numLights; i++) {
+    Light *light = (*this)[i];
+    initPosition(i, light);
+    initLife(i, light);
+  }
+}
+
+void LightList::initPosition(uint16_t i, Light* light) {
+  float position = i * -1;
+  if (order == LIST_RANDOM) {
+    position = random(model->getMaxLength());
+  }
+  light->position = position;
+}
+
+void LightList::initLife(uint16_t i, Light* light) {
+  int16_t life = light->life;    
+  if (order == LIST_SEQUENTIAL) {
+    life = life + ceil(1.0 / light->speed * i);
+  }
+  light->life = life;
 }
 
 void LightList::split() {

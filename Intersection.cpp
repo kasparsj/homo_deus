@@ -29,11 +29,6 @@ void Intersection::addPort(Port *p) {
 void Intersection::add(LightList *lightList) {
   for (uint8_t j=0; j<EMITTER_MAX_LIGHT_LISTS; j++) {
     if (lightLists[j] == NULL) {
-      for (uint16_t i=0; i<lightList->numLights; i++) {
-        Light *light = (*lightList)[i];
-        light->position = i * -1;
-        light->life += ceil(1.0 / light->speed * i);
-      }
       lightLists[j] = lightList;
       return;
     }
@@ -44,8 +39,9 @@ void Intersection::add(LightList *lightList) {
 void Intersection::emit(uint8_t k) {
   LightList *lightList = lightLists[k];
   if (lightList->numEmitted < lightList->numLights) {
-    for (uint8_t i=lightList->numEmitted; i<lightList->numLights; i++) {
-      Light *light = (*lightList)[i];
+    uint8_t batchSize = min(lightList->numLights - lightList->numEmitted, EMITTER_MAX_LIGHTS - freeLight);      
+    for (uint8_t i=0; i<batchSize; i++) {
+      Light *light = (*lightList)[lightList->numEmitted+i];
       if (light->position < 0) {
         break;
       }
@@ -99,7 +95,7 @@ void Intersection::updateLight(uint16_t i) {
     light->resetPixels();
     if (light->position >= 0.f) {
       light->pixel1 = topPixel;
-      light->pixel1Bri = light->brightness;
+      light->pixel1Bri = light->getBrightness();
     }
     if (light->shouldExpire()) {
       if (light->position >= 1.f) {

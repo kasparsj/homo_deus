@@ -4,9 +4,9 @@
 #include <Arduino.h>
 #include "Palettes.h"
 
-// #ifdef HD_OSC
-// #include <ArduinoOSC.h>
-// #endif
+#ifdef HD_OSC_REPLY
+#include <ArduinoOSC.h>
+#endif
 
 float Emitter::randomSpeed() {
   return EMITTER_MIN_SPEED + random(max(EMITTER_MAX_SPEED - EMITTER_MIN_SPEED, 0.f));
@@ -66,15 +66,15 @@ int8_t Emitter::emitLinked(uint8_t which, float speed, uint16_t length, RgbColor
       //lightLists[i]->setupNoise(length, randomBriThresh());
       uint16_t trail = min((int) (speed * max(1, length / 2)), max(EMITTER_MAX_LENGTH, EMITTER_MAX_LIGHTS) - 1);
       lightLists[i]->setTrail(trail);
-      lightLists[i]->setupFull(max(1, length - trail), color);
+      lightLists[i]->setup(max(1, length - trail), color);
       #ifdef HD_DEBUG
       Serial.printf("emitLinked %d lights, bringing total to %d\n", lightLists[i]->numLights, totalLights + lightLists[i]->numLights);      
       #endif
       model->emit(k, lightLists[i]);
       totalLights += lightLists[i]->numLights;
-      //#ifdef HD_OSC
-      //OscWiFi.publish(SC_HOST, SC_PORT, "/linked", i);
-      //#endif
+      #ifdef HD_OSC_REPLY
+      OscWiFi.publish(SC_HOST, SC_PORT, "/linked", i);
+      #endif
       return i;
     }
   }
@@ -100,16 +100,48 @@ int8_t Emitter::emitSplatter(float speed, uint16_t length, RgbColor color) {
       lightLists[i]->setLife(4);
       //uint16_t trail = min((int) (speed * max(1, length / 2)), max(EMITTER_MAX_LENGTH, EMITTER_MAX_LIGHTS) - 1);
       //lightLists[i]->setTrail(trail);
-      //lightLists[i]->setupFull(max(1, length - trail), color);
-      lightLists[i]->setupFull(length, color);
+      //lightLists[i]->setup(max(1, length - trail), color);
+      lightLists[i]->setup(length, color);
       #ifdef HD_DEBUG
       Serial.printf("emitSplatter %d lights, bringing total to %d\n", lightLists[i]->numLights, totalLights + lightLists[i]->numLights);      
       #endif
       model->emit(k, lightLists[i]);
       totalLights += lightLists[i]->numLights;
-      //#ifdef HD_OSC
-      //OscWiFi.publish(SC_HOST, SC_PORT, "/splatter", i);
-      //#endif
+      #ifdef HD_OSC_REPLY
+      OscWiFi.publish(SC_HOST, SC_PORT, "/splatter", i);
+      #endif
+      return i;  
+    }
+  }
+  #ifdef HD_DEBUG
+  Serial.println("No free light lists");
+  #endif
+  return -1;
+}
+
+int8_t Emitter::emitRandom(uint8_t which, uint16_t length, RgbColor color) {
+  Model *model = &models[which];
+  uint8_t k = model->getFreeEmitter();
+  if (k == -1) {
+    Serial.println("emitRandom failed, no free emitter.");
+    return -1;
+  }
+  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
+    if (lightLists[i] == NULL) {
+      lightLists[i] = new LightList();
+      lightLists[i]->setOrder(LIST_RANDOM);
+      lightLists[i]->setSpeed(0);
+      lightLists[i]->setModel(model);
+      lightLists[i]->setLinked(false);
+      lightLists[i]->setup(length, color, -1.f);
+      #ifdef HD_DEBUG
+      Serial.printf("emitRandom %d lights, bringing total to %d\n", lightLists[i]->numLights, totalLights + lightLists[i]->numLights);      
+      #endif
+      model->emit(k, lightLists[i]);
+      totalLights += lightLists[i]->numLights;
+      #ifdef HD_OSC_REPLY
+      OscWiFi.publish(SC_HOST, SC_PORT, "/random", i);
+      #endif
       return i;  
     }
   }

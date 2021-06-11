@@ -42,6 +42,18 @@ class Light {
     Light() : Light(1.0) {
     }
 
+    float getBrightness() {
+      if (brightness < 0) {
+        //if (brightness < -1) {
+          return random(1.f);
+        //}
+        //else {
+        //  return noise(gMillis * brightness * -1.f, id);
+        //}
+      }
+      return brightness;
+    }
+
     RgbColor getColor(float brightness = 1.f) {
       if (brightness == 1.f) {
         return color;

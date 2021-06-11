@@ -6,6 +6,11 @@
 class Model;
 class Light;
 
+enum ListOrder { 
+  LIST_SEQUENTIAL, 
+  LIST_RANDOM, 
+};
+
 class LightList {
 
   public:
@@ -13,9 +18,10 @@ class LightList {
     //static FastNoise fastNoise;
   
     uint8_t noteId;
-    float speed;
-    int16_t life;
-    bool linked;
+    float speed = 1.0;
+    int16_t life = -1;
+    ListOrder order = LIST_SEQUENTIAL;
+    bool linked = true;
     Model *model;
     uint16_t numLights = 0;
     uint16_t trail = 0;
@@ -23,24 +29,15 @@ class LightList {
     uint16_t numEmitted = 0;
     uint8_t numSplits = 0;
     
-    LightList(float speed) {
-      this->speed = speed;
-    }
-    
-    LightList() : LightList(1.0) {
+    LightList() {
     }
 
     ~LightList() {
       delete lights;
     }
 
-    void setup(uint16_t numLights);
-    void setupRandom(uint16_t numLights, bool linked = true);
-    // void setupNoise(uint16_t numLights, float threshold);
-    // void setupNoise(uint16_t numLights) {
-    //   return setupNoise(numLights, 0.0);
-    // }
-    void setupFull(uint16_t numLights, RgbColor color);
+    void init(uint16_t numLights);
+    void setup(uint16_t numLights, RgbColor color, float brightness = 1.f);
 
     Light* operator [] (uint16_t i) const {
       return lights[i];
@@ -50,14 +47,20 @@ class LightList {
       return lights[i];
     }
     
-    void setLinked(bool linked);
-    void setModel(Model *model);
+    void setOrder(ListOrder order) {
+      this->order = order;
+    }
     void setSpeed(float speed);
+    void setModel(Model *model);
     void setLife(int16_t numFrames);
     void setColor(RgbColor color);
+    void setLinked(bool linked);
     void setTrail(uint16_t length) {
       trail = length;
     }
+    void initEmit();
+    void initPosition(uint16_t i, Light* light);
+    void initLife(uint16_t i, Light* light);
     void split();
   
 };

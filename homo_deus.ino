@@ -22,7 +22,8 @@ bool showIntersections = false;
 bool showConnections = false;
 bool showPalette = false;
 bool showAll = false;
-unsigned long prevMillis = 0;
+unsigned long gMillis;
+unsigned long gPrevMillis = 0;
 float fps = 0.f;
 
 void setup() {
@@ -81,10 +82,10 @@ void setupComms() {
 }
 
 void update() {
-  unsigned long ms = millis();
-  fps = 1000.f / float(ms - prevMillis);
-  prevMillis = ms;
-  emitter->emit(ms);
+  gMillis = millis();
+  fps = 1000.f / float(gMillis - gPrevMillis);
+  gPrevMillis = gMillis;
+  emitter->emit(gMillis);
   heptagon.update();
   emitter->update();
 }
@@ -151,7 +152,7 @@ void readSerial() {
       case '.':
         emitter->stopAll();
         break;
-      case '*':
+      case '!':
         emitter->colorAll();
         break;        
       case 's':
@@ -210,6 +211,9 @@ void readSerial() {
       case '+':
         emitter->emitSplatter();
         break;
+      case '*':
+        emitter->emitRandom();
+        break;        
     }
   }
 }

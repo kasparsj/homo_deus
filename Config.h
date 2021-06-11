@@ -32,6 +32,7 @@
 #define UPDATES_PER_FRAME 3
 #define HD_WIFI
 #define HD_OSC
+//#define HD_OSC_REPLY // todo: not working ATM
 #define OSC_PORT 54321
 #define SC_HOST "192.168.43.101"
 #define SC_PORT 57120

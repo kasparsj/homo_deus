@@ -80,6 +80,11 @@ class Model {
       return weight;
     }
 
+    uint16_t getMaxLength() {
+      // todo: implement      
+      return PIXEL_COUNT;
+    }
+
     void addEmitter(Intersection *emitter) {
       for (uint8_t i=0; i<numEmitters; i++) {
         if (emitters[i] == NULL) {
@@ -103,6 +108,7 @@ class Model {
     }
 
     void emit(uint8_t i, LightList *lightList) {
+      lightList->initEmit();
       emitters[i]->add(lightList);
     }
 

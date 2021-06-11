@@ -57,6 +57,16 @@ class Emitter {
     int8_t emitSplatter() {
       return emitSplatter(randomSpeed(), randomLength());
     }
+    int8_t emitRandom(uint8_t model, uint16_t length, RgbColor color);
+    int8_t emitRandom(uint8_t model, uint16_t length, uint8_t color) {
+      return emitRandom(model, length, paletteColor(color));
+    }
+    int8_t emitRandom(uint8_t model, uint16_t length) {
+      return emitRandom(model, length, randomColor());
+    }
+    int8_t emitRandom() {
+      return emitRandom(randomModel(), randomLength());
+    }
     void update();
     void colorAll();
     void splitAll();
