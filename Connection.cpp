@@ -87,7 +87,11 @@ void Connection::updateLight(uint16_t i) {
     light->resetPixels();
     // hack: fix rounding error
     float pos = round(light->position * 1000) / 1000.0;
-    if (pos < numLeds) {      
+    if (light->speed == 0 && light->shouldExpire()) {
+      light->isExpired = true;
+      queueRemove(i);
+    }
+    else if (pos < numLeds) {      
       // todo: outPort can be NULL
       if (light->outPort == NULL) {
         //Serial.print("light: ");

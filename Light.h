@@ -9,15 +9,12 @@ class Model;
 class Light {
 
   public:
-    static const float SPEED;
-    static const uint16_t LIFE;
-    
     //uint16_t id;
     float brightness;
-    float speed;
+    float speed = DEFAULT_SPEED;
     float position;
     uint16_t age = 0;
-    int16_t life;
+    int16_t life = DEFAULT_LIFE;
     RgbColor color; // 3 bytes
     Model *model = 0;
     Light *linkedPrev = 0;
@@ -36,7 +33,7 @@ class Light {
     Light(float brightness, float speed, int16_t life) : Light(brightness, speed, life, 0, 0) {
     }
     
-    Light(float brightness) : Light(brightness, SPEED, LIFE) {
+    Light(float brightness) : Light(brightness, DEFAULT_SPEED, DEFAULT_LIFE) {
     }
     
     Light() : Light(1.0) {
@@ -45,7 +42,7 @@ class Light {
     float getBrightness() {
       if (brightness < 0) {
         //if (brightness < -1) {
-          return random(1.f);
+          return random(1001) / 1000.f;
         //}
         //else {
         //  return noise(gMillis * brightness * -1.f, id);

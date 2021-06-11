@@ -80,7 +80,7 @@ void LightList::initEmit() {
 }
 
 void LightList::initPosition(uint16_t i, Light* light) {
-  float position = i * -1;
+  float position = i * -1.f;
   if (order == LIST_RANDOM) {
     position = random(model->getMaxLength());
   }
@@ -90,7 +90,7 @@ void LightList::initPosition(uint16_t i, Light* light) {
 void LightList::initLife(uint16_t i, Light* light) {
   int16_t life = light->life;    
   if (order == LIST_SEQUENTIAL) {
-    life = life + ceil(1.0 / light->speed * i);
+    life += ceil(1.0 / light->speed * i);
   }
   light->life = life;
 }

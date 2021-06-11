@@ -39,9 +39,10 @@ void Intersection::add(LightList *lightList) {
 void Intersection::emit(uint8_t k) {
   LightList *lightList = lightLists[k];
   if (lightList->numEmitted < lightList->numLights) {
-    uint8_t batchSize = min(lightList->numLights - lightList->numEmitted, EMITTER_MAX_LIGHTS - freeLight);      
+    uint8_t batchSize = min(lightList->numLights - lightList->numEmitted, EMITTER_MAX_LIGHTS - freeLight);
+    uint8_t j = lightList->numEmitted;      
     for (uint8_t i=0; i<batchSize; i++) {
-      Light *light = (*lightList)[lightList->numEmitted+i];
+      Light *light = (*lightList)[i+j];
       if (light->position < 0) {
         break;
       }
@@ -93,12 +94,8 @@ void Intersection::updateLight(uint16_t i) {
   Light *light = lights[i];
   if (light != NULL && !light->isExpired) {
     light->resetPixels();
-    if (light->position >= 0.f) {
-      light->pixel1 = topPixel;
-      light->pixel1Bri = light->getBrightness();
-    }
     if (light->shouldExpire()) {
-      if (light->position >= 1.f) {
+      if (light->speed == 0 || light->position >= 1.f) {
         light->isExpired = true;
         queueRemove(i);
       }
@@ -107,7 +104,11 @@ void Intersection::updateLight(uint16_t i) {
       // neurons are updated after connections
       queueOutgoing(light);
       queueRemove(i);
-    }        
+    }       
+    if (light->position >= 0.f) {
+      light->pixel1 = topPixel;
+      light->pixel1Bri = light->getBrightness();
+    }
   }
 }
 

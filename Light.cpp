@@ -2,9 +2,6 @@
 #include "Config.h"
 #include <Arduino.h>
 
-const float Light::SPEED = 1.0;
-const uint16_t Light::LIFE = 60;
-
 Light::Light(float brightness, float speed, int16_t life, Model *model, Light *linkedPrev) {
   this->brightness = brightness;
   this->speed = speed;

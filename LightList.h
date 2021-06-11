@@ -1,7 +1,8 @@
 #pragma once
 
-//#include "FastNoise.h"
+#include "Config.h"
 #include <NeoPixelBus.h>
+//#include "FastNoise.h"
 
 class Model;
 class Light;
@@ -18,8 +19,8 @@ class LightList {
     //static FastNoise fastNoise;
   
     uint8_t noteId;
-    float speed = 1.0;
-    int16_t life = -1;
+    float speed = DEFAULT_SPEED;
+    int16_t life = DEFAULT_LIFE;
     ListOrder order = LIST_SEQUENTIAL;
     bool linked = true;
     Model *model;
@@ -59,8 +60,11 @@ class LightList {
       trail = length;
     }
     void initEmit();
+    void split();
+
+  private:
+
     void initPosition(uint16_t i, Light* light);
     void initLife(uint16_t i, Light* light);
-    void split();
   
 };
