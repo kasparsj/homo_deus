@@ -229,7 +229,8 @@ void onEmit(const OscMessage& m) {
         if (m.size() > 3) {
           ListOrder order = static_cast<ListOrder>(m.arg<uint8_t>(3));
           if (m.size() > 4) {
-            bool linked = m.arg<bool>(4);
+            bool linked = m.arg<uint8_t>(4) > 0;
+            Serial.println(linked);
             if (m.size() > 5) {
               int16_t life = m.arg<int16_t>(5);
               if (m.size() > 6) {

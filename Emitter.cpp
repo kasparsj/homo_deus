@@ -50,7 +50,6 @@ void Emitter::autoEmit(unsigned long ms) {
 }
 
 int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder order, bool linked, int16_t life, RgbColor color) {
-  Serial.println(life);
   Model *model = &models[which];
   uint8_t k = model->getFreeEmitter();
   if (k == -1) {
