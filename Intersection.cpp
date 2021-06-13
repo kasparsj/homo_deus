@@ -47,6 +47,14 @@ void Intersection::emit(uint8_t k) {
         break;
       }
       lightList->numEmitted++;
+      if (numPorts == 2) {
+        for (uint8_t i=0; i<2; i++) {
+          if (ports[i]->connection->numLeds == 0) {
+            light->setInPort(ports[i]);
+            break;
+          }
+        }
+      }
       addLight(light);
     }
   }

@@ -49,16 +49,18 @@ void Emitter::autoEmit(unsigned long ms) {
   }
 }
 
-int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder order, bool linked, int16_t life, RgbColor color) {
+int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder order, bool linked, int8_t from, int16_t life, RgbColor color) {
   Model *model = &models[which];
   if (totalLights + length > MAX_TOTAL_LIGHTS) {
     Serial.printf("emit failed, %d is over max %d lights\n", totalLights + length, MAX_TOTAL_LIGHTS);
     return -1;
   }
-  uint8_t k = model->getFreeEmitter();
-  if (k == -1) {
-    Serial.println("emit failed, no free emitter.");
-    return -1;
+  if (from < 0) {
+    from = model->getFreeEmitter();
+    if (from < 0) {
+      Serial.println("emit failed, no free emitter.");
+      return -1;
+    }
   }
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) {
@@ -85,7 +87,7 @@ int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder orde
         numFull + numTrail, (linked ? "linked" : "random"), which, speed, length, life, totalLights + numFull + numTrail, totalLightLists + 1);      
       #endif
       lightLists[i]->setup(numFull, color, brightness);
-      model->emit(k, lightLists[i]);
+      model->emit(from, lightLists[i]);
       totalLights += lightLists[i]->numLights;
       totalLightLists++;
       #ifdef HD_OSC_REPLY
@@ -142,10 +144,9 @@ void Emitter::update() {
       totalLightLists--;
       delete lightLists[i];
       lightLists[i] = NULL;
-      #ifdef HD_DEBUG
-      Serial.print("Deleted lightList");
-      Serial.println(i);
-      #endif
+      //#ifdef HD_DEBUG
+      //Serial.printf("Deleted lightList %d\n", i);
+      //#endif
     }
   }
 }

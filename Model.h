@@ -95,7 +95,7 @@ class Model {
       Serial.printf("Model %d cannot add emitter\n", id);
     }
 
-    uint8_t getFreeEmitter() {
+    int8_t getFreeEmitter() {
       uint8_t r = random(numEmitters);
       for (uint8_t i=0; i<numEmitters; i++) {
         uint8_t j = (r + i) % numEmitters;

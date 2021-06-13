@@ -257,13 +257,19 @@ void onEmit(const OscMessage& m) {
           if (m.size() > 4) {
             bool linked = m.arg<uint8_t>(4) > 0;
             if (m.size() > 5) {
-              int16_t life = m.arg<int16_t>(5);
+              int8_t from = m.arg<int8_t>(5);
               if (m.size() > 6) {
-                uint8_t color = m.arg<uint8_t>(6);
-                emitter->emit(model, speed, length, order, linked, life, color);
+                int16_t life = m.arg<int16_t>(6);
+                if (m.size() > 7) {
+                  uint8_t color = m.arg<uint8_t>(7);
+                  emitter->emit(model, speed, length, order, linked, from, life, color);
+                }
+                else {
+                  emitter->emit(model, speed, length, order, linked, from, life);
+                }
               }
               else {
-                emitter->emit(model, speed, length, order, linked, life);
+                emitter->emit(model, speed, length, order, linked, from);
               }
             }
             else {
@@ -303,11 +309,17 @@ void onNoteOn(const OscMessage& m) {
             if (m.size() > 5) {
               bool linked = m.arg<uint8_t>(5) > 0;
               if (m.size() > 6) {
-                uint8_t color = m.arg<uint8_t>(6);
-                i = emitter->emit(model, speed, length, order, linked, -1, color);
+                int8_t from = m.arg<int8_t>(6);
+                if (m.size() > 7) {
+                  uint8_t color = m.arg<uint8_t>(7);
+                  i = emitter->emit(model, speed, length, order, linked, from, -1, color);
+                }
+                else {
+                  i = emitter->emit(model, speed, length, order, linked, from, -1);
+                }
               }
               else {
-                i = emitter->emit(model, speed, length, order, linked, -1);
+                i = emitter->emit(model, speed, length, order, linked);
               }
             }
             else {

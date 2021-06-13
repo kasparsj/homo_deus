@@ -84,7 +84,7 @@ void LightList::initEmit() {
 }
 
 void LightList::initPosition(uint16_t i, Light* light) {
-  float position = i * -1.f;
+  float position = i * (speed != 0 ? -1.f : 1.f);
   if (order == LIST_RANDOM) {
     position = random(model->getMaxLength());
   }
