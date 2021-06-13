@@ -24,7 +24,10 @@ bool showPalette = false;
 bool showAll = false;
 unsigned long gMillis;
 unsigned long gPrevMillis = 0;
-float fps = 0.f;
+#ifdef HD_TEST
+float fps[AVG_FPS_FRAMES] = {0.f};
+uint8_t fpsIndex = 0;
+#endif
 #ifdef HD_WIFI
 bool wifiConnected = false;
 #endif
@@ -95,11 +98,22 @@ void setupComms() {
 
 void update() {
   gMillis = millis();
-  fps = 1000.f / float(gMillis - gPrevMillis);
+  #ifdef HD_TEST
+  fps[fpsIndex] = 1000.f / float(gMillis - gPrevMillis);
+  fpsIndex = (fpsIndex + 1) % AVG_FPS_FRAMES;
+  #endif
   gPrevMillis = gMillis;
   emitter->autoEmit(gMillis);
   heptagon.update();
   emitter->update();
+}
+
+float getFPS() {
+  float avg = 0;
+  for (uint8_t i=0; i<AVG_FPS_FRAMES; i++) {
+    avg += fps[i];
+  }
+  return avg / AVG_FPS_FRAMES;
 }
 
 void draw() {
@@ -172,7 +186,7 @@ void readSerial() {
         break;
       #ifdef HD_TEST
       case 'f':
-        Serial.printf("FPS: %f\n", fps);
+        Serial.printf("FPS: %f\n", getFPS());
         break;
       case 'h':
         Serial.printf("Free heap: %d\n", ESP.getFreeHeap());

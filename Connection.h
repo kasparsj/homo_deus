@@ -20,14 +20,11 @@ class Connection {
     bool pixelDir;
     uint16_t fromPixel;
     uint16_t toPixel;
-    uint16_t removeLights[EMITTER_MAX_LIGHTS] = {-1};
-    uint16_t freeRemove = 0;
     
     void setup(Intersection *from, Intersection *to);
     void addLight(Light *light);
-    void queueRemove(uint16_t i);
     void removeLight(uint16_t i);
     void update();
     void updateLight(uint16_t i);
-    void outgoing(Light *light);
+    void outgoing(Light *light, int16_t i = -1);
 };

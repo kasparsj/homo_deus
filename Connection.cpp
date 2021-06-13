@@ -52,7 +52,13 @@ void Connection::addLight(Light *light) {
   if (numLeds > 0) {
     if (freeLight < maxLights) {
       lights[freeLight] = light;
-      freeLight++;
+      uint8_t i;
+      for (i=freeLight+1; i<maxLights; i++) {
+        if (lights[i] == NULL) {
+          break;
+        }
+      }
+      freeLight = i;
     }
     else {
       Serial.printf("Connection addLight no free slot: %d - %d\n", fromPixel, toPixel);
@@ -65,17 +71,9 @@ void Connection::addLight(Light *light) {
 
 void Connection::update() {
   if (numLeds == 0) return;
-  for (uint16_t i=0; i<freeLight; i++) {
+  for (uint16_t i=0; i<maxLights; i++) {
     updateLight(i);
   }
-  for (int16_t i=(freeRemove-1); i>=0; i--) {
-    if (removeLights[i] >= 0) {
-      removeLight(removeLights[i]);
-      removeLights[i] = -1;
-    }
-  }
-  freeLight -= freeRemove;
-  freeRemove = 0;
 }
 
 void Connection::updateLight(uint16_t i) {
@@ -86,7 +84,7 @@ void Connection::updateLight(uint16_t i) {
     float pos = round(light->position * 1000) / 1000.0;
     if (light->speed == 0 && light->shouldExpire()) {
       light->isExpired = true;
-      queueRemove(i);
+      removeLight(i);
     }
     else if (pos < numLeds) {      
       if (light->outPort == NULL) {
@@ -99,38 +97,19 @@ void Connection::updateLight(uint16_t i) {
       light->pixel1Bri = light->getBrightness();
     }
     else {
-      outgoing(light);
-      queueRemove(i);
+      outgoing(light, i);
     }
-  }
-}
-
-void Connection::queueRemove(uint16_t i) {
-  if (freeRemove < EMITTER_MAX_LIGHTS) {
-    removeLights[freeRemove] = i;
-    freeRemove++;    
-  }
-  else {
-    Serial.println("Connection queueRemove no free slot");
   }
 }
 
 void Connection::removeLight(uint16_t i) {
-  if (i < (freeLight - freeRemove)) {
-    for (uint16_t j=1; j <= freeRemove; j++) {
-      if (lights[(freeLight - j)] != NULL) {
-        lights[i] = lights[(freeLight - j)];
-        lights[(freeLight - j)] = NULL;
-        break;
-      }
-    }
-  }
-  else {
-    lights[i] = NULL;
-  }
+  lights[i] = NULL;
+  if (i < freeLight) {
+    freeLight = i;
+  }  
 }
 
-void Connection::outgoing(Light *light) {
+void Connection::outgoing(Light* light, int16_t i) {
   Intersection *neuron = light->outPort->direction ? from : to;
   Port *port = light->outPort->direction ? fromPort : toPort;
   light->position -= numLeds;
@@ -139,5 +118,8 @@ void Connection::outgoing(Light *light) {
   //#ifdef HD_DEBUG
   //Serial.printf("Conn %d - %d outgoing %d\n", fromPixel, toPixel, light->id);
   //#endif
+  if (i >= 0) {
+    removeLight(i);    
+  }
   neuron->addLight(light);
 }
