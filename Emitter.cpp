@@ -81,8 +81,8 @@ int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder orde
       }
       uint16_t numFull = max(1, length - numTrail);
       #ifdef HD_DEBUG
-      Serial.printf("emitting %d lights (%d/%.1f/%d/%d), total: %d (%d)\n", 
-        numFull + numTrail, which, speed, length, life, totalLights + numFull + numTrail, totalLightLists + 1);      
+      Serial.printf("emitting %d %s lights (%d/%.1f/%d/%d), total: %d (%d)\n", 
+        numFull + numTrail, (linked ? "linked" : "random"), which, speed, length, life, totalLights + numFull + numTrail, totalLightLists + 1);      
       #endif
       lightLists[i]->setup(numFull, color, brightness);
       model->emit(k, lightLists[i]);

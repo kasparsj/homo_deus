@@ -291,7 +291,7 @@ void onEmit(const OscMessage& m) {
 void onNoteOn(const OscMessage& m) {
   if (m.size() > 0) {
     uint16_t noteId = m.arg<uint16_t>(0);
-    uint8_t i = 0;
+    int8_t i = 0;
     if (m.size() > 1) {
       uint8_t model = m.arg<uint8_t>(1);
       if (m.size() > 2) {

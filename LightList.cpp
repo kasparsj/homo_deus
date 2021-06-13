@@ -93,7 +93,7 @@ void LightList::initPosition(uint16_t i, Light* light) {
 
 void LightList::initLife(uint16_t i, Light* light) {
   int16_t life = light->life;    
-  if (order == LIST_SEQUENTIAL) {
+  if (life > 0 && order == LIST_SEQUENTIAL) {
     life += ceil(1.0 / light->speed * i);
   }
   light->life = life;
