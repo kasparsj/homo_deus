@@ -255,7 +255,7 @@ void onEmit(const OscMessage& m) {
         if (m.size() > 3) {
           ListOrder order = static_cast<ListOrder>(m.arg<uint8_t>(3));
           if (m.size() > 4) {
-            bool linked = m.arg<uint8_t>(4)> 0;
+            bool linked = m.arg<uint8_t>(4) > 0;
             if (m.size() > 5) {
               int16_t life = m.arg<int16_t>(5);
               if (m.size() > 6) {
@@ -301,7 +301,7 @@ void onNoteOn(const OscMessage& m) {
           if (m.size() > 4) {
             ListOrder order = static_cast<ListOrder>(m.arg<uint8_t>(4));
             if (m.size() > 5) {
-              bool linked = m.arg<bool>(5);
+              bool linked = m.arg<uint8_t>(5) > 0;
               if (m.size() > 6) {
                 uint8_t color = m.arg<uint8_t>(6);
                 i = emitter->emit(model, speed, length, order, linked, -1, color);
@@ -330,7 +330,9 @@ void onNoteOn(const OscMessage& m) {
       i = emitter->emit(emitter->randomModel());
     }
     if (i >= 0) {
-      emitter->lightLists[i]->setLife(-1);
+      if (emitter->lightLists[i]->life != -1) {
+        emitter->lightLists[i]->setLife(-1);
+      }
       emitter->lightLists[i]->noteId = noteId;
     }
   }
