@@ -25,6 +25,9 @@ bool showAll = false;
 unsigned long gMillis;
 unsigned long gPrevMillis = 0;
 float fps = 0.f;
+#ifdef HD_WIFI
+bool wifiConnected = false;
+#endif
 
 void setup() {
   setupComms();
@@ -59,18 +62,26 @@ void setupComms() {
   WiFi.mode(WIFI_STA);
   #endif
 
+  uint8_t numTries = 0;
   //WiFi.begin("VA37-3", "fdsa4321");
   WiFi.begin("Redmi", "marlena123");
   //WiFi.config(ip, gateway, subnet);
-  while (WiFi.status() != WL_CONNECTED) {
+  while (numTries < 10 && WiFi.status() != WL_CONNECTED) {
+      numTries++;
       Serial.print(".");
       delay(500);
   }
-  Serial.print("WiFi connected, IP = ");
-  Serial.println(WiFi.localIP());
+  if (WiFi.status() == WL_CONNECTED) {
+    wifiConnected = true;
+    Serial.print("WiFi connected, IP = ");
+    Serial.println(WiFi.localIP());
+  }
+  else {
+    WiFi.disconnect();
+    Serial.println("WiFi failed to connect");
+  }
 
   #endif
-
   #ifdef HD_OSC
   OscWiFi.subscribe(OSC_PORT, "/emit", onEmit);
   OscWiFi.subscribe(OSC_PORT, "/note_on", onNoteOn);
@@ -78,6 +89,7 @@ void setupComms() {
   OscWiFi.subscribe(OSC_PORT, "/palette", onPalette);
   OscWiFi.subscribe(OSC_PORT, "/color", onColor);
   OscWiFi.subscribe(OSC_PORT, "/split", onSplit);
+  OscWiFi.subscribe(OSC_PORT, "/auto", onAuto);
   #endif
 }
 
@@ -229,8 +241,7 @@ void onEmit(const OscMessage& m) {
         if (m.size() > 3) {
           ListOrder order = static_cast<ListOrder>(m.arg<uint8_t>(3));
           if (m.size() > 4) {
-            bool linked = m.arg<uint8_t>(4) > 0;
-            Serial.println(linked);
+            bool linked = m.arg<uint8_t>(4)> 0;
             if (m.size() > 5) {
               int16_t life = m.arg<int16_t>(5);
               if (m.size() > 6) {
@@ -304,8 +315,10 @@ void onNoteOn(const OscMessage& m) {
     else {
       i = emitter->emit(emitter->randomModel());
     }
-    emitter->lightLists[i]->setLife(-1);
-    emitter->lightLists[i]->noteId = noteId;
+    if (i >= 0) {
+      emitter->lightLists[i]->setLife(-1);
+      emitter->lightLists[i]->noteId = noteId;
+    }
   }
 }
 
@@ -349,5 +362,9 @@ void onSplit(const OscMessage &m) {
   else {
     emitter->splitAll();
   }
+}
+
+void onAuto(const OscMessage &m) {
+  emitter->autoEnabled = !emitter->autoEnabled;
 }
 #endif

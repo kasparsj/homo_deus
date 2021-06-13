@@ -20,7 +20,7 @@ class Connection {
     bool pixelDir;
     uint16_t fromPixel;
     uint16_t toPixel;
-    uint16_t removeLights[MAX_OUTGOING_LIGHTS] = {-1};
+    uint16_t removeLights[EMITTER_MAX_LIGHTS] = {-1};
     uint16_t freeRemove = 0;
     
     void setup(Intersection *from, Intersection *to);

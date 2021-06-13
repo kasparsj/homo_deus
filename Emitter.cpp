@@ -51,6 +51,10 @@ void Emitter::autoEmit(unsigned long ms) {
 
 int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder order, bool linked, int16_t life, RgbColor color) {
   Model *model = &models[which];
+  if (totalLights + length > MAX_TOTAL_LIGHTS) {
+    Serial.printf("emit failed, %d is over max %d lights\n", totalLights + length, MAX_TOTAL_LIGHTS);
+    return -1;
+  }
   uint8_t k = model->getFreeEmitter();
   if (k == -1) {
     Serial.println("emit failed, no free emitter.");
@@ -64,24 +68,26 @@ int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder orde
       lightLists[i]->setModel(model);
       lightLists[i]->setLinked(linked);
       lightLists[i]->setLife(life);
-      uint16_t trail = 0;
+      uint16_t numTrail = 0;
       float brightness = 1.f;
       if (order == LIST_SEQUENTIAL) {
         if (linked) {
-          trail = min((int) (speed * max(1, length / 2)), max(EMITTER_MAX_LENGTH, EMITTER_MAX_LIGHTS) - 1);
-          lightLists[i]->setTrail(trail);
+          numTrail = min((int) (speed * max(1, length / 2)), max(EMITTER_MAX_LENGTH, EMITTER_MAX_LIGHTS) - 1);
+          lightLists[i]->setTrail(numTrail);
         }
       }
       else {
         brightness = -1.f;        
       }
-      lightLists[i]->setup(max(1, length - trail), color, brightness);
+      uint16_t numFull = max(1, length - numTrail);
       #ifdef HD_DEBUG
-      Serial.printf("emitting %d lights (%d/%.1f/%d/%d), total: %d\n", 
-        lightLists[i]->numLights, which, speed, length, life, totalLights + lightLists[i]->numLights);      
+      Serial.printf("emitting %d lights (%d/%.1f/%d/%d), total: %d (%d)\n", 
+        numFull + numTrail, which, speed, length, life, totalLights + numFull + numTrail, totalLightLists + 1);      
       #endif
+      lightLists[i]->setup(numFull, color, brightness);
       model->emit(k, lightLists[i]);
       totalLights += lightLists[i]->numLights;
+      totalLightLists++;
       #ifdef HD_OSC_REPLY
       OscWiFi.publish(SC_HOST, SC_PORT, "/linked", i);
       #endif
@@ -89,7 +95,7 @@ int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder orde
     }
   }
   #ifdef HD_DEBUG
-  Serial.println("No free light lists");
+  Serial.println("emit failed: no free light lists");
   #endif
   return -1;
 }
@@ -133,6 +139,7 @@ void Emitter::update() {
     }
     if (allExpired) {
       totalLights -= lightLists[i]->numLights;
+      totalLightLists--;
       delete lightLists[i];
       lightLists[i] = NULL;
       #ifdef HD_DEBUG

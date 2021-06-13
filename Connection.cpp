@@ -113,7 +113,7 @@ void Connection::updateLight(uint16_t i) {
 }
 
 void Connection::queueRemove(uint16_t i) {
-  if (freeRemove < MAX_OUTGOING_LIGHTS) {
+  if (freeRemove < EMITTER_MAX_LIGHTS) {
     removeLights[freeRemove] = i;
     freeRemove++;    
   }

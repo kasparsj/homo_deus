@@ -10,6 +10,7 @@ class Emitter {
     Model *models;
     LightList *lightLists[MAX_LIGHT_LISTS] = {0};
     uint16_t totalLights = 0;
+    uint8_t totalLightLists = 0;
     unsigned long nextEmit = 0;
     uint16_t pixelValuesR[PIXEL_COUNT];
     uint16_t pixelValuesG[PIXEL_COUNT];
