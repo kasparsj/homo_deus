@@ -55,10 +55,7 @@ void Connection::addLight(Light *light) {
       freeLight++;
     }
     else {
-      Serial.print("Connection addLight no free slot: ");
-      Serial.print(fromPixel);
-      Serial.print(" - ");
-      Serial.println(toPixel);
+      Serial.printf("Connection addLight no free slot: %d - %d\n", fromPixel, toPixel);
     }
   }
   else {
@@ -92,14 +89,10 @@ void Connection::updateLight(uint16_t i) {
       queueRemove(i);
     }
     else if (pos < numLeds) {      
-      // todo: outPort can be NULL
       if (light->outPort == NULL) {
-        //Serial.print("light: ");
-        //Serial.print(light->id);
-        Serial.print("outport NULL, connection: ");
-        Serial.print(fromPixel);
-        Serial.print(" - ");
-        Serial.println(toPixel);
+        #ifdef HD_DEBUG
+        Serial.printf("light: %d outport NULL, conn: %d - %d\n", light->id, fromPixel, toPixel);
+        #endif
       }
       uint16_t ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
       light->pixel1 = fromPixel + (ledIdx * (pixelDir ? 1 : -1));
@@ -138,11 +131,13 @@ void Connection::removeLight(uint16_t i) {
 }
 
 void Connection::outgoing(Light *light) {
-  // connections are updated before neurons
   Intersection *neuron = light->outPort->direction ? from : to;
   Port *port = light->outPort->direction ? fromPort : toPort;
   light->position -= numLeds;
   light->setInPort(port);
   light->setOutPort(NULL);
+  //#ifdef HD_DEBUG
+  //Serial.printf("Conn %d - %d outgoing %d\n", fromPixel, toPixel, light->id);
+  //#endif
   neuron->addLight(light);
 }

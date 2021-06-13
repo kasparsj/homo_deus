@@ -9,7 +9,9 @@ class Model;
 class Light {
 
   public:
-    //uint16_t id;
+    #ifdef HD_DEBUG
+    uint16_t id;
+    #endif
     float brightness;
     float speed = DEFAULT_SPEED;
     float position;

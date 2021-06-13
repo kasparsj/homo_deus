@@ -39,7 +39,7 @@ void Intersection::add(LightList *lightList) {
 void Intersection::emit(uint8_t k) {
   LightList *lightList = lightLists[k];
   if (lightList->numEmitted < lightList->numLights) {
-    uint8_t batchSize = min(lightList->numLights - lightList->numEmitted, EMITTER_MAX_LIGHTS - freeLight);
+    uint8_t batchSize = min(lightList->numLights - lightList->numEmitted, EMITTER_MAX_LIGHTS - numLights);
     uint8_t j = lightList->numEmitted;      
     for (uint8_t i=0; i<batchSize; i++) {
       Light *light = (*lightList)[i+j];
@@ -58,7 +58,14 @@ void Intersection::emit(uint8_t k) {
 void Intersection::addLight(Light *light) {
   if (freeLight < EMITTER_MAX_LIGHTS) {
     lights[freeLight] = light;
-    freeLight++;
+    numLights++;
+    uint8_t i;
+    for (i=freeLight+1; i<EMITTER_MAX_LIGHTS; i++) {
+      if (lights[i] == NULL) {
+        break;
+      }
+    }
+    freeLight = i;
   }
   else {
     Serial.printf("Intersection %d addLight no free slot\n", topPixel);
@@ -66,44 +73,35 @@ void Intersection::addLight(Light *light) {
 }
 
 void Intersection::update() {
-  for (uint16_t i=0; i<EMITTER_MAX_LIGHT_LISTS; i++) {
+  for (uint8_t i=0; i<EMITTER_MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] != NULL) {
       emit(i);
     }
   }
-  for (uint16_t i=0; i<freeLight; i++) {
+  for (uint8_t i=0; i<EMITTER_MAX_LIGHTS; i++) {
     updateLight(i);
   }
-  for (uint16_t i=0; i<freeOutgoing; i++) {
-    if (outgoingLights[i] != NULL) {
+  for (uint8_t i=0; i<freeOutgoing; i++) {
+    if (outgoingLights[i] >= 0) {
       sendOut(i); 
     }
   }
   freeOutgoing = 0;
-  for (int16_t i=(freeRemove-1); i>=0; i--) {
-    if (removeLights[i] >= 0) {
-      removeLight(removeLights[i]);
-      removeLights[i] = -1;
-    }
-  }
-  freeLight -= freeRemove;
-  freeRemove = 0;
 }
 
-void Intersection::updateLight(uint16_t i) {
+void Intersection::updateLight(uint8_t i) {
   Light *light = lights[i];
   if (light != NULL && !light->isExpired) {
     light->resetPixels();
     if (light->shouldExpire()) {
       if (light->speed == 0 || light->position >= 1.f) {
         light->isExpired = true;
-        queueRemove(i);
+        removeLight(i);
       }
     }
     else if (light->position >= 1.f) {
       // neurons are updated after connections
-      queueOutgoing(light);
-      queueRemove(i);
+      queueOutgoing(i);
     }       
     if (light->position >= 0.f) {
       light->pixel1 = topPixel;
@@ -112,9 +110,17 @@ void Intersection::updateLight(uint16_t i) {
   }
 }
 
-void Intersection::queueOutgoing(Light *light) {
-  if (freeOutgoing < MAX_OUTGOING_LIGHTS) {
-    outgoingLights[freeOutgoing] = light;
+void Intersection::removeLight(uint8_t i) {
+  numLights--;
+  lights[i] = NULL;
+  if (i < freeLight) {
+    freeLight = i;
+  }
+}
+
+void Intersection::queueOutgoing(uint8_t i) {
+  if (freeOutgoing < EMITTER_MAX_LIGHTS) {
+    outgoingLights[freeOutgoing] = i;
     freeOutgoing++;  
   }
   else {
@@ -122,23 +128,13 @@ void Intersection::queueOutgoing(Light *light) {
   }
 }
 
-void Intersection::queueRemove(uint16_t i) {
-  if (freeRemove < MAX_OUTGOING_LIGHTS) {
-    removeLights[freeRemove] = i;
-    freeRemove++;    
-  }
-  else {
-    Serial.println("Intersection queueRemove no free slot");
-  }
-}
-
-Port* Intersection::sendOut(uint16_t i) {
-  Light *light = outgoingLights[i];
+Port* Intersection::sendOut(uint8_t i) {
+  Light *light = lights[outgoingLights[i]];
   Port *port = NULL;
   if (light->linkedPrev != NULL) {
-    uint16_t maxOutgoing = freeOutgoing;
-    for (uint16_t k=0; k<maxOutgoing; k++) {
-      if (outgoingLights[k] == light->linkedPrev) {
+    uint8_t maxOutgoing = freeOutgoing;
+    for (uint8_t k=0; k<maxOutgoing; k++) {
+      if (outgoingLights[k] >= 0 && lights[outgoingLights[k]] == light->linkedPrev) {
         port = sendOut(k);
         break;
       }
@@ -164,29 +160,18 @@ Port* Intersection::sendOut(uint16_t i) {
   light->setOutPort(port, id);
   light->setInPort(NULL);
   light->position -= 1.f;
-  outgoingLights[i] = NULL;
+  removeLight(outgoingLights[i]);
+  outgoingLights[i] = -1;
   if (port != NULL) { 
     if (light->model->numColorPorts > 0 && light->model->checkColorPort(port)) {
       light->color = light->model->changeColor(light);
     }
+    //#ifdef HD_DEBUG
+    //Serial.printf("Intersection %d sendOut %d\n", id, light->id);
+    //#endif
     port->connection->addLight(light);
   }
   return port;
-}
-
-void Intersection::removeLight(uint16_t i) {
-  if (i < (freeLight - freeRemove)) {
-    for (uint16_t j=1; j <= freeRemove; j++) {
-      if (lights[(freeLight - j)] != NULL) {
-        lights[i] = lights[(freeLight - j)];
-        lights[(freeLight - j)] = NULL;
-        break;
-      }
-    }
-  }
-  else {
-    lights[i] = NULL;
-  }
 }
 
 float Intersection::sumW(Model *model, Port *incoming) {
