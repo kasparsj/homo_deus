@@ -29,7 +29,7 @@ class EmitParams {
     ListOrder order = LIST_SEQUENTIAL;
     bool linked = true;
     int8_t from = -1;
-    int8_t life = DEFAULT_LIFE;
+    int16_t life = DEFAULT_LIFE;
     int8_t color = -1;
     uint16_t noteId = 0;
     float brightness = DEFAULT_BRIGHTNESS;

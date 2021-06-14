@@ -172,7 +172,7 @@ void Emitter::splitAll() {
 void Emitter::stopAll() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
-    lightLists[i]->setLife(1);
+    lightLists[i]->setLife(-1);
   }
 }
 
@@ -180,7 +180,7 @@ void Emitter::stopNote(uint8_t noteId) {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     if (lightLists[i]->noteId == noteId) {
-      lightLists[i]->setLife(1);
+      lightLists[i]->setLife(-1);
     }
   }
 }
