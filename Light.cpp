@@ -14,14 +14,13 @@ Light::Light(float brightness, float speed, int16_t life, Model *model, Light *l
 
 void Light::update() {
   position += speed;
+  brightness += fade;
   age++;
 }
 
 void Light::resetPixels() {
   pixel1 = -1;
-  pixel1Bri = 0;
   // pixel2 = -1;
-  // pixel2Bri = 0;
 }
 
 Port* Light::getOutPort(uint8_t intersectionId) {

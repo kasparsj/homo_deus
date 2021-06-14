@@ -113,7 +113,6 @@ void Intersection::updateLight(uint8_t i) {
     }       
     if (light->position >= 0.f) {
       light->pixel1 = topPixel;
-      light->pixel1Bri = light->getBrightness();
     }
   }
 }

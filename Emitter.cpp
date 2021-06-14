@@ -12,7 +12,7 @@ float Emitter::randomSpeed() {
   return EMITTER_MIN_SPEED + random(max(EMITTER_MAX_SPEED - EMITTER_MIN_SPEED, 0.f));
 }
 
-int16_t Emitter::randomLife() {
+uint16_t Emitter::randomLife() {
   return EMITTER_MIN_LIFE + random(max(EMITTER_MAX_LIFE - EMITTER_MIN_LIFE, 0));
 }
 
@@ -24,8 +24,8 @@ uint16_t Emitter::randomLength() {
   return (uint16_t) (EMITTER_MIN_LENGTH + random(max(EMITTER_MAX_LENGTH - EMITTER_MIN_LENGTH, 0)));
 }
 
-float Emitter::randomBriThresh() {
-  return EMITTER_MIN_BRI + random(max(EMITTER_MAX_BRI - EMITTER_MIN_BRI, 0.f));
+float Emitter::randomBrightness() {
+  return random(1001) / 1000.f;
 }
 
 uint16_t Emitter::randomNextEmit() {
@@ -49,12 +49,15 @@ void Emitter::autoEmit(unsigned long ms) {
   }
 }
 
-int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder order, bool linked, int8_t from, int16_t life, RgbColor color) {
-  Model *model = &models[which];
+int8_t Emitter::emit(EmitParams &params) {
+  uint16_t length = params.length > 0 ? params.length : randomLength();
   if (totalLights + length > MAX_TOTAL_LIGHTS) {
     Serial.printf("emit failed, %d is over max %d lights\n", totalLights + length, MAX_TOTAL_LIGHTS);
     return -1;
   }
+  uint8_t which = params.model >= 0 ? params.model : randomModel();  
+  Model *model = &models[params.model];
+  int8_t from = params.from >= 0 ? params.from : -1;
   if (from < 0) {
     from = model->getFreeEmitter();
     if (from < 0) {
@@ -64,34 +67,34 @@ int8_t Emitter::emit(uint8_t which, float speed, uint16_t length, ListOrder orde
   }
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) {
+      float speed = params.speed >= 0 ? params.speed : randomSpeed();
+      uint16_t life = params.life >= 0 ? params.life : randomLife();
+      RgbColor color = params.color >= 0 ? paletteColor(params.color) : randomColor();
+      float brightness = params.brightness >= 0.f ? params.brightness : randomBrightness();
       lightLists[i] = new LightList();
-      lightLists[i]->setOrder(order);
+      lightLists[i]->setOrder(params.order);
       lightLists[i]->setSpeed(speed);
       lightLists[i]->setModel(model);
-      lightLists[i]->setLinked(linked);
+      lightLists[i]->setLinked(params.linked);
       lightLists[i]->setLife(life);
       uint16_t numTrail = 0;
-      float brightness = 1.f;
-      if (order == LIST_SEQUENTIAL) {
-        if (linked) {
+      if (params.order == LIST_SEQUENTIAL) {
+        if (params.linked) {
           numTrail = min((int) (speed * max(1, length / 2)), max(EMITTER_MAX_LENGTH, EMITTER_MAX_LIGHTS) - 1);
           lightLists[i]->setTrail(numTrail);
         }
       }
-      else {
-        brightness = -1.f;        
-      }
       uint16_t numFull = max(1, length - numTrail);
       #ifdef HD_DEBUG
       Serial.printf("emitting %d %s lights (%d/%.1f/%d/%d), total: %d (%d)\n", 
-        numFull + numTrail, (linked ? "linked" : "random"), which, speed, length, life, totalLights + numFull + numTrail, totalLightLists + 1);      
+        numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, totalLights + numFull + numTrail, totalLightLists + 1);      
       #endif
       lightLists[i]->setup(numFull, color, brightness);
       model->emit(from, lightLists[i]);
       totalLights += lightLists[i]->numLights;
       totalLightLists++;
       #ifdef HD_OSC_REPLY
-      OscWiFi.publish(SC_HOST, SC_PORT, "/linked", i);
+      OscWiFi.publish(SC_HOST, SC_PORT, "/emit", i);
       #endif
       return i;
     }
@@ -124,7 +127,7 @@ void Emitter::update() {
       }
       allExpired = false;
       if (lightLists[i]->lights[j]->pixel1 >= 0) {
-        RgbColor color = lightLists[i]->lights[j]->getColor(lightLists[i]->lights[j]->pixel1Bri);
+        RgbColor color = lightLists[i]->lights[j]->getColor();
         pixelValuesR[lightLists[i]->lights[j]->pixel1] += color.R;
         pixelValuesG[lightLists[i]->lights[j]->pixel1] += color.G;
         pixelValuesB[lightLists[i]->lights[j]->pixel1] += color.B;
@@ -168,7 +171,7 @@ void Emitter::splitAll() {
 void Emitter::stopAll() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
-    lightLists[i]->setLife(0);
+    lightLists[i]->setLife(1);
   }
 }
 
@@ -176,7 +179,7 @@ void Emitter::stopNote(uint8_t noteId) {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     if (lightLists[i]->noteId == noteId) {
-      lightLists[i]->setLife(0);
+      lightLists[i]->setLife(1);
     }
   }
 }

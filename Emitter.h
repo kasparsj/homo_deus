@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config.h"
+#include "EmitParams.h"
 #include "Model.h"
 
 class Emitter {
@@ -24,48 +25,39 @@ class Emitter {
     }
     
     float randomSpeed();
-    int16_t randomLife();
+    uint16_t randomLife();
     uint8_t randomModel();
     uint16_t randomLength();
-    float randomBriThresh();
+    float randomBrightness();
     uint16_t randomNextEmit();
     RgbColor randomColor();
     RgbColor paletteColor(uint8_t color);
     void autoEmit(unsigned long millis);
-    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, bool linked, int8_t from, int16_t life, RgbColor color);
-    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, bool linked, int8_t from, int16_t life, uint8_t color) {
-      return emit(model, speed, length, order, linked, from, life, paletteColor(color));
-    }
-    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, bool linked, int8_t from, int16_t life) {
-      return emit(model, speed, length, order, linked, from, life, randomColor());
-    }
-    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, bool linked, int8_t from) {
-      return emit(model, speed, length, order, linked, from, randomLife());
-    }
-    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order, bool linked) {
-      return emit(model, speed, length, order, linked, -1);
-    }
-    int8_t emit(uint8_t model, float speed, uint16_t length, ListOrder order) {
-      return emit(model, speed, length, order, true);
-    }
-    int8_t emit(uint8_t model, float speed, uint16_t length) {
-      return emit(model, speed, length, LIST_SEQUENTIAL);
-    }
-    int8_t emit(uint8_t model, float speed) {
-      return emit(model, speed, randomLength());
-    }
+    int8_t emit(EmitParams &params);
     int8_t emit(uint8_t model) {
-      return emit(model, randomSpeed());
+      EmitParams params;
+      params.model = model;
+      params.speed = randomSpeed();
+      return emit(params);
     }
     int8_t emit() {
       return emit(randomModel());
     }
     int8_t emitRandom() {
-      return emit(randomModel(), 0, randomLength(), LIST_RANDOM);
+      EmitParams params;
+      params.speed = 0.f;
+      params.order = LIST_RANDOM;      
+      return emit(params);
     }
     int8_t emitSplatter() {
-      float speed = randomSpeed();
-      return emit(7, speed, randomLength(), LIST_SEQUENTIAL, false, max(1, (int) (1.f/speed)));
+      EmitParams params;
+      // todo: fix
+      //params.model = M_SPLATTER;
+      params.model = 7;
+      params.speed = randomSpeed();
+      params.linked = false;
+      params.life = max(1, (int) (1.f/params.speed));
+      return emit(params);
     }
     void update();
     void colorAll();

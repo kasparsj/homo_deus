@@ -14,6 +14,7 @@ class Light {
     #endif
     float brightness;
     float speed = DEFAULT_SPEED;
+    float fade = 0;
     float position;
     uint16_t age = 0;
     int16_t life = DEFAULT_LIFE;
@@ -25,9 +26,7 @@ class Light {
     Port *outPorts[OUT_PORTS_MEMORY] = {0}; // 4 bytes * 7
     int8_t outPortsInt[OUT_PORTS_MEMORY] = {-1};
     int16_t pixel1 = -1;
-    float pixel1Bri = 0;
     // int16_t pixel2 = -1; // 4 bytes
-    // float pixel2Bri = 0; // 4 bytes
     bool isExpired = false;
     
     Light(float brightness, float speed, int16_t life, Model *model, Light *linkedPrev);
@@ -42,18 +41,12 @@ class Light {
     }
 
     float getBrightness() {
-      if (brightness < 0) {
-        //if (brightness < -1) {
-          return random(1001) / 1000.f;
-        //}
-        //else {
-        //  return noise(gMillis * brightness * -1.f, id);
-        //}
-      }
-      return brightness;
+      float bri = fmod(brightness, 2.f);
+      return bri > 1 ? 2.f - bri : bri;
     }
 
-    RgbColor getColor(float brightness = 1.f) {
+    RgbColor getColor() {
+      float brightness = getBrightness();
       if (brightness == 1.f) {
         return color;
       }
@@ -71,7 +64,7 @@ class Light {
     void update();
     
     bool shouldExpire() {
-      if (life < 0) {
+      if (life <= 0) {
         return false;
       }
       return age >= life;

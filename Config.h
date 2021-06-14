@@ -35,6 +35,8 @@
 #define OSC_PORT 54321
 #define SC_HOST "192.168.43.101"
 #define SC_PORT 57120
+#define DEFAULT_MODEL -1
 #define DEFAULT_SPEED 1.0
-#define DEFAULT_LIFE -1
+#define DEFAULT_LIFE -1 // -1 = random, 0 = infinite
+#define DEFAULT_BRIGHTNESS 1.0
 #define AVG_FPS_FRAMES 120

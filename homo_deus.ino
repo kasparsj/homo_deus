@@ -245,109 +245,59 @@ void readSerial() {
 }
 
 #ifdef HD_OSC
-void onEmit(const OscMessage& m) {
-  if (m.size() > 0) {
-    uint8_t model = m.arg<uint8_t>(0);
-    if (m.size() > 1) {
-      float speed = m.arg<float>(1);
-      if (m.size() > 2) {
-        uint16_t length = m.arg<uint16_t>(2);
-        if (m.size() > 3) {
-          ListOrder order = static_cast<ListOrder>(m.arg<uint8_t>(3));
-          if (m.size() > 4) {
-            bool linked = m.arg<uint8_t>(4) > 0;
-            if (m.size() > 5) {
-              int8_t from = m.arg<int8_t>(5);
-              if (m.size() > 6) {
-                int16_t life = m.arg<int16_t>(6);
-                if (m.size() > 7) {
-                  uint8_t color = m.arg<uint8_t>(7);
-                  emitter->emit(model, speed, length, order, linked, from, life, color);
-                }
-                else {
-                  emitter->emit(model, speed, length, order, linked, from, life);
-                }
-              }
-              else {
-                emitter->emit(model, speed, length, order, linked, from);
-              }
-            }
-            else {
-              emitter->emit(model, speed, length, order, linked);
-            }
-          }
-          else {
-            emitter->emit(model, speed, length, order);
-          }
-        }
-        else {
-          emitter->emit(model, speed);
-        }
-      }
-      else {
-        emitter->emit(model, speed);
-      }
-    }
-    else {
-      emitter->emit(model);
+void parseParams(EmitParams &p, const OscMessage &m) {
+  for (uint8_t i=0; i<m.size() / 2; i++) {
+    EnumParam param = static_cast<EnumParam>(m.arg<uint8_t>(i*2));
+    uint8_t j = i*2+1;
+    switch (param) {
+      case P_MODEL:
+        p.model = m.arg<int8_t>(j);
+        break;
+      case P_SPEED:
+        p.speed = m.arg<float>(j);
+        break;
+      case P_LENGTH:
+        p.length = m.arg<uint16_t>(j);
+        break;
+      case P_FADE:
+        p.fade = m.arg<float>(j);
+        break;
+      case P_ORDER:
+        p.order = static_cast<ListOrder>(m.arg<uint8_t>(j));
+        break;
+      case P_LINKED:
+        p.linked = m.arg<uint8_t>(j) > 0;
+        break;
+      case P_FROM:
+        p.from = m.arg<int8_t>(j);
+        break;
+      case P_LIFE:
+        p.life = m.arg<int16_t>(j);
+        break;
+      case P_COLOR:
+        p.color = m.arg<int8_t>(j);        
+        break;
+      case P_NOTE_ID:
+        p.noteId = m.arg<uint16_t>(j);
+        break;
+      case P_BRIGHTNESS:
+        p.brightness = m.arg<float>(j);
+        break;
     }
   }
 }
 
+void onEmit(const OscMessage& m) {
+  EmitParams params;
+  parseParams(params, m);
+  emitter->emit(params);
+}
+
 void onNoteOn(const OscMessage& m) {
-  if (m.size() > 0) {
-    uint16_t noteId = m.arg<uint16_t>(0);
-    int8_t i = 0;
-    if (m.size() > 1) {
-      uint8_t model = m.arg<uint8_t>(1);
-      if (m.size() > 2) {
-        float speed = m.arg<float>(2);
-        if (m.size() > 3) {
-          uint16_t length = m.arg<uint16_t>(3);
-          if (m.size() > 4) {
-            ListOrder order = static_cast<ListOrder>(m.arg<uint8_t>(4));
-            if (m.size() > 5) {
-              bool linked = m.arg<uint8_t>(5) > 0;
-              if (m.size() > 6) {
-                int8_t from = m.arg<int8_t>(6);
-                if (m.size() > 7) {
-                  uint8_t color = m.arg<uint8_t>(7);
-                  i = emitter->emit(model, speed, length, order, linked, from, -1, color);
-                }
-                else {
-                  i = emitter->emit(model, speed, length, order, linked, from, -1);
-                }
-              }
-              else {
-                i = emitter->emit(model, speed, length, order, linked);
-              }
-            }
-            else {
-              i = emitter->emit(model, speed, length, order);
-            }
-          }
-          else {
-            i = emitter->emit(model, speed, length);
-          }
-        }
-        else {
-          i = emitter->emit(model, speed);
-        }
-      }
-      else {
-        i = emitter->emit(model);
-      }
-    }
-    else {
-      i = emitter->emit(emitter->randomModel());
-    }
-    if (i >= 0) {
-      if (emitter->lightLists[i]->life != -1) {
-        emitter->lightLists[i]->setLife(-1);
-      }
-      emitter->lightLists[i]->noteId = noteId;
-    }
-  }
+  EmitParams params;
+  params.life = -1;
+  parseParams(params, m);
+  emitter->emit(params);
 }
 
 void onNoteOff(const OscMessage& m) {
