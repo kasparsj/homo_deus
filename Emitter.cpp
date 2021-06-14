@@ -77,6 +77,7 @@ int8_t Emitter::emit(EmitParams &params) {
       lightLists[i]->setModel(model);
       lightLists[i]->setLinked(params.linked);
       lightLists[i]->setLife(life);
+      lightLists[i]->setNoteId(params.noteId);
       uint16_t numTrail = 0;
       if (params.order == LIST_SEQUENTIAL) {
         if (params.linked) {

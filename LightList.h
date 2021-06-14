@@ -18,7 +18,7 @@ class LightList {
 
     //static FastNoise fastNoise;
   
-    uint8_t noteId;
+    uint16_t noteId;
     float speed = DEFAULT_SPEED;
     int16_t life = INFINITE_LIFE;
     ListOrder order = LIST_SEQUENTIAL;
@@ -58,6 +58,9 @@ class LightList {
     void setLinked(bool linked);
     void setTrail(uint16_t length) {
       trail = length;
+    }
+    void setNoteId(uint16_t noteId) {
+      this->noteId = noteId;
     }
     void initEmit();
     void split();
