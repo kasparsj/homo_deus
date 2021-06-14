@@ -13,12 +13,13 @@ void LightList::init(uint16_t numLights) {
   }
 }
 
-void LightList::setup(uint16_t numLights, RgbColor color, float brightness) {
+void LightList::setup(uint16_t numLights, RgbColor color, float brightness, float fade) {
   init(numLights + trail);
   for (uint16_t i=0; i<numLights; i++) {
     Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : 0;
     Light *light = new Light(brightness, speed, life, model, linkedPrev);
     light->setColor(color);
+    light->setFade(fade);
     #ifdef HD_DEBUG
     light->id = i;
     #endif
@@ -29,6 +30,7 @@ void LightList::setup(uint16_t numLights, RgbColor color, float brightness) {
     float bri = (255.f - (255.f / (trail + 1)) * (i + 1)) / 255.f;
     Light *light = new Light(brightness * bri, speed, life, model, linkedPrev);
     light->setColor(color);
+    light->setFade(fade);
     #ifdef HD_DEBUG
     light->id = numLights + i;
     #endif

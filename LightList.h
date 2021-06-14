@@ -38,7 +38,7 @@ class LightList {
     }
 
     void init(uint16_t numLights);
-    void setup(uint16_t numLights, RgbColor color, float brightness = 1.f);
+    void setup(uint16_t numLights, RgbColor color, float brightness = 1.f, float fade = 0.f);
 
     Light* operator [] (uint16_t i) const {
       return lights[i];

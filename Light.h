@@ -12,7 +12,8 @@ class Light {
     #ifdef HD_DEBUG
     uint16_t id;
     #endif
-    float brightness;
+    float maxBri = 1.f;
+    float bri = 1.f;
     float speed = DEFAULT_SPEED;
     float fade = 0;
     float position;
@@ -41,8 +42,8 @@ class Light {
     }
 
     float getBrightness() {
-      float bri = fmod(brightness, 2.f);
-      return bri > 1 ? 2.f - bri : bri;
+      float value = fmod(bri, 2.f);
+      return (value > 1 ? 2.f - value : value) * maxBri;
     }
 
     RgbColor getColor() {
@@ -55,6 +56,10 @@ class Light {
 
     void setColor(RgbColor color) {
       this->color = color;
+    }
+
+    void setFade(float fade) {
+      this->fade = fade;
     }
     
     void setModel(Model *model) {

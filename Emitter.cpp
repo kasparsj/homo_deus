@@ -90,7 +90,7 @@ int8_t Emitter::emit(EmitParams &params) {
       Serial.printf("emitting %d %s lights (%d/%.1f/%d/%d), total: %d (%d)\n", 
         numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, totalLights + numFull + numTrail, totalLightLists + 1);      
       #endif
-      lightLists[i]->setup(numFull, color, brightness);
+      lightLists[i]->setup(numFull, color, brightness, params.fade);
       model->emit(from, lightLists[i]);
       totalLights += lightLists[i]->numLights;
       totalLightLists++;

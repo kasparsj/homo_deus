@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 Light::Light(float brightness, float speed, int16_t life, Model *model, Light *linkedPrev) {
-  this->brightness = brightness;
+  this->maxBri = brightness;
   this->speed = speed;
   this->life = life;
   this->model = model;
@@ -14,7 +14,7 @@ Light::Light(float brightness, float speed, int16_t life, Model *model, Light *l
 
 void Light::update() {
   position += speed;
-  brightness += fade;
+  bri += fade;
   age++;
 }
 
