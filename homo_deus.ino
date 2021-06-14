@@ -295,7 +295,7 @@ void onEmit(const OscMessage& m) {
 
 void onNoteOn(const OscMessage& m) {
   EmitParams params;
-  params.life = -1;
+  params.life = INFINITE_LIFE;
   parseParams(params, m);
   emitter->emit(params);
 }

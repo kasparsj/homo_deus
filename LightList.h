@@ -20,7 +20,7 @@ class LightList {
   
     uint8_t noteId;
     float speed = DEFAULT_SPEED;
-    int16_t life = DEFAULT_LIFE;
+    int16_t life = INFINITE_LIFE;
     ListOrder order = LIST_SEQUENTIAL;
     bool linked = true;
     Model *model;

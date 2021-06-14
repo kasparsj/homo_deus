@@ -2,7 +2,7 @@
 #include "Config.h"
 #include <Arduino.h>
 
-Light::Light(float brightness, float speed, int16_t life, Model *model, Light *linkedPrev) {
+Light::Light(float brightness, float speed, uint16_t life, Model *model, Light *linkedPrev) {
   this->brightness = brightness;
   this->speed = speed;
   this->life = life;
