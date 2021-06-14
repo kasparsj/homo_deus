@@ -15,7 +15,7 @@ class Light {
     float maxBri = 1.f;
     float bri = 1.f;
     float speed = DEFAULT_SPEED;
-    float fade = 0;
+    float fade = 0.f;
     float position;
     uint16_t age = 0;
     int16_t life = INFINITE_LIFE;
@@ -43,7 +43,7 @@ class Light {
 
     float getBrightness() {
       float value = fmod(bri, 2.f);
-      return (value > 1 ? 2.f - value : value) * maxBri;
+      return (value > 1.f ? 2.f - value : value) * maxBri;
     }
 
     RgbColor getColor() {
