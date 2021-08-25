@@ -17,7 +17,6 @@ class Light {
     float maxBri = 1.f;
     float bri = 1.f;
     float speed = DEFAULT_SPEED;
-    float fade = 0.f;
     float position;
     uint16_t age = 0;
     int16_t life = INFINITE_LIFE;
@@ -43,10 +42,7 @@ class Light {
     Light() : Light(1.0) {
     }
 
-    float getBrightness() {
-      float value = fmod(bri, 2.f);
-      return (value > 1.f ? 2.f - value : value) * maxBri;
-    }
+    float getBrightness();
 
     RgbColor getColor() {
       float brightness = getBrightness();
@@ -60,10 +56,6 @@ class Light {
       this->color = color;
     }
 
-    void setFade(float fade) {
-      this->fade = fade;
-    }
-    
     void setParent(LightList *parent) {
       this->parent = parent;
     }

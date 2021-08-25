@@ -24,7 +24,8 @@ class EmitParams {
 
     int8_t model = DEFAULT_MODEL;
     float speed = DEFAULT_SPEED;
-    float fade = 0.f;
+    float fadeSpeed = 0.f;
+    float fadeThresh = 0.f;
     uint16_t length = 0;
     ListOrder order = LIST_SEQUENTIAL;
     bool linked = true;
@@ -33,6 +34,6 @@ class EmitParams {
     int8_t color = -1;
     uint16_t noteId = 0;
     float brightness = DEFAULT_BRIGHTNESS;
-    PosBehaviour changePos;
+    PosBehaviour posChangeBe;
     uint8_t colorChangeGroups = 0;
 };

@@ -13,8 +13,15 @@ Light::Light(float brightness, float speed, int16_t life, LightList *parent, Lig
   position = -1;
 }
 
+float Light::getBrightness() {
+  float value = fmod(bri, 2.f);
+  value = (value > 1.f ? 2.f - value : value);
+  value = (value - parent->fadeThresh) / (1.f - parent->fadeThresh);
+  return value * maxBri;
+}
+
 void Light::update() {
-  bri += fade;
+  bri += parent->fadeSpeed;
   if (parent == NULL) {
     position += speed;
   }

@@ -11,8 +11,8 @@ enum HeptagonStarModel {
 };
 
 enum PosBehaviour {
-  B_POS_DEFAULT,
-  B_POS_FADE,
+  B_CHANGE_POS_SPEED,
+  B_CHANGE_POS_FADE,
 };
 
 enum GroupFlags {

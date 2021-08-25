@@ -8,12 +8,12 @@ class Light;
 class Behaviour {
 
   public:
-    PosBehaviour bePos = B_POS_DEFAULT;
+    PosBehaviour posChangeBe = B_CHANGE_POS_SPEED;
     uint8_t colorChangeGroups = 0;
 
     Behaviour() {}
 
     float getPosition(Light *light);
 
-    RgbColor changeColor(Light *light);
+    RgbColor getColor(Light *light, uint8_t group);
 };

@@ -59,7 +59,7 @@ int8_t Emitter::emit(EmitParams &params) {
   uint8_t which = params.model >= 0 ? params.model : randomModel();  
   Model *model = &models[params.model];
   Behaviour *behaviour = new Behaviour();
-  behaviour->bePos = params.changePos;
+  behaviour->posChangeBe = params.posChangeBe;
   behaviour->colorChangeGroups = params.colorChangeGroups;
   int8_t from = params.from >= 0 ? params.from : -1;
   if (from < 0) {
@@ -93,9 +93,9 @@ int8_t Emitter::emit(EmitParams &params) {
       uint16_t numFull = max(1, length - numTrail);
       #ifdef HD_DEBUG
       Serial.printf("emitting %d %s lights (%d/%.1f/%d/%d/%.1f/%.3f), total: %d (%d)\n", 
-        numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, brightness, params.fade, totalLights + numFull + numTrail, totalLightLists + 1);      
+        numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, brightness, params.fadeSpeed, totalLights + numFull + numTrail, totalLightLists + 1);      
       #endif
-      lightLists[i]->setup(numFull, color, brightness, params.fade);
+      lightLists[i]->setup(numFull, color, brightness, params.fadeSpeed, params.fadeThresh);
       model->emit(from, lightLists[i]);
       totalLights += lightLists[i]->numLights;
       totalLightLists++;

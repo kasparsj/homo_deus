@@ -173,7 +173,7 @@ Port* Intersection::sendOut(uint8_t i) {
   if (port != NULL) { 
     Behaviour *behaviour = light->getBehaviour();
     if (behaviour->colorChangeGroups & port->group) {
-      light->color = behaviour->changeColor(light);
+      light->color = behaviour->getColor(light, port->group);
     }
     //#ifdef HD_DEBUG
     //Serial.printf("Intersection %d sendOut %d\n", id, light->id);

@@ -235,9 +235,9 @@ void readSerial() {
         break;
       case '7': {
         EmitParams p;
-        p.model = incomingByte - '1';
+        p.model = M_STAR;
         p.colorChangeGroups = GROUP1;
-        emitter->emit();
+        emitter->emit(p);
         break;
       }
       case '+':
@@ -266,7 +266,7 @@ void parseParams(EmitParams &p, const OscMessage &m) {
         p.length = m.arg<uint16_t>(j);
         break;
       case P_FADE:
-        p.fade = m.arg<float>(j);
+        p.fadeSpeed = m.arg<float>(j);
         break;
       case P_ORDER:
         p.order = static_cast<ListOrder>(m.arg<uint8_t>(j));

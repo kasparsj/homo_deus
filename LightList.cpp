@@ -13,13 +13,13 @@ void LightList::init(uint16_t numLights) {
   }
 }
 
-void LightList::setup(uint16_t numLights, RgbColor color, float brightness, float fade) {
+void LightList::setup(uint16_t numLights, RgbColor color, float brightness, float fadeSpeed, float fadeThresh) {
   init(numLights + trail);
+  setFade(fadeSpeed, fadeThresh);
   for (uint16_t i=0; i<numLights; i++) {
     Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : 0;
     Light *light = new Light(brightness, speed, life, this, linkedPrev);
     light->setColor(color);
-    light->setFade(fade);
     #ifdef HD_DEBUG
     light->id = i;
     #endif
@@ -30,7 +30,6 @@ void LightList::setup(uint16_t numLights, RgbColor color, float brightness, floa
     float bri = (255.f - (255.f / (trail + 1)) * (i + 1)) / 255.f;
     Light *light = new Light(brightness * bri, speed, life, this, linkedPrev);
     light->setColor(color);
-    light->setFade(fade);
     #ifdef HD_DEBUG
     light->id = numLights + i;
     #endif
@@ -73,6 +72,7 @@ void LightList::initEmit() {
   for (uint16_t i=0; i<numLights; i++) {
     Light *light = (*this)[i];
     initPosition(i, light);
+    initBri(i, light);
     initLife(i, light);
   }
 }
@@ -90,6 +90,12 @@ void LightList::initPosition(uint16_t i, Light* light) {
     position = random(model->getMaxLength());
   }
   light->position = position;
+}
+
+void LightList::initBri(uint16_t i, Light* light) {
+  if (order == LIST_RANDOM && fadeThresh > 0.f) {
+    light->bri = (random(fadeThresh * 2000) - (fadeThresh * 1000)) / 1000.f; 
+  }
 }
 
 void LightList::initLife(uint16_t i, Light* light) {

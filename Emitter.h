@@ -46,9 +46,10 @@ class Emitter {
     int8_t emitRandom() {
       EmitParams params;
       params.speed = 0.f;
-      params.fade = 0.02f;
+      params.fadeSpeed = 0.01f;
+      params.fadeThresh = 0.5f;
       params.order = LIST_RANDOM;
-      params.changePos = B_POS_FADE;
+      params.posChangeBe = B_CHANGE_POS_FADE;
       return emit(params);
     }
     int8_t emitSplatter() {
