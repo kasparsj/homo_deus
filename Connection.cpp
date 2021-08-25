@@ -2,12 +2,13 @@
 #include "Intersection.h"
 #include <Arduino.h>
 
-void Connection::setup(Intersection *from, Intersection *to) {
+void Connection::setup(Intersection *from, Intersection *to, uint8_t group) {
   this->from = from;
   this->to = to;
+  this->group = group;
   
-  fromPort = new Port(this, from, false);
-  toPort = new Port(this, to, true);    
+  fromPort = new Port(this, from, false, group);
+  toPort = new Port(this, to, true, group);    
     
   pixelDir = to->topPixel > from->topPixel;
   fromPixel = from->topPixel + (pixelDir ? 1 : -1);

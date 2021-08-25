@@ -1,5 +1,6 @@
 #include "Emitter.h"
 #include "Model.h"
+#include "Behaviour.h"
 #include "HeptagonStar.h"
 #include <Arduino.h>
 #include "Palettes.h"
@@ -57,6 +58,9 @@ int8_t Emitter::emit(EmitParams &params) {
   }
   uint8_t which = params.model >= 0 ? params.model : randomModel();  
   Model *model = &models[params.model];
+  Behaviour *behaviour = new Behaviour();
+  behaviour->bePos = params.changePos;
+  behaviour->colorChangeGroups = params.colorChangeGroups;
   int8_t from = params.from >= 0 ? params.from : -1;
   if (from < 0) {
     from = model->getFreeEmitter();
@@ -74,9 +78,10 @@ int8_t Emitter::emit(EmitParams &params) {
       lightLists[i] = new LightList();
       lightLists[i]->setOrder(params.order);
       lightLists[i]->setSpeed(speed);
-      lightLists[i]->setModel(model);
+      lightLists[i]->model = model;
+      lightLists[i]->behaviour = behaviour;
       lightLists[i]->setLinked(params.linked);
-      lightLists[i]->setLife(life);
+      lightLists[i]->setLife(life); 
       lightLists[i]->setNoteId(params.noteId);
       uint16_t numTrail = 0;
       if (params.order == LIST_SEQUENTIAL) {

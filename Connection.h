@@ -11,6 +11,7 @@ class Connection {
   public:
     Intersection *from;
     Intersection *to;
+    uint8_t group;
     Port *fromPort;
     Port *toPort;
     Light **lights;
@@ -21,7 +22,7 @@ class Connection {
     uint16_t fromPixel;
     uint16_t toPixel;
     
-    void setup(Intersection *from, Intersection *to);
+    void setup(Intersection *from, Intersection *to, uint8_t group);
     void addLight(Light *light);
     void removeLight(uint16_t i);
     void update();

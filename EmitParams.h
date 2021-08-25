@@ -4,7 +4,7 @@
 #include "LightList.h"
 #include <Arduino.h>
 
-enum EnumParam {
+enum EmitParam {
   P_MODEL,
   P_SPEED,
   P_FADE,
@@ -33,4 +33,6 @@ class EmitParams {
     int8_t color = -1;
     uint16_t noteId = 0;
     float brightness = DEFAULT_BRIGHTNESS;
+    PosBehaviour changePos;
+    uint8_t colorChangeGroups = 0;
 };

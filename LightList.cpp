@@ -17,7 +17,7 @@ void LightList::setup(uint16_t numLights, RgbColor color, float brightness, floa
   init(numLights + trail);
   for (uint16_t i=0; i<numLights; i++) {
     Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : 0;
-    Light *light = new Light(brightness, speed, life, model, linkedPrev);
+    Light *light = new Light(brightness, speed, life, this, linkedPrev);
     light->setColor(color);
     light->setFade(fade);
     #ifdef HD_DEBUG
@@ -28,21 +28,13 @@ void LightList::setup(uint16_t numLights, RgbColor color, float brightness, floa
   for (uint16_t i=0; i<trail; i++) {
     Light *linkedPrev = linked ? (*this)[numLights + i - 1] : 0;
     float bri = (255.f - (255.f / (trail + 1)) * (i + 1)) / 255.f;
-    Light *light = new Light(brightness * bri, speed, life, model, linkedPrev);
+    Light *light = new Light(brightness * bri, speed, life, this, linkedPrev);
     light->setColor(color);
     light->setFade(fade);
     #ifdef HD_DEBUG
     light->id = numLights + i;
     #endif
     (*this)[numLights + i] = light;
-  }
-}
-
-void LightList::setModel(Model *model) {
-  this->model = model;
-  for (int i=0; i<numLights; i++) {
-    if ((*this)[i] == NULL) continue;
-    (*this)[i]->model = model; 
   }
 }
 
@@ -83,6 +75,13 @@ void LightList::initEmit() {
     initPosition(i, light);
     initLife(i, light);
   }
+}
+
+float LightList::getPosition(Light *light) {
+  if (behaviour != NULL) {
+    return behaviour->getPosition(light);
+  }
+  return light->position + light->speed;
 }
 
 void LightList::initPosition(uint16_t i, Light* light) {

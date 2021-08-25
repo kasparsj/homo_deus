@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config.h"
+#include "Behaviour.h"
 #include <NeoPixelBus.h>
 //#include "FastNoise.h"
 
@@ -23,7 +24,8 @@ class LightList {
     int16_t life = INFINITE_LIFE;
     ListOrder order = LIST_SEQUENTIAL;
     bool linked = true;
-    Model *model;
+    Model *model = 0;
+    Behaviour *behaviour = 0;
     uint16_t numLights = 0;
     uint16_t trail = 0;
     Light **lights;
@@ -35,6 +37,9 @@ class LightList {
 
     ~LightList() {
       delete lights;
+      if (behaviour != NULL) {
+        delete behaviour;
+      }
     }
 
     void init(uint16_t numLights);
@@ -52,7 +57,6 @@ class LightList {
       this->order = order;
     }
     void setSpeed(float speed);
-    void setModel(Model *model);
     void setLife(int16_t numFrames);
     void setColor(RgbColor color);
     void setLinked(bool linked);
@@ -64,6 +68,7 @@ class LightList {
     }
     void initEmit();
     void split();
+    float getPosition(Light *light);
 
   private:
 

@@ -1,3 +1,28 @@
+#pragma once
+
+enum HeptagonStarModel { 
+  M_DEFAULT, 
+  M_STAR, 
+  M_OUTER_STAR, 
+  M_INNER_CIRCLE,
+  M_HORNS,
+  M_HALO,
+  M_SPLATTER,
+};
+
+enum PosBehaviour {
+  B_POS_DEFAULT,
+  B_POS_FADE,
+};
+
+enum GroupFlags {
+  GROUP1 = 1,
+  GROUP2 = 2,
+  GROUP3 = 4,
+  GROUP4 = 8,
+  GROUP5 = 16,
+};
+
 #define HD_DEBUG
 #define HD_TEST
 #define HD_OPTIMIZED
@@ -20,7 +45,7 @@
 #define EMITTER_MIN_NEXT 2000 // ms, ~125 frames (avg fps is 62.5)
 #define EMITTER_MAX_NEXT 20000 // ms, ~1250 frames (avg fps is 62.5)
 #define MAX_PORTS 90 // 85
-#define NUM_MODELS 8
+#define NUM_MODELS 7
 #define MAX_LIGHT_LISTS 20
 #define MAX_BRIGHTNESS 255
 #define MAX_CONDITIONAL_WEIGHTS 10
@@ -36,7 +61,7 @@
 #define SC_HOST "192.168.43.101"
 #define SC_PORT 57120
 #define INFINITE_LIFE 0
-#define DEFAULT_MODEL -1
+#define DEFAULT_MODEL M_DEFAULT
 #define DEFAULT_SPEED 1.0
 #define DEFAULT_LIFE -1 // -1 = random, 0 = infinite
 #define DEFAULT_BRIGHTNESS 1.0

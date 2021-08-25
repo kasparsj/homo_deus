@@ -18,23 +18,14 @@ class Model {
     Weight *weights[MAX_PORTS] = {0};
     uint8_t numEmitters;
     Intersection **emitters;
-    uint8_t numColorPorts;
-    Port **colorPorts;
     
-    Model(uint8_t id, float defaultW, uint8_t numEmitters, uint8_t numColorPorts = 0) {
+    Model(uint8_t id, float defaultW, uint8_t numEmitters) {
       this->id = id;
       this->defaultW = defaultW;
       this->numEmitters = numEmitters;
       this->emitters = new Intersection*[numEmitters]();
       for (uint8_t i=0; i<numEmitters; i++) {
         this->emitters[i] = NULL;
-      }
-      this->numColorPorts = numColorPorts;
-      if (numColorPorts > 0) {
-        this->colorPorts = new Port*[numColorPorts]();
-        for (uint8_t i=0; i<numColorPorts; i++) {
-          this->colorPorts[i] = NULL;
-        }
       }
     }
   
@@ -110,30 +101,5 @@ class Model {
     void emit(uint8_t i, LightList *lightList) {
       lightList->initEmit();
       emitters[i]->add(lightList);
-    }
-
-    void addColorPort(Port *port) {
-      for (uint8_t i=0; i<numColorPorts; i++) {
-        if (colorPorts[i] == NULL) {
-          colorPorts[i] = port;
-          break;
-        }
-      }
-    }
-
-    bool checkColorPort(Port *port) {
-      for (uint8_t i=0; i<numColorPorts; i++) {
-        if (colorPorts[i] == port) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    RgbColor changeColor(Light *light) {
-      if (light->linkedPrev != NULL) {
-        return light->linkedPrev->color;
-      }
-      return RgbColor(random(255), random(255), random(255));
     }
 };

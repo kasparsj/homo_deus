@@ -231,9 +231,15 @@ void readSerial() {
       case '4':
       case '5':
       case '6':
-      case '7':
         emitter->emit(incomingByte - '1');
         break;
+      case '7': {
+        EmitParams p;
+        p.model = incomingByte - '1';
+        p.colorChangeGroups = GROUP1;
+        emitter->emit();
+        break;
+      }
       case '+':
         emitter->emitSplatter();
         break;
@@ -247,7 +253,7 @@ void readSerial() {
 #ifdef HD_OSC
 void parseParams(EmitParams &p, const OscMessage &m) {
   for (uint8_t i=0; i<m.size() / 2; i++) {
-    EnumParam param = static_cast<EnumParam>(m.arg<uint8_t>(i*2));
+    EmitParam param = static_cast<EmitParam>(m.arg<uint8_t>(i*2));
     uint8_t j = i*2+1;
     switch (param) {
       case P_MODEL:

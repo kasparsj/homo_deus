@@ -3,15 +3,13 @@
 
 void HeptagonStar::setup() {
   for (uint8_t i=0; i<7; i++) {
-    zeroConnections[i].setup(&outerNeurons[i*2], &outerNeurons[i*2+1]);
-    models[M_STAR_COLOR].addColorPort(zeroConnections[i].fromPort);
-    models[M_STAR_COLOR].addColorPort(zeroConnections[i].toPort);
+    zeroConnections[i].setup(&outerNeurons[i*2], &outerNeurons[i*2+1], GROUP1);
   }
   for (uint8_t i=0; i<7; i++) {
     Intersection *outerNeuron1 = &outerNeurons[i*2+1];
     Intersection *outerNeuron2 = &outerNeurons[((i+1)*2) % 14];
-    outerConnections[i*2].setup(outerNeuron1, &middleNeurons[i]);
-    outerConnections[i*2+1].setup(outerNeuron2, &middleNeurons[i]);
+    outerConnections[i*2].setup(outerNeuron1, &middleNeurons[i], GROUP2);
+    outerConnections[i*2+1].setup(outerNeuron2, &middleNeurons[i], GROUP2);
   }
 
   for (uint8_t i=0; i<7; i++) {
@@ -19,13 +17,11 @@ void HeptagonStar::setup() {
     Intersection *middleNeuron2 = &middleNeurons[(i-1+7) % 7];
     Connection *middleConnection1 = &middleConnections[i*2];
     Connection *middleConnection2 = &middleConnections[i*2+1];
-    middleConnection1->setup(middleNeuron1, &innerNeurons[i]);
+    middleConnection1->setup(middleNeuron1, &innerNeurons[i], GROUP3);
     models[M_STAR].put(middleConnection1->fromPort, middleNeuron1->ports[1], 1);
-    models[M_STAR_COLOR].put(middleConnection1->fromPort, middleNeuron1->ports[1], 1);
     models[M_OUTER_STAR].put(middleConnection1, 0);
-    middleConnection2->setup(middleNeuron2, &innerNeurons[i]);
+    middleConnection2->setup(middleNeuron2, &innerNeurons[i], GROUP3);
     models[M_STAR].put(middleConnection2->fromPort, middleNeuron2->ports[0], 1);
-    models[M_STAR_COLOR].put(middleConnection2->fromPort, middleNeuron2->ports[0], 1);
     models[M_OUTER_STAR].put(middleConnection2, 0);
     models[M_INNER_CIRCLE].put(middleConnection1, 1);
     models[M_INNER_CIRCLE].put(middleConnection2, 1);
@@ -35,11 +31,9 @@ void HeptagonStar::setup() {
     Intersection *innerNeuron1 = &innerNeurons[i];
     Intersection *innerNeuron2 = &innerNeurons[(i+1) % 7];
     Connection *innerConnection = &innerConnections[i];
-    innerConnection->setup(innerNeuron1, innerNeuron2);
+    innerConnection->setup(innerNeuron1, innerNeuron2, GROUP4);
     models[M_STAR].put(innerConnection->fromPort, innerNeuron1->ports[1], 1);
-    models[M_STAR_COLOR].put(innerConnection->fromPort, innerNeuron1->ports[1], 1);
     models[M_STAR].put(innerConnection->toPort, innerNeuron2->ports[0], 1);
-    models[M_STAR_COLOR].put(innerConnection->toPort, innerNeuron2->ports[0], 1);
     models[M_OUTER_STAR].put(innerConnection, 0);
     models[M_INNER_CIRCLE].put(innerConnection, 1);
   }
@@ -48,7 +42,6 @@ void HeptagonStar::setup() {
     models[M_DEFAULT].addEmitter(&outerNeurons[i]);
     models[M_STAR].addEmitter(&outerNeurons[i]);
     models[M_OUTER_STAR].addEmitter(&outerNeurons[i]);
-    models[M_STAR_COLOR].addEmitter(&outerNeurons[i]);
     if (i<7) {
       models[M_INNER_CIRCLE].addEmitter(&middleNeurons[i]);
       models[M_INNER_CIRCLE].addEmitter(&innerNeurons[i]);

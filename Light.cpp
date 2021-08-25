@@ -1,20 +1,26 @@
 #include "Light.h"
+#include "LightList.h"
 #include "Config.h"
 #include <Arduino.h>
 
-Light::Light(float brightness, float speed, int16_t life, Model *model, Light *linkedPrev) {
+Light::Light(float brightness, float speed, int16_t life, LightList *parent, Light *linkedPrev) {
   this->maxBri = brightness;
   this->speed = speed;
   this->life = life;
-  this->model = model;
+  this->parent = parent;
   this->linkedPrev = linkedPrev;
   this->color = RgbColor(255, 255, 255);
   position = -1;
 }
 
 void Light::update() {
-  position += speed;
   bri += fade;
+  if (parent == NULL) {
+    position += speed;
+  }
+  else {
+    position = parent->getPosition(this);
+  }
   age++;
 }
 
@@ -42,4 +48,18 @@ void Light::setOutPort(Port *port, int8_t intersectionId) {
     outPorts[0] = port;
     outPortsInt[0] = intersectionId;
   }
+}
+
+Model* Light::getModel() {
+  if (parent != NULL) {
+    return parent->model;
+  }
+  return NULL;
+}
+
+Behaviour* Light::getBehaviour() {
+  if (parent != NULL) {
+    return parent->behaviour;
+  }
+  return NULL;
 }

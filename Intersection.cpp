@@ -150,8 +150,9 @@ Port* Intersection::sendOut(uint8_t i) {
       port = light->linkedPrev->getOutPort(id);
     }
   }
+  Model *model = light->getModel();
   if (port == NULL) {
-    port = choosePort(light->model, light->inPort);
+    port = choosePort(model, light->inPort);
   }
   #ifdef HD_DEBUG
   if (port == NULL) {
@@ -159,7 +160,7 @@ Port* Intersection::sendOut(uint8_t i) {
     Serial.print(topPixel);
     Serial.print(" choosePort returned NULL ");
     Serial.print(" for model ");
-    Serial.print(light->model->id);
+    Serial.print(model->id);
     Serial.print(" with linkedPrev ");
     Serial.println(light->linkedPrev != NULL);
   }
@@ -170,8 +171,9 @@ Port* Intersection::sendOut(uint8_t i) {
   removeLight(outgoingLights[i]);
   outgoingLights[i] = -1;
   if (port != NULL) { 
-    if (light->model->numColorPorts > 0 && light->model->checkColorPort(port)) {
-      light->color = light->model->changeColor(light);
+    Behaviour *behaviour = light->getBehaviour();
+    if (behaviour->colorChangeGroups & port->group) {
+      light->color = behaviour->changeColor(light);
     }
     //#ifdef HD_DEBUG
     //Serial.printf("Intersection %d sendOut %d\n", id, light->id);

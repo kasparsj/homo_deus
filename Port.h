@@ -15,7 +15,8 @@ class Port {
     Connection *connection;
     Intersection *intersection;
     bool direction;
+    uint8_t group;
   
-    Port(Connection *connection, Intersection *intersection, bool direction);
+    Port(Connection *connection, Intersection *intersection, bool direction, uint8_t group);
   
 };

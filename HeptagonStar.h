@@ -5,17 +5,6 @@
 #include "Connection.h"
 #include "Model.h"
 
-enum HeptagonStarModel { 
-  M_DEFAULT, 
-  M_STAR, 
-  M_OUTER_STAR, 
-  M_INNER_CIRCLE,
-  M_STAR_COLOR,
-  M_HORNS,
-  M_HALO,
-  M_SPLATTER,
-};
-
 class HeptagonStar {
 
   public:
@@ -57,7 +46,6 @@ class HeptagonStar {
       Model(M_STAR, 0, 14), 
       Model(M_OUTER_STAR, 1, 14), 
       Model(M_INNER_CIRCLE, 0, 14),
-      Model(M_STAR_COLOR, 0, 14, 14),
       Model(M_HORNS, 0, 9),
       Model(M_HALO, 0, 3),
       Model(M_SPLATTER, 1, 14), 

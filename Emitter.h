@@ -46,14 +46,14 @@ class Emitter {
     int8_t emitRandom() {
       EmitParams params;
       params.speed = 0.f;
-      params.order = LIST_RANDOM;      
+      params.fade = 0.02f;
+      params.order = LIST_RANDOM;
+      params.changePos = B_POS_FADE;
       return emit(params);
     }
     int8_t emitSplatter() {
       EmitParams params;
-      // todo: fix
-      //params.model = M_SPLATTER;
-      params.model = 7;
+      params.model = M_SPLATTER;
       params.speed = randomSpeed();
       params.linked = false;
       params.life = max(1, (int) (1.f/params.speed));

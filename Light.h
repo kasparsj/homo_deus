@@ -4,7 +4,9 @@
 #include "Port.h"
 #include <NeoPixelBus.h>
 
+class LightList;
 class Model;
+class Behaviour;
 
 class Light {
 
@@ -20,7 +22,7 @@ class Light {
     uint16_t age = 0;
     int16_t life = INFINITE_LIFE;
     RgbColor color; // 3 bytes
-    Model *model = 0;
+    LightList *parent = 0;
     Light *linkedPrev = 0;
     Port *inPort = 0;
     Port *outPort = 0;
@@ -30,7 +32,7 @@ class Light {
     // int16_t pixel2 = -1; // 4 bytes
     bool isExpired = false;
     
-    Light(float brightness, float speed, int16_t life, Model *model, Light *linkedPrev);
+    Light(float brightness, float speed, int16_t life, LightList *parent, Light *linkedPrev);
     
     Light(float brightness, float speed, int16_t life) : Light(brightness, speed, life, 0, 0) {
     }
@@ -62,8 +64,8 @@ class Light {
       this->fade = fade;
     }
     
-    void setModel(Model *model) {
-      this->model = model;
+    void setParent(LightList *parent) {
+      this->parent = parent;
     }
     
     void update();
@@ -83,5 +85,8 @@ class Light {
     void setOutPort(Port *port, int8_t intersectionId = -1);
 
     void resetPixels();
+
+    Model* getModel();
+    Behaviour* getBehaviour();
   
 };
