@@ -16,6 +16,7 @@ class Light {
     #endif
     float maxBri = 1.f;
     float bri = 1.f;
+    float brightness = 0;
     float speed = DEFAULT_SPEED;
     float position;
     uint16_t age = 0;
@@ -31,12 +32,12 @@ class Light {
     // int16_t pixel2 = -1; // 4 bytes
     bool isExpired = false;
     
-    Light(float brightness, float speed, int16_t life, LightList *parent, Light *linkedPrev);
+    Light(float maxBri, float speed, int16_t life, LightList *parent, Light *linkedPrev);
     
-    Light(float brightness, float speed, int16_t life) : Light(brightness, speed, life, 0, 0) {
+    Light(float maxBri, float speed, int16_t life) : Light(maxBri, speed, life, 0, 0) {
     }
     
-    Light(float brightness) : Light(brightness, DEFAULT_SPEED, INFINITE_LIFE) {
+    Light(float maxBri) : Light(maxBri, DEFAULT_SPEED, INFINITE_LIFE) {
     }
     
     Light() : Light(1.0) {
@@ -45,7 +46,6 @@ class Light {
     float getBrightness();
 
     RgbColor getColor() {
-      float brightness = getBrightness();
       if (brightness == 1.f) {
         return color;
       }
@@ -62,12 +62,7 @@ class Light {
     
     void update();
     
-    bool shouldExpire() {
-      if (life == 0) {
-        return false;
-      }
-      return age >= life;
-    }
+    bool shouldExpire();
     
     void setInPort(Port *port) {
       inPort = port;

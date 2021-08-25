@@ -93,8 +93,8 @@ void LightList::initPosition(uint16_t i, Light* light) {
 }
 
 void LightList::initBri(uint16_t i, Light* light) {
-  if (order == LIST_RANDOM && fadeThresh > 0.f) {
-    light->bri = (random(fadeThresh * 2000) - (fadeThresh * 1000)) / 1000.f; 
+  if (order == LIST_RANDOM && fadeThresh > 0) {
+    light->bri = (random(fadeThresh * 3000.f) - (fadeThresh * 2000.f)) / 1000.f; 
   }
 }
 

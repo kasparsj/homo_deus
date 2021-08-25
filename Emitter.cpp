@@ -74,7 +74,7 @@ int8_t Emitter::emit(EmitParams &params) {
       float speed = params.speed >= 0 ? params.speed : randomSpeed();
       uint16_t life = params.life >= 0 ? params.life : randomLife();
       RgbColor color = params.color >= 0 ? paletteColor(params.color) : randomColor();
-      float brightness = params.brightness >= 0.f ? params.brightness : randomBrightness();
+      float brightness = params.brightness >= 0 ? params.brightness : randomBrightness();
       lightLists[i] = new LightList();
       lightLists[i]->setOrder(params.order);
       lightLists[i]->setSpeed(speed);

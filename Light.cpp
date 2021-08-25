@@ -3,8 +3,8 @@
 #include "Config.h"
 #include <Arduino.h>
 
-Light::Light(float brightness, float speed, int16_t life, LightList *parent, Light *linkedPrev) {
-  this->maxBri = brightness;
+Light::Light(float maxBri, float speed, int16_t life, LightList *parent, Light *linkedPrev) {
+  this->maxBri = maxBri;
   this->speed = speed;
   this->life = life;
   this->parent = parent;
@@ -22,6 +22,7 @@ float Light::getBrightness() {
 
 void Light::update() {
   bri += parent->fadeSpeed;
+  brightness = max(0.f, getBrightness());
   if (parent == NULL) {
     position += speed;
   }
@@ -29,6 +30,13 @@ void Light::update() {
     position = parent->getPosition(this);
   }
   age++;
+}
+
+bool Light::shouldExpire() {
+  if (life == 0) {
+    return false;
+  }
+  return age >= life && (parent->fadeSpeed == 0 || brightness == 0);
 }
 
 void Light::resetPixels() {

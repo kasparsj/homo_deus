@@ -24,8 +24,8 @@ class EmitParams {
 
     int8_t model = DEFAULT_MODEL;
     float speed = DEFAULT_SPEED;
-    float fadeSpeed = 0.f;
-    float fadeThresh = 0.f;
+    float fadeSpeed = 0;
+    float fadeThresh = 0;
     uint16_t length = 0;
     ListOrder order = LIST_SEQUENTIAL;
     bool linked = true;

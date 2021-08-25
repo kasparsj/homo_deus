@@ -21,8 +21,8 @@ class LightList {
   
     uint16_t noteId;
     float speed = DEFAULT_SPEED;
-    float fadeSpeed = 0.f;
-    float fadeThresh = 0.f;
+    float fadeSpeed = 0;
+    float fadeThresh = 0;
     int16_t life = INFINITE_LIFE;
     ListOrder order = LIST_SEQUENTIAL;
     bool linked = true;
@@ -45,7 +45,7 @@ class LightList {
     }
 
     void init(uint16_t numLights);
-    void setup(uint16_t numLights, RgbColor color, float brightness = 1.f, float fadeSpeed = 0.f, float fadeThresh = 0.f);
+    void setup(uint16_t numLights, RgbColor color, float brightness = 1, float fadeSpeed = 0, float fadeThresh = 0);
 
     Light* operator [] (uint16_t i) const {
       return lights[i];
@@ -59,7 +59,7 @@ class LightList {
       this->order = order;
     }
     void setSpeed(float speed);
-    void setFade(float fadeSpeed, float fadeThresh = 0.f) {
+    void setFade(float fadeSpeed, float fadeThresh = 0) {
       this->fadeSpeed = fadeSpeed;
       this->fadeThresh = fadeThresh;
     }

@@ -45,7 +45,7 @@ class Emitter {
     }
     int8_t emitRandom() {
       EmitParams params;
-      params.speed = 0.f;
+      params.speed = 0;
       params.fadeSpeed = 0.01f;
       params.fadeThresh = 0.5f;
       params.order = LIST_RANDOM;
