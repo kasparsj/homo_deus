@@ -33,7 +33,8 @@ class EmitParams {
     int8_t color = -1;
     uint16_t noteId = 0;
     float brightness = DEFAULT_BRIGHTNESS;
-    PosBehaviour posChangeBe = B_CHANGE_POS_SPEED;
+    BriBehaviour briChangeBe = B_BRI_CHANGE_FADE;
+    PosBehaviour posChangeBe = B_POS_CHANGE_SPEED;
     RenderBehaviour renderBe = B_RENDER_LIGHT;
     RandomPortBehaviour randomPortBe = B_RND_PORT_THROUGH;
     uint8_t colorChangeGroups = 0;

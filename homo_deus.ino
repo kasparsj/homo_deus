@@ -2,6 +2,7 @@
 #include "BluetoothSerial.h"
 
 #include "Config.h"
+#include "Globals.h"
 #include "HeptagonStar.h"
 #include "Emitter.h"
 #include "esp_bt.h"
@@ -246,12 +247,26 @@ void readSerial() {
       case '*':
         emitter->emitRandom();
         break;        
-      case '/':
-        emitter->emitSegment();
+      case '/': { // emitSegment
+        EmitParams params;
+        params.renderBe = B_RENDER_SEGMENT;
+        params.length = 1;
+        emitter->emit(params);
         break;
-      case '-':
-        emitter->emitBounce();
+      }
+      case '-': { // emitBounce
+        EmitParams params;
+        params.model = M_STAR;
+        params.randomPortBe = B_RND_PORT_BOUNCE;
+        emitter->emit(params);
         break;
+      }
+      case '?': { // emitNoise
+        EmitParams params;
+        params.order = LIST_NOISE;
+        emitter->emit(params);
+        break;
+      }
     }
   }
 }

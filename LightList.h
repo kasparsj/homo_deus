@@ -3,7 +3,6 @@
 #include "Config.h"
 #include "Behaviour.h"
 #include <NeoPixelBus.h>
-//#include "FastNoise.h"
 
 class Model;
 class Light;
@@ -13,7 +12,9 @@ class LightList {
   public:
 
     //static FastNoise fastNoise;
+    static uint16_t nextId;
   
+    uint16_t id;
     uint16_t noteId;
     float speed = DEFAULT_SPEED;
     float fadeSpeed = 0;
@@ -30,6 +31,7 @@ class LightList {
     uint8_t numSplits = 0;
     
     LightList() {
+      this->id = nextId++;
     }
 
     ~LightList() {
@@ -70,6 +72,7 @@ class LightList {
     void initEmit();
     void split();
     float getPosition(Light *light);
+    float getBri(Light *light);
 
   private:
 

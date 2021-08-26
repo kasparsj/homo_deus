@@ -21,11 +21,17 @@ enum GroupFlags {
 enum ListOrder { 
   LIST_SEQUENTIAL, 
   LIST_RANDOM, 
+  LIST_NOISE,
 };
 
 enum PosBehaviour {
-  B_CHANGE_POS_SPEED,
-  B_CHANGE_POS_FADE,
+  B_POS_CHANGE_SPEED,
+  B_POS_CHANGE_FADE,
+};
+
+enum BriBehaviour {
+  B_BRI_CHANGE_FADE,
+  B_BRI_CONST_NOISE,
 };
 
 enum RenderBehaviour {

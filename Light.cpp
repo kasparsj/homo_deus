@@ -21,7 +21,7 @@ float Light::getBrightness() {
 }
 
 void Light::update() {
-  bri += parent->fadeSpeed;
+  bri = parent->getBri(this);
   brightness = max(0.f, getBrightness());
   if (parent == NULL) {
     position += speed;

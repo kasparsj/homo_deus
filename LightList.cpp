@@ -1,9 +1,10 @@
 #include "LightList.h"
 #include "Light.h"
 #include "Model.h"
+#include "Globals.h"
 #include <Arduino.h>
 
-//FastNoise LightList::fastNoise;
+uint16_t LightList::nextId = 0;
 
 void LightList::init(uint16_t numLights) {
   this->numLights = numLights;
@@ -93,9 +94,23 @@ void LightList::initPosition(uint16_t i, Light* light) {
 }
 
 void LightList::initBri(uint16_t i, Light* light) {
-  if (order == LIST_RANDOM && fadeThresh > 0) {
-    light->bri = (random(fadeThresh * 3000.f) - (fadeThresh * 2000.f)) / 1000.f; 
+  switch (order) {
+    case LIST_RANDOM:
+      if (fadeThresh > 0) {
+        light->bri = (random(fadeThresh * 3000.f) - (fadeThresh * 2000.f)) / 1000.f; 
+      }
+      break;
+    case LIST_NOISE:
+      light->bri = gPerlinNoise.GetValue(id * 10, i * 100);
+      break;
   }
+}
+
+float LightList::getBri(Light *light) {
+  if (behaviour != NULL) {
+    return behaviour->getBri(light);
+  }
+  return light->bri + fadeSpeed;
 }
 
 void LightList::initLife(uint16_t i, Light* light) {

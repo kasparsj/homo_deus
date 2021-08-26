@@ -49,7 +49,7 @@ class Emitter {
       params.fadeSpeed = 0.01f;
       params.fadeThresh = 0.5f;
       params.order = LIST_RANDOM;
-      params.posChangeBe = B_CHANGE_POS_FADE;
+      params.posChangeBe = B_POS_CHANGE_FADE;
       return emit(params);
     }
     int8_t emitSplatter() {
@@ -58,18 +58,6 @@ class Emitter {
       params.speed = randomSpeed();
       params.linked = false;
       params.life = max(1, (int) (1.f/params.speed) + 1);
-      return emit(params);
-    }
-    int8_t emitSegment() {
-      EmitParams params;
-      params.renderBe = B_RENDER_SEGMENT;
-      params.length = 1;
-      return emit(params);
-    }
-    int8_t emitBounce() {
-      EmitParams params;
-      params.model = M_STAR;
-      params.randomPortBe = B_RND_PORT_BOUNCE;
       return emit(params);
     }
     void update();
