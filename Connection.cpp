@@ -94,7 +94,7 @@ void Connection::updateLight(uint16_t i) {
         #endif
       }
       uint16_t ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
-      light->pixel1 = fromPixel + (ledIdx * (pixelDir ? 1 : -1));
+      light->pixel1 = getPixel(ledIdx);
     }
     else {
       outgoing(light, i);

@@ -246,6 +246,9 @@ void readSerial() {
       case '*':
         emitter->emitRandom();
         break;        
+      case '/':
+        emitter->emitSegment();
+        break;
     }
   }
 }

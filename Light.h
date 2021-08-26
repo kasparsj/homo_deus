@@ -75,5 +75,7 @@ class Light {
 
     Model* getModel();
     Behaviour* getBehaviour();
+
+    uint16_t* getPixels();
   
 };

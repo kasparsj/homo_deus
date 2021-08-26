@@ -8,11 +8,6 @@
 class Model;
 class Light;
 
-enum ListOrder { 
-  LIST_SEQUENTIAL, 
-  LIST_RANDOM, 
-};
-
 class LightList {
 
   public:

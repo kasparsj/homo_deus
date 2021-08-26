@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Config.h"
-#include "LightList.h"
 #include <Arduino.h>
 
 enum EmitParam {
@@ -34,6 +33,15 @@ class EmitParams {
     int8_t color = -1;
     uint16_t noteId = 0;
     float brightness = DEFAULT_BRIGHTNESS;
-    PosBehaviour posChangeBe;
+    PosBehaviour posChangeBe = B_CHANGE_POS_SPEED;
+    RenderBehaviour renderBe = B_RENDER_LIGHT;
     uint8_t colorChangeGroups = 0;
+
+    uint16_t getTrail(float speed, uint16_t length) {
+      uint16_t trail = 0;
+      if (order == LIST_SEQUENTIAL && linked && renderBe != B_RENDER_SEGMENT) {
+        trail = min((int) (speed * max(1, length / 2)), max(EMITTER_MAX_LENGTH, EMITTER_MAX_LIGHTS) - 1);
+      }
+      return trail;
+    }
 };

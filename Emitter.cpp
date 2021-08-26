@@ -58,9 +58,7 @@ int8_t Emitter::emit(EmitParams &params) {
   }
   uint8_t which = params.model >= 0 ? params.model : randomModel();  
   Model *model = &models[params.model];
-  Behaviour *behaviour = new Behaviour();
-  behaviour->posChangeBe = params.posChangeBe;
-  behaviour->colorChangeGroups = params.colorChangeGroups;
+  Behaviour *behaviour = new Behaviour(params);
   int8_t from = params.from >= 0 ? params.from : -1;
   if (from < 0) {
     from = model->getFreeEmitter();
@@ -83,13 +81,8 @@ int8_t Emitter::emit(EmitParams &params) {
       lightLists[i]->setLinked(params.linked);
       lightLists[i]->setLife(life); 
       lightLists[i]->setNoteId(params.noteId);
-      uint16_t numTrail = 0;
-      if (params.order == LIST_SEQUENTIAL) {
-        if (params.linked) {
-          numTrail = min((int) (speed * max(1, length / 2)), max(EMITTER_MAX_LENGTH, EMITTER_MAX_LIGHTS) - 1);
-          lightLists[i]->setTrail(numTrail);
-        }
-      }
+      uint16_t numTrail = params.getTrail(speed, length);
+      lightLists[i]->setTrail(numTrail);
       uint16_t numFull = max(1, length - numTrail);
       #ifdef HD_DEBUG
       Serial.printf("emitting %d %s lights (%d/%.1f/%d/%d/%.1f/%.3f), total: %d (%d)\n", 
@@ -132,21 +125,28 @@ void Emitter::update() {
         continue;
       }
       allExpired = false;
-      if (lightLists[i]->lights[j]->pixel1 >= 0) {
-        RgbColor color = lightLists[i]->lights[j]->getColor();
-        pixelValuesR[lightLists[i]->lights[j]->pixel1] += color.R;
-        pixelValuesG[lightLists[i]->lights[j]->pixel1] += color.G;
-        pixelValuesB[lightLists[i]->lights[j]->pixel1] += color.B;
-        pixelDiv[lightLists[i]->lights[j]->pixel1]++;
+      Light* light = lightLists[i]->lights[j];
+      uint16_t* pixels = light->getPixels();
+      if (pixels != NULL) {
+        RgbColor color = light->getColor();
+        // first value is length
+        uint16_t numPixels = pixels[0];
+        for (uint16_t k=1; k<numPixels+1; k++) {
+          pixelValuesR[pixels[k]] += color.R;
+          pixelValuesG[pixels[k]] += color.G;
+          pixelValuesB[pixels[k]] += color.B;
+          pixelDiv[pixels[k]]++;
+        }
+        delete[] pixels;
       }
-      // if (lightLists[i]->lights[j]->pixel2 >= 0) {
-      //   RgbColor color = lightLists[i]->lights[j]->getColor(lightLists[i]->lights[j]->pixel2Bri);
-      //   pixelValuesR[lightLists[i]->lights[j]->pixel2] += color.R;
-      //   pixelValuesG[lightLists[i]->lights[j]->pixel2] += color.G;
-      //   pixelValuesB[lightLists[i]->lights[j]->pixel2] += color.B;
-      //   pixelDiv[lightLists[i]->lights[j]->pixel2]++;
+      // if (light->pixel2 >= 0) {
+      //   RgbColor color = light->getColor(light->pixel2Bri);
+      //   pixelValuesR[light->pixel2] += color.R;
+      //   pixelValuesG[light->pixel2] += color.G;
+      //   pixelValuesB[light->pixel2] += color.B;
+      //   pixelDiv[light->pixel2]++;
       // }
-      lightLists[i]->lights[j]->update();
+      light->update();
     }
     if (allExpired) {
       totalLights -= lightLists[i]->numLights;

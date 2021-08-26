@@ -1,6 +1,6 @@
 #include "Light.h"
 #include "LightList.h"
-#include "Config.h"
+#include "Connection.h"
 #include <Arduino.h>
 
 Light::Light(float maxBri, float speed, int16_t life, LightList *parent, Light *linkedPrev) {
@@ -42,6 +42,27 @@ bool Light::shouldExpire() {
 void Light::resetPixels() {
   pixel1 = -1;
   // pixel2 = -1;
+}
+
+uint16_t* Light::getPixels() {
+  if (pixel1 >= 0) {
+    Behaviour *behaviour = getBehaviour();
+    if (behaviour != NULL && outPort != NULL) {
+      switch (behaviour->renderBe) {
+        case B_RENDER_SEGMENT: {
+          uint8_t numPixels = outPort->connection->numLeds;
+          uint16_t* pixels = new uint16_t[numPixels+1];
+          pixels[0] = numPixels;
+          for (uint8_t i=1; i<numPixels+1; i++) {
+            pixels[i] = outPort->connection->getPixel(i-1);
+          }
+          return pixels;
+        }
+      }
+    }
+    return new uint16_t[2]{1, pixel1};
+  }
+  return NULL;
 }
 
 Port* Light::getOutPort(uint8_t intersectionId) {

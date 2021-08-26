@@ -28,4 +28,7 @@ class Connection {
     void update();
     void updateLight(uint16_t i);
     void outgoing(Light *light, int16_t i = -1);
+    uint16_t getPixel(uint16_t i) {
+      return fromPixel + (i * (pixelDir ? 1 : -1));
+    }
 };

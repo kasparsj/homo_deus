@@ -10,17 +10,27 @@ enum HeptagonStarModel {
   M_SPLATTER,
 };
 
-enum PosBehaviour {
-  B_CHANGE_POS_SPEED,
-  B_CHANGE_POS_FADE,
-};
-
 enum GroupFlags {
   GROUP1 = 1,
   GROUP2 = 2,
   GROUP3 = 4,
   GROUP4 = 8,
   GROUP5 = 16,
+};
+
+enum ListOrder { 
+  LIST_SEQUENTIAL, 
+  LIST_RANDOM, 
+};
+
+enum PosBehaviour {
+  B_CHANGE_POS_SPEED,
+  B_CHANGE_POS_FADE,
+};
+
+enum RenderBehaviour {
+  B_RENDER_LIGHT,
+  B_RENDER_SEGMENT,
 };
 
 #define HD_DEBUG

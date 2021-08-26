@@ -60,6 +60,12 @@ class Emitter {
       params.life = max(1, (int) (1.f/params.speed));
       return emit(params);
     }
+    int8_t emitSegment() {
+      EmitParams params;
+      params.renderBe = B_RENDER_SEGMENT;
+      params.length = 1;
+      return emit(params);
+    }
     void update();
     void colorAll();
     void splitAll();
