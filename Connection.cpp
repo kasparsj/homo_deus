@@ -123,3 +123,11 @@ void Connection::outgoing(Light* light, int16_t i) {
   }
   neuron->addLight(light);
 }
+
+uint16_t Connection::getFromPixel() {
+  return fromPort->intersection->topPixel;
+}
+
+uint16_t Connection::getToPixel() {
+  return toPort->intersection->topPixel;
+}

@@ -51,10 +51,12 @@ uint16_t* Light::getPixels() {
       switch (behaviour->renderBe) {
         case B_RENDER_SEGMENT: {
           uint8_t numPixels = outPort->connection->numLeds;
-          uint16_t* pixels = new uint16_t[numPixels+1];
-          pixels[0] = numPixels;
-          for (uint8_t i=1; i<numPixels+1; i++) {
-            pixels[i] = outPort->connection->getPixel(i-1);
+          uint16_t* pixels = new uint16_t[numPixels+3];
+          pixels[0] = numPixels+2;
+          pixels[1] = outPort->connection->getFromPixel();
+          pixels[2] = outPort->connection->getToPixel();
+          for (uint8_t i=3; i<numPixels+3; i++) {
+            pixels[i] = outPort->connection->getPixel(i-3);
           }
           return pixels;
         }

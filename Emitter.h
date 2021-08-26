@@ -57,7 +57,7 @@ class Emitter {
       params.model = M_SPLATTER;
       params.speed = randomSpeed();
       params.linked = false;
-      params.life = max(1, (int) (1.f/params.speed));
+      params.life = max(1, (int) (1.f/params.speed) + 1);
       return emit(params);
     }
     int8_t emitSegment() {

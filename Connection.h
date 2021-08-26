@@ -31,4 +31,6 @@ class Connection {
     uint16_t getPixel(uint16_t i) {
       return fromPixel + (i * (pixelDir ? 1 : -1));
     }
+    uint16_t getFromPixel();
+    uint16_t getToPixel();
 };
