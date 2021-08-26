@@ -4,6 +4,7 @@
 #include "Light.h"
 #include "Port.h"
 #include "LightList.h"
+#include "Behaviour.h"
 
 class Intersection {
 
@@ -40,7 +41,7 @@ class Intersection {
     void updateLight(uint8_t i);
     void removeLight(uint8_t i);
     float sumW(Model *model, Port *incoming);
-    Port *randomPort(Port *incoming);
-    Port *choosePort(Model *model, Port *incoming);
+    Port *randomPort(Port *incoming, Behaviour *behaviour);
+    Port *choosePort(Model *model, Light* light);
   
 };

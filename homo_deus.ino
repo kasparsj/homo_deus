@@ -249,6 +249,9 @@ void readSerial() {
       case '/':
         emitter->emitSegment();
         break;
+      case '-':
+        emitter->emitBounce();
+        break;
     }
   }
 }

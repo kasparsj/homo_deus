@@ -35,6 +35,7 @@ class EmitParams {
     float brightness = DEFAULT_BRIGHTNESS;
     PosBehaviour posChangeBe = B_CHANGE_POS_SPEED;
     RenderBehaviour renderBe = B_RENDER_LIGHT;
+    RandomPortBehaviour randomPortBe = B_RND_PORT_THROUGH;
     uint8_t colorChangeGroups = 0;
 
     uint16_t getTrail(float speed, uint16_t length) {

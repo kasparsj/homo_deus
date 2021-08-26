@@ -66,6 +66,12 @@ class Emitter {
       params.length = 1;
       return emit(params);
     }
+    int8_t emitBounce() {
+      EmitParams params;
+      params.model = M_STAR;
+      params.randomPortBe = B_RND_PORT_BOUNCE;
+      return emit(params);
+    }
     void update();
     void colorAll();
     void splitAll();

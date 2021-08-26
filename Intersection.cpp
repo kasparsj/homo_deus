@@ -47,9 +47,11 @@ void Intersection::emit(uint8_t k) {
         break;
       }
       lightList->numEmitted++;
+      // go straight out of zeroConnection
+      Behaviour *behaviour = lightList->behaviour;
       if (numPorts == 2) {
         for (uint8_t i=0; i<2; i++) {
-          if (ports[i]->connection->numLeds == 0) {
+          if (ports[i]->connection->numLeds == 0 && behaviour->randomPortBe == B_RND_PORT_THROUGH || ports[i]->connection->numLeds > 0) {
             light->setInPort(ports[i]);
             break;
           }
@@ -152,7 +154,7 @@ Port* Intersection::sendOut(uint8_t i) {
   }
   Model *model = light->getModel();
   if (port == NULL) {
-    port = choosePort(model, light->inPort);
+    port = choosePort(model, light);
   }
   #ifdef HD_DEBUG
   if (port == NULL) {
@@ -201,18 +203,19 @@ float Intersection::sumW(Model *model, Port *incoming) {
   return sum;
 }
 
-Port *Intersection::randomPort(Port *incoming) {
+Port *Intersection::randomPort(Port *incoming, Behaviour *behaviour) {
   Port *port;
   do {
     port = ports[random(numPorts)];
-  } while (port == incoming);
+  } while (port == incoming && behaviour->randomPortBe == B_RND_PORT_THROUGH || port != incoming);
   return port;
 }
 
-Port *Intersection::choosePort(Model *model, Port *incoming) {
+Port *Intersection::choosePort(Model *model, Light *light) {
+    Port *incoming = light->inPort;
     float sum = sumW(model, incoming);
     if (sum <= 0.f) {
-      return randomPort(incoming);
+      return randomPort(incoming, light->getBehaviour());
     }
     float rnd = random(sum * 1000) / 1000.f;
     for (uint8_t i=0; i<numPorts; i++) {

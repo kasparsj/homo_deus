@@ -33,6 +33,11 @@ enum RenderBehaviour {
   B_RENDER_SEGMENT,
 };
 
+enum RandomPortBehaviour {
+  B_RND_PORT_THROUGH,
+  B_RND_PORT_BOUNCE,
+};
+
 #define HD_DEBUG
 #define HD_TEST
 #define HD_OPTIMIZED
