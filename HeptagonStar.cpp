@@ -147,23 +147,29 @@ Intersection* HeptagonStar::getIntersection(uint8_t i, uint8_t groups) {
 
 Intersection* HeptagonStar::getFreeIntersection(uint8_t groups) {
   if (groups & GROUP1) {
+    uint8_t r = random(14);
     for (uint8_t i=0; i<14; i++) {
-      if (outerNeurons[i].freeLight == 0) {
-        return &outerNeurons[i];
+      uint8_t j = (r + i) % 14;
+      if (outerNeurons[j].freeLight == 0) {
+        return &outerNeurons[j];
       }
     }
   }
   if (groups & GROUP2) {
+    uint8_t r = random(7);
     for (uint8_t i=0; i<7; i++) {
-      if (middleNeurons[i].freeLight == 0) {
-        return &middleNeurons[i];
+      uint8_t j = (r + i) % 7;
+      if (middleNeurons[j].freeLight == 0) {
+        return &middleNeurons[j];
       }
     }          
   }
   if (groups & GROUP3) {
+    uint8_t r = random(7);
     for (uint8_t i=0; i<7; i++) {
-      if (innerNeurons[i].freeLight == 0) {
-        return &innerNeurons[i];
+      uint8_t j = (r + i) % 7;
+      if (innerNeurons[j].freeLight == 0) {
+        return &innerNeurons[j];
       }
     }
   }
