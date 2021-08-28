@@ -46,7 +46,7 @@ class HeptagonStar : public Object {
       Model(M_INNER_CIRCLE, 0, GROUP2),
       Model(M_HORNS, 0, GROUP1),
       Model(M_HALO, 0, GROUP2),
-      Model(M_SPLATTER, 1, GROUP2), 
+      Model(M_SPLATTER, 1, GROUP2 | GROUP3), 
     };
   
     HeptagonStar() {}
