@@ -4,17 +4,18 @@
 #include <Arduino.h>
 
 enum EmitParam {
-  P_MODEL,
-  P_SPEED,
-  P_FADE,
-  P_LENGTH,
-  P_ORDER,
-  P_LINKED,
-  P_FROM,
-  P_LIFE,
-  P_COLOR,
-  P_NOTE_ID,
-  P_BRIGHTNESS,
+  P_MODEL = 0,
+  P_SPEED = 1,
+  P_FADE = 2,
+  P_LENGTH = 3,
+  P_ORDER = 4,
+  P_LINKED = 5,
+  P_FROM = 6,
+  P_LIFE = 7,
+  P_COLOR = 8,
+  P_NOTE_ID = 9,
+  P_BRIGHTNESS = 10,
+  P_BEHAVIOUR = 11,
 };
 
 class EmitParams {

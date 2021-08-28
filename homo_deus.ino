@@ -311,6 +311,9 @@ void parseParams(EmitParams &p, const OscMessage &m) {
       case P_BRIGHTNESS:
         p.brightness = m.arg<float>(j);
         break;
+      case P_BEHAVIOUR:
+        p.behaviourFlags = m.arg<uint8_t>(j);
+        break;        
     }
   }
 }
