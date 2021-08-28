@@ -51,7 +51,7 @@ void Intersection::emit(uint8_t k) {
       Behaviour *behaviour = lightList->behaviour;
       if (numPorts == 2) {
         for (uint8_t i=0; i<2; i++) {
-          if (behaviour->randomPortBe == B_RND_PORT_THROUGH ? ports[i]->connection->numLeds == 0 : ports[i]->connection->numLeds > 0) {
+          if (behaviour->flags & B_RND_PORT_BOUNCE ? ports[i]->connection->numLeds > 0 : ports[i]->connection->numLeds == 0) {
             light->setInPort(ports[i]);
             break;
           }
@@ -153,28 +153,17 @@ Port* Intersection::sendOut(uint8_t i) {
     }
   }
   Model *model = light->getModel();
+  Behaviour *behaviour = light->getBehaviour();
   if (port == NULL) {
     port = choosePort(model, light);
   }
-  #ifdef HD_DEBUG
-  if (port == NULL) {
-    Serial.print("Intersection ");
-    Serial.print(topPixel);
-    Serial.print(" choosePort returned NULL ");
-    Serial.print(" for model ");
-    Serial.print(model->id);
-    Serial.print(" with linkedPrev ");
-    Serial.println(light->linkedPrev != NULL);
-  }
-  #endif
   light->setOutPort(port, id);
   light->setInPort(NULL);
   light->position -= 1.f;
   removeLight(outgoingLights[i]);
   outgoingLights[i] = -1;
   if (port != NULL) { 
-    Behaviour *behaviour = light->getBehaviour();
-    if (behaviour->colorChangeGroups & port->group) {
+    if (behaviour->colorChangeGroupFlags & port->group) {
       light->color = behaviour->getColor(light, port->group);
     }
     port->connection->addLight(light);
@@ -204,7 +193,7 @@ Port *Intersection::randomPort(Port *incoming, Behaviour *behaviour) {
   Port *port;
   do {
     port = ports[random(numPorts)];
-  } while (behaviour->randomPortBe == B_RND_PORT_THROUGH ? port == incoming : port != incoming);
+  } while (behaviour->flags & B_RND_PORT_BOUNCE ? port != incoming : port == incoming);
   return port;
 }
 

@@ -47,20 +47,16 @@ void Light::resetPixels() {
 uint16_t* Light::getPixels() {
   if (pixel1 >= 0) {
     Behaviour *behaviour = getBehaviour();
-    if (behaviour != NULL && outPort != NULL) {
-      switch (behaviour->renderBe) {
-        case B_RENDER_SEGMENT: {
-          uint8_t numPixels = outPort->connection->numLeds;
-          uint16_t* pixels = new uint16_t[numPixels+3];
-          pixels[0] = numPixels+2;
-          pixels[1] = outPort->connection->getFromPixel();
-          pixels[2] = outPort->connection->getToPixel();
-          for (uint8_t i=3; i<numPixels+3; i++) {
-            pixels[i] = outPort->connection->getPixel(i-3);
-          }
-          return pixels;
-        }
+    if (behaviour != NULL && behaviour->flags & B_RENDER_SEGMENT && outPort != NULL) {
+      uint8_t numPixels = outPort->connection->numLeds;
+      uint16_t* pixels = new uint16_t[numPixels+3];
+      pixels[0] = numPixels+2;
+      pixels[1] = outPort->connection->getFromPixel();
+      pixels[2] = outPort->connection->getToPixel();
+      for (uint8_t i=3; i<numPixels+3; i++) {
+        pixels[i] = outPort->connection->getPixel(i-3);
       }
+      return pixels;
     }
     return new uint16_t[2]{1, pixel1};
   }

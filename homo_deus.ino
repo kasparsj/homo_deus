@@ -237,7 +237,7 @@ void readSerial() {
       case '7': {
         EmitParams p;
         p.model = M_STAR;
-        p.colorChangeGroups = GROUP1;
+        p.colorChangeGroupFlags |= GROUP1;
         emitter->emit(p);
         break;
       }
@@ -249,7 +249,7 @@ void readSerial() {
         break;        
       case '/': { // emitSegment
         EmitParams params;
-        params.renderBe = B_RENDER_SEGMENT;
+        params.behaviourFlags |= B_RENDER_SEGMENT;
         params.length = 1;
         emitter->emit(params);
         break;
@@ -257,13 +257,14 @@ void readSerial() {
       case '-': { // emitBounce
         EmitParams params;
         params.model = M_STAR;
-        params.randomPortBe = B_RND_PORT_BOUNCE;
+        params.behaviourFlags |= B_RND_PORT_BOUNCE;
         emitter->emit(params);
         break;
       }
       case '?': { // emitNoise
         EmitParams params;
-        params.order = LIST_NOISE;
+        //params.order = LIST_NOISE;
+        params.behaviourFlags |= B_BRI_CONST_NOISE;
         emitter->emit(params);
         break;
       }

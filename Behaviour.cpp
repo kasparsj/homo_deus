@@ -4,21 +4,18 @@
 #include "Globals.h"
 
 float Behaviour::getBri(Light *light) {
-  switch (briChangeBe) {
-    case B_BRI_CONST_NOISE:
-      light->bri = gPerlinNoise.GetValue(light->parent->id * 10, light->pixel1 * 100);
-      break;
+  if (flags & B_BRI_CONST_NOISE) {
+    return gPerlinNoise.GetValue(light->parent->id * 10, light->pixel1 * 100);
   }
   return light->bri + light->parent->fadeSpeed;
 }
 
 float Behaviour::getPosition(Light *light) {
-  switch (posChangeBe) {
-    case B_POS_CHANGE_FADE:
-      if (light->bri >= 2.f) {
-        light->bri -= 2.f;
-        return random(light->getModel()->getMaxLength());
-      }
+  if (flags & B_POS_CHANGE_FADE) {
+    if (light->bri >= 2.f) {
+      light->bri -= 2.f;
+      return random(light->getModel()->getMaxLength());
+    }  
   }
   return light->position + light->speed;
 }

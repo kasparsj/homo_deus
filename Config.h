@@ -18,30 +18,17 @@ enum GroupFlags {
   GROUP5 = 16,
 };
 
+enum BehaviourFlags {
+  B_POS_CHANGE_FADE = 1,
+  B_BRI_CONST_NOISE = 2,
+  B_RENDER_SEGMENT = 4,
+  B_RND_PORT_BOUNCE = 8,
+};
+
 enum ListOrder { 
   LIST_SEQUENTIAL, 
   LIST_RANDOM, 
   LIST_NOISE,
-};
-
-enum PosBehaviour {
-  B_POS_CHANGE_SPEED,
-  B_POS_CHANGE_FADE,
-};
-
-enum BriBehaviour {
-  B_BRI_CHANGE_FADE,
-  B_BRI_CONST_NOISE,
-};
-
-enum RenderBehaviour {
-  B_RENDER_LIGHT,
-  B_RENDER_SEGMENT,
-};
-
-enum RandomPortBehaviour {
-  B_RND_PORT_THROUGH,
-  B_RND_PORT_BOUNCE,
 };
 
 #define HD_DEBUG
