@@ -172,6 +172,16 @@ void Emitter::update() {
   }
 }
 
+RgbColor Emitter::getPixel(uint16_t i) {
+  RgbColor color = RgbColor(0, 0, 0);
+  if (pixelDiv[i]) {
+    color.R = min(pixelValuesR[i] / pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
+    color.G = min(pixelValuesG[i] / pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
+    color.B = min(pixelValuesB[i] / pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
+  }
+  return color;
+}
+
 void Emitter::setPixel(uint16_t pixel, RgbColor &color) {
   pixelValuesR[pixel] += color.R;
   pixelValuesG[pixel] += color.G;

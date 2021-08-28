@@ -129,12 +129,7 @@ void draw() {
 }
 
 RgbColor getColor(uint16_t i) {
-  RgbColor color = RgbColor(0, 0, 0);
-  if (emitter->pixelDiv[i]) {
-    color.R = min(emitter->pixelValuesR[i] / emitter->pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
-    color.G = min(emitter->pixelValuesG[i] / emitter->pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
-    color.B = min(emitter->pixelValuesB[i] / emitter->pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
-  }
+  RgbColor color = emitter->getPixel(i);
   #ifdef HD_TEST
   if (showAll) {
     color.R = MAX_BRIGHTNESS / 2;
