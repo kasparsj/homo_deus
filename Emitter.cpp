@@ -134,20 +134,22 @@ void Emitter::update() {
         lightLists[i]->lights[j] = NULL;
         continue;
       }
-      allExpired = false;
       Light* light = lightLists[i]->lights[j];
-      uint16_t* pixels = light->getPixels();
-      if (pixels != NULL) {
-        RgbColor color = light->getColor();
-        // first value is length
-        uint16_t numPixels = pixels[0];
-        for (uint16_t k=1; k<numPixels+1; k++) {
-          pixelValuesR[pixels[k]] += color.R;
-          pixelValuesG[pixels[k]] += color.G;
-          pixelValuesB[pixels[k]] += color.B;
-          pixelDiv[pixels[k]]++;
+      RgbColor color = light->getColor();
+      allExpired = false;
+      // todo: perhaps it's OK to always retrieve pixels
+      if (lightLists[i]->behaviour != NULL && lightLists[i]->behaviour->isRenderSegment()) {
+        uint16_t* pixels = light->getPixels();
+        if (pixels != NULL) {
+          // first value is length
+          uint16_t numPixels = pixels[0];
+          for (uint16_t k=1; k<numPixels+1; k++) {
+            setPixel(pixels[k], color);
+          }
         }
-        delete[] pixels;
+      }
+      else if (light->pixel1 >= 0) {
+        setPixel(light->pixel1, color);
       }
       // if (light->pixel2 >= 0) {
       //   RgbColor color = light->getColor(light->pixel2Bri);
@@ -168,6 +170,13 @@ void Emitter::update() {
       //#endif
     }
   }
+}
+
+void Emitter::setPixel(uint16_t pixel, RgbColor &color) {
+  pixelValuesR[pixel] += color.R;
+  pixelValuesG[pixel] += color.G;
+  pixelValuesB[pixel] += color.B;
+  pixelDiv[pixel]++;
 }
 
 void Emitter::colorAll() {

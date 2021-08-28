@@ -77,5 +77,8 @@ class Light {
     Behaviour* getBehaviour();
 
     uint16_t* getPixels();
+
+  private:
+    static uint16_t pixels[CONNECTION_MAX_LEDS];    
   
 };

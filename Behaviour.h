@@ -21,6 +21,9 @@ class Behaviour {
 
     float getBri(Light *light);
     float getPosition(Light *light);
-
     RgbColor getColor(Light *light, uint8_t group);
+
+    bool isRenderSegment() {
+      return flags & B_RENDER_SEGMENT;
+    }
 };

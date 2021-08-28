@@ -72,5 +72,6 @@ class Emitter {
 
   private:
     void doEmit(Intersection* from, LightList *lightList);
+    void setPixel(uint16_t pixel, RgbColor &color);
 
 };
