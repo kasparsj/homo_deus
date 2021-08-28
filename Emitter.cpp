@@ -57,15 +57,20 @@ int8_t Emitter::emit(EmitParams &params) {
     return -1;
   }
   uint8_t which = params.model >= 0 ? params.model : randomModel();  
-  Model *model = &models[params.model];
+  Model *model = object.getModel(which);
   Behaviour *behaviour = new Behaviour(params);
+  Intersection *intersection = NULL;
+  uint8_t emitGroups = behaviour->emitGroups > 0 ? behaviour->emitGroups : model->emitGroups;
   int8_t from = params.from >= 0 ? params.from : -1;
-  if (from < 0) {
-    from = model->getFreeEmitter();
-    if (from < 0) {
-      Serial.println("emit failed, no free emitter.");
-      return -1;
-    }
+  if (from >= 0) {
+    intersection = object.getIntersection(from, emitGroups);
+  }
+  else {
+    intersection = object.getFreeIntersection(emitGroups);
+  }
+  if (intersection == NULL) {
+    Serial.println("emit failed, no free emitter.");
+    return -1;
   }
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) {
@@ -89,9 +94,7 @@ int8_t Emitter::emit(EmitParams &params) {
         numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, brightness, params.fadeSpeed, totalLights + numFull + numTrail, totalLightLists + 1);      
       #endif
       lightLists[i]->setup(numFull, color, brightness, params.fadeSpeed, params.fadeThresh);
-      model->emit(from, lightLists[i]);
-      totalLights += lightLists[i]->numLights;
-      totalLightLists++;
+      doEmit(intersection, lightLists[i]);
       #ifdef HD_OSC_REPLY
       OscWiFi.publish(SC_HOST, SC_PORT, "/emit", i);
       #endif
@@ -102,6 +105,13 @@ int8_t Emitter::emit(EmitParams &params) {
   Serial.println("emit failed: no free light lists");
   #endif
   return -1;
+}
+
+void Emitter::doEmit(Intersection* from, LightList *lightList) {
+  lightList->initEmit();
+  from->add(lightList);
+  totalLights += lightList->numLights;
+  totalLightLists++;
 }
 
 void Emitter::update() {

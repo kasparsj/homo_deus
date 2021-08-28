@@ -2,13 +2,13 @@
 
 #include "Config.h"
 #include "EmitParams.h"
-#include "Model.h"
+#include "Object.h"
 
 class Emitter {
 
   public:
   
-    Model *models;
+    Object &object;
     LightList *lightLists[MAX_LIGHT_LISTS] = {0};
     uint16_t totalLights = 0;
     uint8_t totalLightLists = 0;
@@ -20,8 +20,8 @@ class Emitter {
     bool autoEnabled = false;
     uint8_t currentPalette = 0;
     
-    Emitter(Model (&models)[NUM_MODELS]) {
-      this->models = models;
+    Emitter(Object &obj) : object(obj) {
+      
     }
     
     float randomSpeed();
@@ -69,5 +69,8 @@ class Emitter {
     uint16_t numLights();
     void debug();
     #endif
+
+  private:
+    void doEmit(Intersection* from, LightList *lightList);
 
 };

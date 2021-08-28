@@ -1,11 +1,9 @@
 #pragma once
 
 #include "Config.h"
-#include "Intersection.h"
-#include "Connection.h"
-#include "Model.h"
+#include "Object.h"
 
-class HeptagonStar {
+class HeptagonStar : public Object {
 
   public:
   
@@ -42,18 +40,23 @@ class HeptagonStar {
     Connection innerConnections[7];
   
     Model models[NUM_MODELS] = { 
-      Model(M_DEFAULT, 1, 14), 
-      Model(M_STAR, 0, 14), 
-      Model(M_OUTER_STAR, 1, 14), 
-      Model(M_INNER_CIRCLE, 0, 14),
-      Model(M_HORNS, 0, 9),
-      Model(M_HALO, 0, 3),
-      Model(M_SPLATTER, 1, 14), 
+      Model(M_DEFAULT, 1, GROUP1), 
+      Model(M_STAR, 0, GROUP1), 
+      Model(M_OUTER_STAR, 1, GROUP1), 
+      Model(M_INNER_CIRCLE, 0, GROUP2),
+      Model(M_HORNS, 0, GROUP1),
+      Model(M_HALO, 0, GROUP2),
+      Model(M_SPLATTER, 1, GROUP2), 
     };
   
     HeptagonStar() {}
     void setup();
     void update();
+    Model* getModel(int i) {
+      return &models[i];
+    }
+    Intersection* getIntersection(uint8_t i, uint8_t groups);
+    Intersection* getFreeIntersection(uint8_t groups);
 
     #ifdef HD_TEST
     bool intersections[PIXEL_COUNT] = {false};

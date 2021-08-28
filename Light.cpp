@@ -47,7 +47,7 @@ void Light::resetPixels() {
 uint16_t* Light::getPixels() {
   if (pixel1 >= 0) {
     Behaviour *behaviour = getBehaviour();
-    if (behaviour != NULL && behaviour->flags & B_RENDER_SEGMENT && outPort != NULL) {
+    if (behaviour != NULL && (behaviour->flags & B_RENDER_SEGMENT) && outPort != NULL) {
       uint8_t numPixels = outPort->connection->numLeds;
       uint16_t* pixels = new uint16_t[numPixels+3];
       pixels[0] = numPixels+2;

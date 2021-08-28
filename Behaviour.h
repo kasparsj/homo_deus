@@ -10,11 +10,13 @@ class Behaviour {
 
   public:
     uint8_t flags = 0;
-    uint8_t colorChangeGroupFlags = 0;
+    uint8_t emitGroups = 0;
+    uint8_t colorChangeGroups = 0;
 
     Behaviour(EmitParams &params) {
       flags = params.behaviourFlags;
-      colorChangeGroupFlags = params.colorChangeGroupFlags;
+      emitGroups = params.emitGroups;
+      colorChangeGroups = params.colorChangeGroups;
     }
 
     float getBri(Light *light);

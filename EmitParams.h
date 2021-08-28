@@ -16,6 +16,8 @@ enum EmitParam {
   P_NOTE_ID = 9,
   P_BRIGHTNESS = 10,
   P_BEHAVIOUR = 11,
+  P_EMIT_GROUPS = 12,
+  P_COLOR_CHANGE_GROUPS = 13,
 };
 
 class EmitParams {
@@ -35,7 +37,8 @@ class EmitParams {
     uint16_t noteId = 0;
     float brightness = DEFAULT_BRIGHTNESS;
     uint8_t behaviourFlags = 0;
-    uint8_t colorChangeGroupFlags = 0;
+    uint8_t emitGroups = 0;
+    uint8_t colorChangeGroups = 0;
 
     uint16_t getTrail(float speed, uint16_t length) {
       uint16_t trail = 0;

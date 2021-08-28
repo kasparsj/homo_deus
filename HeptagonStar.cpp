@@ -38,17 +38,17 @@ void HeptagonStar::setup() {
     models[M_INNER_CIRCLE].put(innerConnection, 1);
   }
 
-  for (uint8_t i=0; i<14; i++) {
-    models[M_DEFAULT].addEmitter(&outerNeurons[i]);
-    models[M_STAR].addEmitter(&outerNeurons[i]);
-    models[M_OUTER_STAR].addEmitter(&outerNeurons[i]);
-    if (i<7) {
-      models[M_INNER_CIRCLE].addEmitter(&middleNeurons[i]);
-      models[M_INNER_CIRCLE].addEmitter(&innerNeurons[i]);
-      models[M_SPLATTER].addEmitter(&middleNeurons[i]);
-      models[M_SPLATTER].addEmitter(&innerNeurons[i]);
-    }    
-  }
+  // for (uint8_t i=0; i<14; i++) {
+  //   models[M_DEFAULT].addEmitter(&outerNeurons[i]);
+  //   models[M_STAR].addEmitter(&outerNeurons[i]);
+  //   models[M_OUTER_STAR].addEmitter(&outerNeurons[i]);
+  //   if (i<7) {
+  //     models[M_INNER_CIRCLE].addEmitter(&middleNeurons[i]);
+  //     models[M_INNER_CIRCLE].addEmitter(&innerNeurons[i]);
+  //     models[M_SPLATTER].addEmitter(&middleNeurons[i]);
+  //     models[M_SPLATTER].addEmitter(&innerNeurons[i]);
+  //   }    
+  // }
 
   models[M_HORNS].put(&outerConnections[5], 1);
   models[M_HORNS].put(&outerConnections[6], 1);
@@ -59,22 +59,22 @@ void HeptagonStar::setup() {
   models[M_HORNS].put(&middleConnections[8], 1);
   models[M_HORNS].put(&middleConnections[9], 1);
   //models[M_HORNS].put(&innerConnections[3], 1);
-  models[M_HORNS].addEmitter(&outerNeurons[6]);
-  models[M_HORNS].addEmitter(&outerNeurons[7]);
-  models[M_HORNS].addEmitter(&outerNeurons[8]);
-  models[M_HORNS].addEmitter(&outerNeurons[9]);
-  models[M_HORNS].addEmitter(&middleNeurons[2]);
-  models[M_HORNS].addEmitter(&middleNeurons[3]);
-  models[M_HORNS].addEmitter(&middleNeurons[4]);
-  models[M_HORNS].addEmitter(&innerNeurons[3]);
-  models[M_HORNS].addEmitter(&innerNeurons[4]);
+  // models[M_HORNS].addEmitter(&outerNeurons[6]);
+  // models[M_HORNS].addEmitter(&outerNeurons[7]);
+  // models[M_HORNS].addEmitter(&outerNeurons[8]);
+  // models[M_HORNS].addEmitter(&outerNeurons[9]);
+  // models[M_HORNS].addEmitter(&middleNeurons[2]);
+  // models[M_HORNS].addEmitter(&middleNeurons[3]);
+  // models[M_HORNS].addEmitter(&middleNeurons[4]);
+  // models[M_HORNS].addEmitter(&innerNeurons[3]);
+  // models[M_HORNS].addEmitter(&innerNeurons[4]);
 
   models[M_HALO].put(&innerConnections[3], 1);
   models[M_HALO].put(&middleConnections[6], 1);
   models[M_HALO].put(&middleConnections[9], 1);
-  models[M_HALO].addEmitter(&middleNeurons[3]);
-  models[M_HALO].addEmitter(&innerNeurons[3]);
-  models[M_HALO].addEmitter(&innerNeurons[4]);
+  // models[M_HALO].addEmitter(&middleNeurons[3]);
+  // models[M_HALO].addEmitter(&innerNeurons[3]);
+  // models[M_HALO].addEmitter(&innerNeurons[4]);
   
   #ifdef HD_TEST
   for (uint8_t i=0; i<14; i++) {
@@ -121,6 +121,53 @@ void HeptagonStar::update() {
       outerNeurons[i].update();
     }
   }
+}
+
+Intersection* HeptagonStar::getIntersection(uint8_t i, uint8_t groups) {
+  if (groups & GROUP1) {
+    if (i < 14) {
+      return &outerNeurons[i];
+    } 
+    i -= 14;   
+  }
+  if (groups & GROUP2) {
+    if (i < 7) {
+      return &middleNeurons[i];
+    }
+    i -= 7;
+  }
+  if (groups & GROUP3) {
+    if (i < 7) {
+      return &innerNeurons[i];
+    }
+    i -= 7;
+  }
+  return NULL;
+}
+
+Intersection* HeptagonStar::getFreeIntersection(uint8_t groups) {
+  if (groups & GROUP1) {
+    for (uint8_t i=0; i<14; i++) {
+      if (outerNeurons[i].freeLight == 0) {
+        return &outerNeurons[i];
+      }
+    }
+  }
+  if (groups & GROUP2) {
+    for (uint8_t i=0; i<7; i++) {
+      if (middleNeurons[i].freeLight == 0) {
+        return &middleNeurons[i];
+      }
+    }          
+  }
+  if (groups & GROUP3) {
+    for (uint8_t i=0; i<7; i++) {
+      if (innerNeurons[i].freeLight == 0) {
+        return &innerNeurons[i];
+      }
+    }
+  }
+  return NULL;
 }
 
 #ifdef HD_TEST

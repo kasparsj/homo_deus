@@ -10,12 +10,15 @@ enum HeptagonStarModel {
   M_SPLATTER,
 };
 
-enum GroupFlags {
+enum Groups {
   GROUP1 = 1,
   GROUP2 = 2,
   GROUP3 = 4,
   GROUP4 = 8,
   GROUP5 = 16,
+  GROUP6 = 32,
+  GROUP7 = 64,
+  GROUP8 = 128,
 };
 
 enum BehaviourFlags {
@@ -69,7 +72,7 @@ enum ListOrder {
 #define SC_HOST "192.168.43.101"
 #define SC_PORT 57120
 #define INFINITE_LIFE 0
-#define DEFAULT_MODEL M_DEFAULT
+#define DEFAULT_MODEL -1
 #define DEFAULT_SPEED 1.0
 #define DEFAULT_LIFE -1 // -1 = random, 0 = infinite
 #define DEFAULT_BRIGHTNESS 1.0

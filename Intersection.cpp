@@ -163,7 +163,7 @@ Port* Intersection::sendOut(uint8_t i) {
   removeLight(outgoingLights[i]);
   outgoingLights[i] = -1;
   if (port != NULL) { 
-    if (behaviour->colorChangeGroupFlags & port->group) {
+    if (behaviour->colorChangeGroups & port->group) {
       light->color = behaviour->getColor(light, port->group);
     }
     port->connection->addLight(light);

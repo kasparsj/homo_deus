@@ -14,19 +14,14 @@ class Model {
 
     uint8_t id;
     float defaultW;
+    uint8_t emitGroups;
     // todo: perhaps better use HashMap
     Weight *weights[MAX_PORTS] = {0};
-    uint8_t numEmitters;
-    Intersection **emitters;
     
-    Model(uint8_t id, float defaultW, uint8_t numEmitters) {
+    Model(uint8_t id, float defaultW, uint8_t emitGroups) {
       this->id = id;
       this->defaultW = defaultW;
-      this->numEmitters = numEmitters;
-      this->emitters = new Intersection*[numEmitters]();
-      for (uint8_t i=0; i<numEmitters; i++) {
-        this->emitters[i] = NULL;
-      }
+      this->emitGroups = emitGroups;
     }
   
     ~Model() {
@@ -74,32 +69,5 @@ class Model {
     uint16_t getMaxLength() {
       // todo: implement      
       return PIXEL_COUNT;
-    }
-
-    void addEmitter(Intersection *emitter) {
-      for (uint8_t i=0; i<numEmitters; i++) {
-        if (emitters[i] == NULL) {
-          this->emitters[i] = emitter;
-          return;
-        }
-      }
-      Serial.printf("Model %d cannot add emitter\n", id);
-    }
-
-    int8_t getFreeEmitter() {
-      uint8_t r = random(numEmitters);
-      for (uint8_t i=0; i<numEmitters; i++) {
-        uint8_t j = (r + i) % numEmitters;
-        // todo: maybe better check light lists?
-        if (emitters[j]->freeLight == 0) {
-          return j;
-        }
-      }
-      return -1;
-    }
-
-    void emit(uint8_t i, LightList *lightList) {
-      lightList->initEmit();
-      emitters[i]->add(lightList);
     }
 };

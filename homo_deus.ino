@@ -46,7 +46,7 @@ void setup() {
 
   pinMode(BUTTON_PIN, INPUT);
 
-  emitter = new Emitter(heptagon.models);
+  emitter = new Emitter(heptagon);
 
   #ifdef HD_DEBUG
   Serial.println("setup complete");
@@ -93,7 +93,7 @@ void setupComms() {
   OscWiFi.subscribe(OSC_PORT, "/palette", onPalette);
   OscWiFi.subscribe(OSC_PORT, "/color", onColor);
   OscWiFi.subscribe(OSC_PORT, "/split", onSplit);
-  OscWiFi.subscribe(OSC_PORT, "/auto", onAuto);
+  OscWiFi.subscribe(OSC_PORT, "/command", onCommand);
   #endif
 }
 
@@ -168,106 +168,110 @@ void loop() {
 void readSerial() {
   if (Serial.available() > 0) {
     char incomingByte = Serial.read();
-    switch (incomingByte) {
-      case 'r':
-        ESP.restart();
-        break;
-      case 'e':
-        emitter->autoEnabled = !emitter->autoEnabled;
-        Serial.printf("AutoEmitter is %s", emitter->autoEnabled ? "enabled" : "disabled");
-        break;
-      case '.':
-        emitter->stopAll();
-        break;
-      case '!':
-        emitter->colorAll();
-        break;        
-      case 's':
-        emitter->splitAll();
-        break;
-      #ifdef HD_TEST
-      case 'f':
-        Serial.printf("FPS: %f\n", getFPS());
-        break;
-      case 'h':
-        Serial.printf("Free heap: %d\n", ESP.getFreeHeap());
-        break;
-      case 'a':
-        showAll = !showAll;
-        break;
-      case 'i':
-        showIntersections = !showIntersections;
-        break;
-      case 'c':
-        showConnections = !showConnections;
-        break;
-      case 'p':
-        showPalette = !showPalette;
-        break;
-      case '>':
-        if (emitter->currentPalette < 32)
-        emitter->currentPalette++;
-        break;
-      case '<':
-        if (emitter->currentPalette > 0) {
-          emitter->currentPalette--;
-        }
-        break;
-      case 'l':
-        Serial.printf("Total %d lights\n", emitter->totalLights);
-        break;
-      case 'L':
-        emitter->debug();
-        break;
-      case 'C':
-        heptagon.debugConnections();
-        break;
-      case 'I':
-        heptagon.debugIntersections();
-        break;
-      #endif
-      case '1':
-      case '2':
-      case '3':
-      case '4':
-      case '5':
-      case '6':
-        emitter->emit(incomingByte - '1');
-        break;
-      case '7': {
-        EmitParams p;
-        p.model = M_STAR;
-        p.colorChangeGroupFlags |= GROUP1;
-        emitter->emit(p);
-        break;
+    doCommand(incomingByte);
+  }
+}
+
+void doCommand(char command) {
+  switch (command) {
+    case 'r':
+      ESP.restart();
+      break;
+    case 'e':
+      emitter->autoEnabled = !emitter->autoEnabled;
+      Serial.printf("AutoEmitter is %s", emitter->autoEnabled ? "enabled" : "disabled");
+      break;
+    case '.':
+      emitter->stopAll();
+      break;
+    case '!':
+      emitter->colorAll();
+      break;        
+    case 's':
+      emitter->splitAll();
+      break;
+    #ifdef HD_TEST
+    case 'f':
+      Serial.printf("FPS: %f\n", getFPS());
+      break;
+    case 'h':
+      Serial.printf("Free heap: %d\n", ESP.getFreeHeap());
+      break;
+    case 'a':
+      showAll = !showAll;
+      break;
+    case 'i':
+      showIntersections = !showIntersections;
+      break;
+    case 'c':
+      showConnections = !showConnections;
+      break;
+    case 'p':
+      showPalette = !showPalette;
+      break;
+    case '>':
+      if (emitter->currentPalette < 32)
+      emitter->currentPalette++;
+      break;
+    case '<':
+      if (emitter->currentPalette > 0) {
+        emitter->currentPalette--;
       }
-      case '+':
-        emitter->emitSplatter();
-        break;
-      case '*':
-        emitter->emitRandom();
-        break;        
-      case '/': { // emitSegment
-        EmitParams params;
-        params.behaviourFlags |= B_RENDER_SEGMENT;
-        params.length = 1;
-        emitter->emit(params);
-        break;
-      }
-      case '-': { // emitBounce
-        EmitParams params;
-        params.model = M_STAR;
-        params.behaviourFlags |= B_RND_PORT_BOUNCE;
-        emitter->emit(params);
-        break;
-      }
-      case '?': { // emitNoise
-        EmitParams params;
-        //params.order = LIST_NOISE;
-        params.behaviourFlags |= B_BRI_CONST_NOISE;
-        emitter->emit(params);
-        break;
-      }
+      break;
+    case 'l':
+      Serial.printf("Total %d lights\n", emitter->totalLights);
+      break;
+    case 'L':
+      emitter->debug();
+      break;
+    case 'C':
+      heptagon.debugConnections();
+      break;
+    case 'I':
+      heptagon.debugIntersections();
+      break;
+    #endif
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+      emitter->emit(command - '1');
+      break;
+    case '7': {
+      EmitParams p;
+      p.model = M_STAR;
+      p.colorChangeGroups |= GROUP1;
+      emitter->emit(p);
+      break;
+    }
+    case '+':
+      emitter->emitSplatter();
+      break;
+    case '*':
+      emitter->emitRandom();
+      break;        
+    case '/': { // emitSegment
+      EmitParams params;
+      params.behaviourFlags |= B_RENDER_SEGMENT;
+      params.length = 1;
+      emitter->emit(params);
+      break;
+    }
+    case '-': { // emitBounce
+      EmitParams params;
+      params.model = M_STAR;
+      params.behaviourFlags |= B_RND_PORT_BOUNCE;
+      emitter->emit(params);
+      break;
+    }
+    case '?': { // emitNoise
+      EmitParams params;
+      //params.order = LIST_NOISE;
+      params.behaviourFlags |= B_BRI_CONST_NOISE;
+      emitter->emit(params);
+      break;
     }
   }
 }
@@ -313,8 +317,21 @@ void parseParams(EmitParams &p, const OscMessage &m) {
         break;
       case P_BEHAVIOUR:
         p.behaviourFlags = m.arg<uint8_t>(j);
+        break;
+      case P_EMIT_GROUPS:
+        p.emitGroups = m.arg<uint8_t>(j);
+        break;
+      case P_COLOR_CHANGE_GROUPS:
+        p.colorChangeGroups = m.arg<uint8_t>(j);
         break;        
     }
+  }
+}
+
+void onCommand(const OscMessage& m) {
+  String command = m.arg<String>(0);
+  for (uint8_t i=0; i<command.length(); i++) {
+    doCommand(command.charAt(i));
   }
 }
 
