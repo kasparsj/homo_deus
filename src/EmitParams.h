@@ -1,7 +1,11 @@
 #pragma once
 
+#include <stdint.h>
+#include <algorithm>
 #include "Config.h"
-#include <Arduino.h>
+
+using std::min;
+using std::max;
 
 enum EmitParam {
   P_MODEL = 0,

@@ -2,45 +2,51 @@
 #include "Model.h"
 #include "Behaviour.h"
 #include "HeptagonStar.h"
-#include <Arduino.h>
+
+#ifdef ARDUINO
 #include "Palettes.h"
+#endif
 
 #ifdef HD_OSC_REPLY
 #include <ArduinoOSC.h>
 #endif
 
 float Emitter::randomSpeed() {
-  return EMITTER_MIN_SPEED + random(max(EMITTER_MAX_SPEED - EMITTER_MIN_SPEED, 0.f));
+  return EMITTER_MIN_SPEED + LP_RANDOM(max(EMITTER_MAX_SPEED - EMITTER_MIN_SPEED, 0.f));
 }
 
 uint16_t Emitter::randomLife() {
-  return EMITTER_MIN_LIFE + random(max(EMITTER_MAX_LIFE - EMITTER_MIN_LIFE, 0));
+  return EMITTER_MIN_LIFE + LP_RANDOM(max(EMITTER_MAX_LIFE - EMITTER_MIN_LIFE, 0));
 }
 
 uint8_t Emitter::randomModel() {
-  return floor(random(NUM_MODELS));
+  return floor(LP_RANDOM(NUM_MODELS));
 }
 
 uint16_t Emitter::randomLength() {
-  return (uint16_t) (EMITTER_MIN_LENGTH + random(max(EMITTER_MAX_LENGTH - EMITTER_MIN_LENGTH, 0)));
+  return (uint16_t) (EMITTER_MIN_LENGTH + LP_RANDOM(max(EMITTER_MAX_LENGTH - EMITTER_MIN_LENGTH, 0)));
 }
 
 float Emitter::randomBrightness() {
-  return random(1001) / 1000.f;
+  return LP_RANDOM(1001) / 1000.f;
 }
 
 uint16_t Emitter::randomNextEmit() {
-  return EMITTER_MIN_NEXT + random(max(EMITTER_MAX_NEXT - EMITTER_MIN_NEXT, 0));
+  return EMITTER_MIN_NEXT + LP_RANDOM(max(EMITTER_MAX_NEXT - EMITTER_MIN_NEXT, 0));
 }
 
-RgbColor Emitter::randomColor() {
-  return RgbColor(random(255), random(255), random(255));
+ColorRGB Emitter::randomColor() {
+  return ColorRGB(LP_RANDOM(255), LP_RANDOM(255), LP_RANDOM(255));
 }
 
-RgbColor Emitter::paletteColor(uint8_t color) {
+ColorRGB Emitter::paletteColor(uint8_t color) {
+  #ifdef ARDUINO
   const CRGBPalette16& palette = gGradientPalettes[currentPalette];
   CRGB crgb = ColorFromPalette(palette, color);
-  return RgbColor(crgb.r, crgb.g, crgb.b);  
+  return ColorRGB(crgb.r, crgb.g, crgb.b);  
+  #else
+  return randomColor();
+  #endif
 }
 
 void Emitter::autoEmit(unsigned long ms) {
@@ -53,7 +59,7 @@ void Emitter::autoEmit(unsigned long ms) {
 int8_t Emitter::emit(EmitParams &params) {
   uint16_t length = params.length > 0 ? params.length : randomLength();
   if (totalLights + length > MAX_TOTAL_LIGHTS) {
-    Serial.printf("emit failed, %d is over max %d lights\n", totalLights + length, MAX_TOTAL_LIGHTS);
+    LP_LOGF("emit failed, %d is over max %d lights\n", totalLights + length, MAX_TOTAL_LIGHTS);
     return -1;
   }
   uint8_t which = params.model >= 0 ? params.model : randomModel();  
@@ -69,14 +75,14 @@ int8_t Emitter::emit(EmitParams &params) {
     intersection = object.getFreeIntersection(emitGroups);
   }
   if (intersection == NULL) {
-    Serial.println("emit failed, no free emitter.");
+    LP_LOGF("emit failed, no free emitter.");
     return -1;
   }
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) {
       float speed = params.speed >= 0 ? params.speed : randomSpeed();
       uint16_t life = params.life >= 0 ? params.life : randomLife();
-      RgbColor color = params.color >= 0 ? paletteColor(params.color) : randomColor();
+      ColorRGB color = params.color >= 0 ? paletteColor(params.color) : randomColor();
       float brightness = params.brightness >= 0 ? params.brightness : randomBrightness();
       lightLists[i] = new LightList();
       lightLists[i]->setOrder(params.order);
@@ -89,20 +95,20 @@ int8_t Emitter::emit(EmitParams &params) {
       uint16_t numTrail = params.getTrail(speed, length);
       lightLists[i]->setTrail(numTrail);
       uint16_t numFull = max(1, length - numTrail);
-      #ifdef HD_DEBUG
-      Serial.printf("emitting %d %s lights (%d/%.1f/%d/%d/%.1f/%.3f), total: %d (%d)\n", 
+      #ifdef LP_DEBUG
+      LP_LOGF("emitting %d %s lights (%d/%.1f/%d/%d/%.1f/%.3f), total: %d (%d)\n",
         numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, brightness, params.fadeSpeed, totalLights + numFull + numTrail, totalLightLists + 1);      
       #endif
       lightLists[i]->setup(numFull, color, brightness, params.fadeSpeed, params.fadeThresh);
       doEmit(intersection, lightLists[i]);
-      #ifdef HD_OSC_REPLY
-      OscWiFi.publish(SC_HOST, SC_PORT, "/emit", i);
+      #ifdef LP_OSC_REPLY
+      LP_OSC_REPLY(i);
       #endif
       return i;
     }
   }
-  #ifdef HD_DEBUG
-  Serial.println("emit failed: no free light lists");
+  #ifdef LP_DEBUG
+  LP_LOGF("emit failed: no free light lists");
   #endif
   return -1;
 }
@@ -135,7 +141,7 @@ void Emitter::update() {
         continue;
       }
       Light* light = lightLists[i]->lights[j];
-      RgbColor color = light->getColor();
+      ColorRGB color = light->getColor();
       allExpired = false;
       // todo: perhaps it's OK to always retrieve pixels
       if (lightLists[i]->behaviour != NULL && lightLists[i]->behaviour->isRenderSegment()) {
@@ -152,7 +158,7 @@ void Emitter::update() {
         setPixel(light->pixel1, color);
       }
       // if (light->pixel2 >= 0) {
-      //   RgbColor color = light->getColor(light->pixel2Bri);
+      //   ColorRGB color = light->getColor(light->pixel2Bri);
       //   pixelValuesR[light->pixel2] += color.R;
       //   pixelValuesG[light->pixel2] += color.G;
       //   pixelValuesB[light->pixel2] += color.B;
@@ -165,15 +171,15 @@ void Emitter::update() {
       totalLightLists--;
       delete lightLists[i];
       lightLists[i] = NULL;
-      //#ifdef HD_DEBUG
+      //#ifdef LP_DEBUG
       //Serial.printf("Deleted lightList %d\n", i);
       //#endif
     }
   }
 }
 
-RgbColor Emitter::getPixel(uint16_t i) {
-  RgbColor color = RgbColor(0, 0, 0);
+ColorRGB Emitter::getPixel(uint16_t i) {
+  ColorRGB color = ColorRGB(0, 0, 0);
   if (pixelDiv[i]) {
     color.R = min(pixelValuesR[i] / pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
     color.G = min(pixelValuesG[i] / pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
@@ -182,7 +188,7 @@ RgbColor Emitter::getPixel(uint16_t i) {
   return color;
 }
 
-void Emitter::setPixel(uint16_t pixel, RgbColor &color) {
+void Emitter::setPixel(uint16_t pixel, ColorRGB &color) {
   pixelValuesR[pixel] += color.R;
   pixelValuesG[pixel] += color.G;
   pixelValuesB[pixel] += color.B;
@@ -219,11 +225,11 @@ void Emitter::stopNote(uint8_t noteId) {
   }
 }
 
-#ifdef HD_TEST
+#ifdef LP_TEST
 void Emitter::debug() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
-    String lights = "";
+    LP_STRING lights = "";
     for (uint16_t j=0; j<lightLists[i]->numLights; j++) {
       if (lightLists[i]->lights[j] == NULL || lightLists[i]->lights[j]->isExpired) {
         continue;
@@ -236,13 +242,9 @@ void Emitter::debug() {
         lights += ", ";
       }
     }
-    Serial.print("LightList");
-    Serial.print(i);
-    Serial.print("(");
-    Serial.print(lightLists[i]->numLights);
-    Serial.print(")");
-    Serial.print(" active lights: ");
-    Serial.println(lights);
+    LP_LOGF("LightList %d (%d) active lights:", i, lightLists[i]->numLights);
+    LP_LOG(lights);
+    LP_LOGLN("");
   }
 }
 #endif

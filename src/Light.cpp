@@ -1,7 +1,7 @@
+#include <math.h>
 #include "Light.h"
 #include "LightList.h"
 #include "Connection.h"
-#include <Arduino.h>
 
 Light::Light(float maxBri, float speed, int16_t life, LightList *parent, Light *linkedPrev) {
   this->maxBri = maxBri;
@@ -9,7 +9,7 @@ Light::Light(float maxBri, float speed, int16_t life, LightList *parent, Light *
   this->life = life;
   this->parent = parent;
   this->linkedPrev = linkedPrev;
-  this->color = RgbColor(255, 255, 255);
+  this->color = ColorRGB(255, 255, 255);
   position = -1;
 }
 

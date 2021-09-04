@@ -4,7 +4,6 @@
 #include "Port.h"
 #include "Connection.h"
 #include "Intersection.h"
-#include <NeoPixelBus.h>
 
 class Light;
 
@@ -66,8 +65,5 @@ class Model {
       return weight;
     }
 
-    uint16_t getMaxLength() {
-      // todo: implement      
-      return PIXEL_COUNT;
-    }
+    uint16_t getMaxLength();
 };

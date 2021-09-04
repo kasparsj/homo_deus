@@ -1,5 +1,42 @@
 #pragma once
 
+#include <stdint.h>
+
+#if defined (ARDUINO)
+
+#include "Arduino.h"
+#define LP_LOG(...) Serial.print(__VA_ARGS__)
+#define LP_LOGF(...) Serial.printf(__VA_ARGS__)
+#define LP_LOGLN(...) Serial.println(__VA_ARGS__)
+#define LP_RANDOM(...) random(__VA_ARGS__)
+#define LP_STRING String
+
+#else
+//#elif defined (OPENFRAMEWORKS)
+
+#include "ofMain.h"
+#define LP_LOG(...) ofLog(OF_LOG_WARNING, __VA_ARGS__)
+#define LP_LOGF(...) ofLog(OF_LOG_WARNING, __VA_ARGS__)
+#define LP_LOGLN ofLogWarning
+#define LP_RANDOM ofRandom
+#define LP_STRING std::string
+
+#endif
+
+struct ColorRGB {
+  uint8_t R;
+  uint8_t G;
+  uint8_t B;
+  ColorRGB(uint8_t r = 0, uint8_t g = 0, uint8_t b = 0) : R(r), G(g), B(b) {}
+  ColorRGB Dim(uint8_t ratio) const {
+    // specifically avoids float math
+    return ColorRGB(_elementDim(R, ratio), _elementDim(G, ratio), _elementDim(B, ratio));
+  }
+  inline static uint8_t _elementDim(uint8_t value, uint8_t ratio) {
+    return (static_cast<uint16_t>(value) * (static_cast<uint16_t>(ratio) + 1)) >> 8;
+  }
+};
+
 enum HeptagonStarModel { 
   M_DEFAULT, 
   M_STAR, 
@@ -34,15 +71,8 @@ enum ListOrder {
   LIST_NOISE,
 };
 
-#define HD_DEBUG
-#define HD_TEST
-#define HD_OPTIMIZED
-#define PIXEL_COUNT1 524
-#define PIXEL_COUNT2 395
-#define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2)
-#define PIXEL_PIN1 14
-#define PIXEL_PIN2 26
-#define BUTTON_PIN 25
+#define LP_DEBUG
+#define LP_TEST
 #define EMITTER_MAX_LIGHT_LISTS 3 // max 127 (int8_t)
 #define EMITTER_MAX_LIGHTS 110 // max 127 (int8_t)
 #define EMITTER_MIN_SPEED 0.5f
@@ -66,12 +96,7 @@ enum ListOrder {
 #define CONNECTION_MAX_LEDS 48
 #define OUT_PORTS_MEMORY 3
 #define UPDATES_PER_FRAME 3
-#define HD_WIFI
-#define HD_OSC
-//#define HD_OSC_REPLY // todo: not working ATM
-#define OSC_PORT 54321
-#define SC_HOST "192.168.43.101"
-#define SC_PORT 57120
+//#define LP_OSC_REPLY(I) OscWiFi.publish(SC_HOST, SC_PORT, "/emit", (I));
 #define INFINITE_LIFE 0
 #define DEFAULT_MODEL -1
 #define DEFAULT_SPEED 1.0

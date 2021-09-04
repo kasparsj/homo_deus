@@ -1,7 +1,6 @@
 #include "Port.h"
 #include "Intersection.h"
 #include "Config.h"
-#include <Arduino.h>
 
 uint8_t Port::lastId = 0;
 

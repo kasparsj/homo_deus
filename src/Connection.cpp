@@ -1,6 +1,7 @@
+#include <math.h>
 #include "Connection.h"
 #include "Intersection.h"
-#include <Arduino.h>
+#include "LPObject.h"
 
 void Connection::setup(Intersection *from, Intersection *to, uint8_t group) {
   this->from = from;
@@ -14,7 +15,7 @@ void Connection::setup(Intersection *from, Intersection *to, uint8_t group) {
   fromPixel = from->topPixel + (pixelDir ? 1 : -1);
   toPixel = to->topPixel - (pixelDir ? 1 : -1);
   uint16_t diff = abs(fromPixel - toPixel);
-  uint16_t leds = diff > 4 && diff < (PIXEL_COUNT - 4) ? diff + 1 : 0;
+  uint16_t leds = diff > 4 && diff < (LPObject::instance->pixelCount - 4) ? diff + 1 : 0;
   if (from->bottomPixel > -1) {
     if (abs(from->bottomPixel - to->topPixel) < leds) {
       pixelDir = to->topPixel > from->bottomPixel;
@@ -62,7 +63,7 @@ void Connection::addLight(Light *light) {
       freeLight = i;
     }
     else {
-      Serial.printf("Connection addLight no free slot: %d - %d\n", fromPixel, toPixel);
+      LP_LOGF("Connection addLight no free slot: %d - %d\n", fromPixel, toPixel);
     }
   }
   else {
@@ -89,8 +90,8 @@ void Connection::updateLight(uint16_t i) {
     }
     else if (pos < numLeds) {      
       if (light->outPort == NULL) {
-        #ifdef HD_DEBUG
-        Serial.printf("light: %d outport NULL, conn: %d - %d\n", light->id, fromPixel, toPixel);
+        #ifdef LP_DEBUG
+        LP_LOGF("light: %d outport NULL, conn: %d - %d\n", light->id, fromPixel, toPixel);
         #endif
       }
       uint16_t ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
@@ -115,7 +116,7 @@ void Connection::outgoing(Light* light, int16_t i) {
   light->position -= numLeds;
   light->setInPort(port);
   light->setOutPort(NULL);
-  //#ifdef HD_DEBUG
+  //#ifdef LP_DEBUG
   //Serial.printf("Conn %d - %d outgoing %d\n", fromPixel, toPixel, light->id);
   //#endif
   if (i >= 0) {

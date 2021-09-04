@@ -2,7 +2,6 @@
 
 #include "Config.h"
 #include "Port.h"
-#include <NeoPixelBus.h>
 
 class LightList;
 class Model;
@@ -11,7 +10,7 @@ class Behaviour;
 class Light {
 
   public:
-    #ifdef HD_DEBUG
+    #ifdef LP_DEBUG
     uint16_t id;
     #endif
     float maxBri = 1.f;
@@ -21,7 +20,7 @@ class Light {
     float position;
     uint16_t age = 0;
     int16_t life = INFINITE_LIFE;
-    RgbColor color; // 3 bytes
+    ColorRGB color; // 3 bytes
     LightList *parent = 0;
     Light *linkedPrev = 0;
     Port *inPort = 0;
@@ -45,14 +44,14 @@ class Light {
 
     float getBrightness();
 
-    RgbColor getColor() {
+    ColorRGB getColor() {
       if (brightness == 1.f) {
         return color;
       }
       return color.Dim(255 * brightness);
     }
 
-    void setColor(RgbColor color) {
+    void setColor(ColorRGB color) {
       this->color = color;
     }
 

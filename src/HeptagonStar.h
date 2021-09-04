@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Config.h"
-#include "Object.h"
+#include "LPObject.h"
+#include "Emitter.h"
 
-class HeptagonStar : public Object {
+class HeptagonStar : public LPObject {
 
   public:
   
@@ -48,8 +49,16 @@ class HeptagonStar : public Object {
       Model(M_HALO, 0, GROUP2),
       Model(M_SPLATTER, 1, GROUP2 | GROUP3), 
     };
-  
-    HeptagonStar() {}
+
+    HeptagonStar(uint16_t pixelCount) : LPObject(pixelCount) {
+      intersections = new bool[pixelCount]{false};
+      connections = new bool[pixelCount]{false};
+    }
+    ~HeptagonStar() {
+      delete[] intersections;
+      delete[] connections;
+    }
+
     void setup();
     void update();
     Model* getModel(int i) {
@@ -58,10 +67,10 @@ class HeptagonStar : public Object {
     Intersection* getIntersection(uint8_t i, uint8_t groups);
     Intersection* getFreeIntersection(uint8_t groups);
 
-    #ifdef HD_TEST
-    bool intersections[PIXEL_COUNT] = {false};
+    #ifdef LP_TEST
+    bool *intersections;
     bool isIntersection(uint16_t i);
-    bool connections[PIXEL_COUNT] = {false};
+    bool *connections;
     bool isConnection(uint16_t i);
     void debugConnections();
     void debugIntersections();

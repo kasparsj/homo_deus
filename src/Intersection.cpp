@@ -1,7 +1,6 @@
 #include "Intersection.h"
 #include "Connection.h"
 #include "Model.h"
-#include <Arduino.h>
 
 uint8_t Intersection::nextId = 0;
 
@@ -12,13 +11,13 @@ Intersection::Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPi
   this->bottomPixel = bottomPixel;
   this->ports = new Port*[numPorts]();
   for (uint8_t i=0; i<numPorts; i++) {
-    ports[i] = NULL;
+    ports[i] = 0;
   }
 }
 
 void Intersection::addPort(Port *p) {
   for (uint8_t i=0; i<numPorts; i++) {
-    if (ports[i] == NULL) {
+    if (ports[i] == 0) {
       ports[i] = p;
       p->intersection = this;
       break;
@@ -28,12 +27,12 @@ void Intersection::addPort(Port *p) {
 
 void Intersection::add(LightList *lightList) {
   for (uint8_t j=0; j<EMITTER_MAX_LIGHT_LISTS; j++) {
-    if (lightLists[j] == NULL) {
+    if (lightLists[j] == 0) {
       lightLists[j] = lightList;
       return;
     }
   }
-  Serial.printf("Intersection %d addLightList no free slot\n", topPixel);
+  LP_LOGF("Intersection %d addLightList no free slot\n", topPixel);
 }
 
 void Intersection::emit(uint8_t k) {
@@ -61,7 +60,7 @@ void Intersection::emit(uint8_t k) {
     }
   }
   if (lightList->numEmitted >= lightList->numLights) {
-    lightLists[k] = NULL;
+    lightLists[k] = 0;
   }
 }
 
@@ -71,20 +70,20 @@ void Intersection::addLight(Light *light) {
     numLights++;
     uint8_t i;
     for (i=freeLight+1; i<EMITTER_MAX_LIGHTS; i++) {
-      if (lights[i] == NULL) {
+      if (lights[i] == 0) {
         break;
       }
     }
     freeLight = i;
   }
   else {
-    Serial.printf("Intersection %d addLight no free slot\n", topPixel);
+    LP_LOGF("Intersection %d addLight no free slot\n", topPixel);
   }
 }
 
 void Intersection::update() {
   for (uint8_t i=0; i<EMITTER_MAX_LIGHT_LISTS; i++) {
-    if (lightLists[i] != NULL) {
+    if (lightLists[i] != 0) {
       emit(i);
     }
   }
@@ -133,7 +132,7 @@ void Intersection::queueOutgoing(uint8_t i) {
     freeOutgoing++;  
   }
   else {
-    Serial.println("Intersection queueOutgoing no free slot");
+    LP_LOGLN("Intersection queueOutgoing no free slot");
   }
 }
 
@@ -175,13 +174,9 @@ float Intersection::sumW(Model *model, Port *incoming) {
   float sum = 0;
   for (uint8_t i=0; i<numPorts; i++) {
     Port *port = ports[i];
-    #ifdef HD_DEBUG
+    #ifdef LP_DEBUG
     if (port == NULL) {
-      Serial.print("Intersection ");
-      Serial.print(topPixel);
-      Serial.print("port ");
-      Serial.print(i);
-      Serial.println("is NULL");
+      LP_LOGF("Intersection %d port %d is NULL", topPixel, i);
     }
     #endif
     sum += model->get(port, incoming);
@@ -192,7 +187,7 @@ float Intersection::sumW(Model *model, Port *incoming) {
 Port *Intersection::randomPort(Port *incoming, Behaviour *behaviour) {
   Port *port;
   do {
-    port = ports[random(numPorts)];
+    port = ports[(uint8_t) LP_RANDOM(numPorts)];
   } while (behaviour->flags & B_RND_PORT_BOUNCE ? port != incoming : port == incoming);
   return port;
 }
@@ -203,15 +198,12 @@ Port *Intersection::choosePort(Model *model, Light *light) {
     if (sum <= 0.f) {
       return randomPort(incoming, light->getBehaviour());
     }
-    float rnd = random(sum * 1000) / 1000.f;
+    float rnd = LP_RANDOM(sum * 1000) / 1000.f;
     for (uint8_t i=0; i<numPorts; i++) {
        Port *port = ports[i];
-       #ifdef HD_DEBUG
+       #ifdef LP_DEBUG
        if (port == NULL) {
-        Serial.print("Intersection ");
-        Serial.print(topPixel);
-        Serial.print(" choosePort port is NULL ");
-        Serial.println(i);
+        LP_LOGF("Intersection %d choosePort port is NULL %d", topPixel, i);
        }
        #endif
        float w = model->get(port, incoming);

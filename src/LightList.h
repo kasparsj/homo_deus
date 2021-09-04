@@ -2,7 +2,6 @@
 
 #include "Config.h"
 #include "Behaviour.h"
-#include <NeoPixelBus.h>
 
 class Model;
 class Light;
@@ -42,7 +41,7 @@ class LightList {
     }
 
     void init(uint16_t numLights);
-    void setup(uint16_t numLights, RgbColor color, float brightness = 1, float fadeSpeed = 0, float fadeThresh = 0);
+    void setup(uint16_t numLights, ColorRGB color, float brightness = 1, float fadeSpeed = 0, float fadeThresh = 0);
 
     Light* operator [] (uint16_t i) const {
       return lights[i];
@@ -61,7 +60,7 @@ class LightList {
       this->fadeThresh = fadeThresh;
     }
     void setLife(int16_t numFrames);
-    void setColor(RgbColor color);
+    void setColor(ColorRGB color);
     void setLinked(bool linked);
     void setTrail(uint16_t length) {
       trail = length;

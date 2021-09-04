@@ -1,5 +1,4 @@
 #include "HeptagonStar.h"
-#include <Arduino.h>
 
 void HeptagonStar::setup() {
   for (uint8_t i=0; i<7; i++) {
@@ -76,7 +75,7 @@ void HeptagonStar::setup() {
   // models[M_HALO].addEmitter(&innerNeurons[3]);
   // models[M_HALO].addEmitter(&innerNeurons[4]);
   
-  #ifdef HD_TEST
+  #ifdef LP_TEST
   for (uint8_t i=0; i<14; i++) {
     if (i < 7) {
       intersections[middleNeurons[i].topPixel] = true;
@@ -98,8 +97,8 @@ void HeptagonStar::setup() {
   }
   #endif
   
-  #ifdef HD_DEBUG
-  Serial.println("HeptagonStar setup complete");
+  #ifdef LP_DEBUG
+  LP_LOGF("HeptagonStar setup complete");
   #endif
 }
 
@@ -147,7 +146,7 @@ Intersection* HeptagonStar::getIntersection(uint8_t i, uint8_t groups) {
 
 Intersection* HeptagonStar::getFreeIntersection(uint8_t groups) {
   if (groups & GROUP1) {
-    uint8_t r = random(14);
+    uint8_t r = LP_RANDOM(14);
     for (uint8_t i=0; i<14; i++) {
       uint8_t j = (r + i) % 14;
       if (outerNeurons[j].freeLight == 0) {
@@ -156,7 +155,7 @@ Intersection* HeptagonStar::getFreeIntersection(uint8_t groups) {
     }
   }
   if (groups & GROUP2) {
-    uint8_t r = random(7);
+    uint8_t r = LP_RANDOM(7);
     for (uint8_t i=0; i<7; i++) {
       uint8_t j = (r + i) % 7;
       if (middleNeurons[j].freeLight == 0) {
@@ -165,7 +164,7 @@ Intersection* HeptagonStar::getFreeIntersection(uint8_t groups) {
     }          
   }
   if (groups & GROUP3) {
-    uint8_t r = random(7);
+    uint8_t r = LP_RANDOM(7);
     for (uint8_t i=0; i<7; i++) {
       uint8_t j = (r + i) % 7;
       if (innerNeurons[j].freeLight == 0) {
@@ -176,7 +175,7 @@ Intersection* HeptagonStar::getFreeIntersection(uint8_t groups) {
   return NULL;
 }
 
-#ifdef HD_TEST
+#ifdef LP_TEST
 bool HeptagonStar::isIntersection(uint16_t i) {
   return intersections[i];
 }
@@ -184,48 +183,24 @@ bool HeptagonStar::isConnection(uint16_t i) {
   return connections[i];
 }
 void HeptagonStar::debugConnections() {
-  Serial.println("--- CONNECTIONS ---");
+  LP_LOGLN("--- CONNECTIONS ---");
   for (uint8_t i=0; i<14; i++) {
     if (i < 7) {
-      Serial.printf("Zero %d - %d: ", zeroConnections[i].fromPixel, zeroConnections[i].toPixel);
-      Serial.print(zeroConnections[i].freeLight);
-      Serial.print(" / ");
-      Serial.println(zeroConnections[i].maxLights);
-
-      Serial.printf("Inner %d - %d: ", innerConnections[i].fromPixel, innerConnections[i].toPixel);
-      Serial.print(innerConnections[i].freeLight);
-      Serial.print(" / ");
-      Serial.println(innerConnections[i].maxLights);
+      LP_LOGF("Zero %d - %d: %d / %d\n", zeroConnections[i].fromPixel, zeroConnections[i].toPixel, zeroConnections[i].freeLight, zeroConnections[i].maxLights);
+      LP_LOGF("Inner %d - %d: %d / %d\n", innerConnections[i].fromPixel, innerConnections[i].toPixel, innerConnections[i].freeLight, innerConnections[i].maxLights);
     } 
-    Serial.printf("Outer %d - %d: ", outerConnections[i].fromPixel, outerConnections[i].toPixel);
-    Serial.print(outerConnections[i].freeLight);
-    Serial.print(" / ");
-    Serial.println(outerConnections[i].maxLights);
-
-    Serial.printf("Middle %d - %d: ", middleConnections[i].fromPixel, middleConnections[i].toPixel);
-    Serial.print(middleConnections[i].freeLight);
-    Serial.print(" / ");
-    Serial.println(middleConnections[i].maxLights);
+    LP_LOGF("Outer %d - %d: %d / %d\n", outerConnections[i].fromPixel, outerConnections[i].toPixel, outerConnections[i].freeLight, outerConnections[i].maxLights);
+    LP_LOGF("Middle %d - %d: %d / %d\n", middleConnections[i].fromPixel, middleConnections[i].toPixel, middleConnections[i].freeLight, middleConnections[i].maxLights);
   }
 }
 void HeptagonStar::debugIntersections() {
-  Serial.println("--- INTERSECTIONS ---");
+  LP_LOGLN("--- INTERSECTIONS ---");
   for (uint8_t i=0; i<14; i++) {
     if (i < 7) {
-      Serial.print("Middle");
-      Serial.print(middleNeurons[i].id);
-      Serial.print(": ");
-      Serial.print(middleNeurons[i].freeLight);
-
-      Serial.print("Inner");
-      Serial.print(innerNeurons[i].id);
-      Serial.print(": ");
-      Serial.print(innerNeurons[i].freeLight);
+      LP_LOGF("Middle %d: %d\n", middleNeurons[i].id, middleNeurons[i].freeLight);
+      LP_LOGF("Inner %d: %d\n", innerNeurons[i].id, innerNeurons[i].freeLight);
     } 
-    Serial.print("Outer");
-    Serial.print(outerNeurons[i].id);
-    Serial.print(": ");
-    Serial.print(outerNeurons[i].freeLight);
+    LP_LOGF("Outer %d: %d\n", outerNeurons[i].id, outerNeurons[i].freeLight);
   }
 }
 #endif

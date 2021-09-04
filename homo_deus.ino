@@ -1,11 +1,20 @@
-#include <NeoPixelBus.h>
-#include "BluetoothSerial.h"
+#define PIXEL_PIN1 14
+#define PIXEL_PIN2 26
+#define BUTTON_PIN 25
+#define HD_WIFI
+#define HD_OSC
+#define SC_HOST "192.168.43.101"
+#define SC_PORT 57120
+//#define LP_OSC_REPLY(I) OscWiFi.publish(SC_HOST, SC_PORT, "/emit", (I));
+#define PIXEL_COUNT1 524
+#define PIXEL_COUNT2 395
+#define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2)
+#define OSC_PORT 54321
 
-#include "Config.h"
-#include "Globals.h"
-#include "HeptagonStar.h"
-#include "Emitter.h"
+#include "BluetoothSerial.h"
 #include "esp_bt.h"
+#include <NeoPixelBus.h>
+#include "src/HeptagonStar.h"
 
 #ifdef HD_WIFI
 #include <WiFi.h>
@@ -17,7 +26,7 @@
 NeoPixelBus<NeoGrbFeature, NeoWs2813Method> strip1(PIXEL_COUNT1, PIXEL_PIN1);
 NeoPixelBus<NeoGrbFeature, NeoEsp32Rmt5Ws2812xMethod> strip2(PIXEL_COUNT2, PIXEL_PIN2);
 NeoGamma<NeoGammaTableMethod> colorGamma;
-HeptagonStar heptagon;
+HeptagonStar heptagon(PIXEL_COUNT);
 Emitter *emitter;
 bool showIntersections = false;
 bool showConnections = false;
@@ -25,7 +34,7 @@ bool showPalette = false;
 bool showAll = false;
 unsigned long gMillis;
 unsigned long gPrevMillis = 0;
-#ifdef HD_TEST
+#ifdef LP_TEST
 float fps[AVG_FPS_FRAMES] = {0.f};
 uint8_t fpsIndex = 0;
 #endif
@@ -48,7 +57,7 @@ void setup() {
 
   emitter = new Emitter(heptagon);
 
-  #ifdef HD_DEBUG
+  #ifdef LP_DEBUG
   Serial.println("setup complete");
   #endif
 }
@@ -99,7 +108,7 @@ void setupComms() {
 
 void update() {
   gMillis = millis();
-  #ifdef HD_TEST
+  #ifdef LP_TEST
   fps[fpsIndex] = 1000.f / float(gMillis - gPrevMillis);
   fpsIndex = (fpsIndex + 1) % AVG_FPS_FRAMES;
   #endif
@@ -129,8 +138,9 @@ void draw() {
 }
 
 RgbColor getColor(uint16_t i) {
-  RgbColor color = emitter->getPixel(i);
-  #ifdef HD_TEST
+  ColorRGB pixel = emitter->getPixel(i);
+  RgbColor color = RgbColor(pixel.R, pixel.G, pixel.B);
+  #ifdef LP_TEST
   if (showAll) {
     color.R = MAX_BRIGHTNESS / 2;
   }
@@ -141,7 +151,8 @@ RgbColor getColor(uint16_t i) {
     color.B = (heptagon.isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
   if (showPalette && i < 256) {
-    color = emitter->paletteColor(i);
+    pixel = emitter->paletteColor(i);
+    color = RgbColor(pixel.R, pixel.G, pixel.B);
   }
   #endif
   return colorGamma.Correct(color);
@@ -155,7 +166,7 @@ void loop() {
   update();
   draw();
 
-  #ifdef HD_DEBUG
+  #ifdef LP_DEBUG
   readSerial();
   #endif
 }
@@ -185,7 +196,7 @@ void doCommand(char command) {
     case 's':
       emitter->splitAll();
       break;
-    #ifdef HD_TEST
+    #ifdef LP_TEST
     case 'f':
       Serial.printf("FPS: %f\n", getFPS());
       break;
