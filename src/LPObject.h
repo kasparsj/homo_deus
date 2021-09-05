@@ -59,51 +59,13 @@ class LPObject {
             }
         }
     }
-    Intersection* addIntersection(Intersection *intersection, uint8_t group) {
-        if (group & GROUP1) {
-            inter[0][nextInter[0]++] = intersection;
-        }
-        else if (group & GROUP2) {
-            inter[1][nextInter[1]++] = intersection;
-        }
-        else if (group & GROUP3) {
-            inter[2][nextInter[2]++] = intersection;
-        }
-        else if (group & GROUP4) {
-            inter[3][nextInter[3]++] = intersection;
-        }
-        #ifdef LP_TEST
-        intersections[intersection->topPixel] = true;
-        if (intersection->bottomPixel >= 0) {
-            intersections[intersection->bottomPixel] = true;
-        }
-        #endif
-        return intersection;
-    }
-    Connection* addConnection(Connection *connection) {
-        if (connection->group & GROUP1) {
-            conn[0][nextConn[0]++] = connection;
-        }
-        else if (connection->group & GROUP2) {
-            conn[1][nextConn[1]++] = connection;
-        }
-        else if (connection->group & GROUP3) {
-            conn[2][nextConn[2]++] = connection;
-        }
-        else if (connection->group & GROUP4) {
-            conn[3][nextConn[3]++] = connection;
-        }
-        #ifdef LP_TEST
-        connections[connection->fromPixel] = true;
-        connections[connection->toPixel] = true;
-        #endif
-        return connection;
-    }
+    Intersection* addIntersection(Intersection *intersection);
+    Connection* addConnection(Connection *connection);
     void addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group) {
-        Intersection *from = new Intersection(2, fromPixel);
-        Intersection *to = new Intersection(2, toPixel);
-        addIntersection(from, group);
-        addIntersection(to, group);
+        Intersection *from = new Intersection(fromPixel, group);
+        Intersection *to = new Intersection(toPixel, group);
+        addIntersection(from);
+        addIntersection(to);
         addConnection(new Connection(from, to, group));
     }
     void update();

@@ -17,6 +17,7 @@ class Intersection {
     Port **ports; // 2 or 4 ports
     uint16_t topPixel;
     int16_t bottomPixel;
+    uint8_t group;
     Light *lights[EMITTER_MAX_LIGHTS] = {0};
     uint8_t freeLight = 0;
     uint8_t numLights = 0;
@@ -24,7 +25,12 @@ class Intersection {
     int8_t outgoingLights[EMITTER_MAX_LIGHTS] = {-1};
     uint8_t freeOutgoing = 0;
 
-    Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel = -1);
+    Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel, uint8_t group);
+    Intersection(uint16_t topPixel, int16_t bottomPixel, uint8_t group) : Intersection(4, topPixel, bottomPixel, group) {
+    }
+    Intersection(uint16_t topPixel, uint8_t group) : Intersection(2, topPixel, -1, group) {
+
+    }
   
     ~Intersection() {
       delete[] ports;

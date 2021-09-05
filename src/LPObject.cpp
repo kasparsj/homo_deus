@@ -3,6 +3,37 @@
 
 LPObject* LPObject::instance = 0;
 
+Intersection* LPObject::addIntersection(Intersection *intersection) {
+    for (uint8_t i=0; i<5; i++) {
+        if (intersection->group & (uint8_t) pow(2, i)) {
+            inter[i][nextInter[i]++] = intersection;
+            break;
+        }
+    }
+    #ifdef LP_TEST
+    intersections[intersection->topPixel] = true;
+    if (intersection->bottomPixel >= 0) {
+        intersections[intersection->bottomPixel] = true;
+    }
+    #endif
+    return intersection;
+}
+
+Connection* LPObject::addConnection(Connection *connection) {
+    for (uint8_t i=0; i<5; i++) {
+        if (connection->group & (uint8_t) pow(2, i)) {
+            conn[i][nextConn[i]++] = connection;
+            break;
+        }
+    }
+
+    #ifdef LP_TEST
+    connections[connection->fromPixel] = true;
+    connections[connection->toPixel] = true;
+    #endif
+    return connection;
+}
+
 void LPObject::update() {
   for (uint8_t k=0; k<UPDATES_PER_FRAME; k++) {
     for (uint8_t i=0; i<5; i++) {

@@ -4,11 +4,12 @@
 
 uint8_t Intersection::nextId = 0;
 
-Intersection::Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel) {
+Intersection::Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel, uint8_t group) {
   this->id = nextId++;
   this->numPorts = numPorts;
   this->topPixel = topPixel;
   this->bottomPixel = bottomPixel;
+  this->group = group;
   this->ports = new Port*[numPorts]();
   for (uint8_t i=0; i<numPorts; i++) {
     ports[i] = 0;

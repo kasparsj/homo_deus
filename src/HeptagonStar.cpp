@@ -14,13 +14,13 @@ void HeptagonStar::setup() {
     addBridge(260, 263, GROUP1); // bottom right
 
     // middle (inter[1])
-    addIntersection(new Intersection(4, 612, 42), GROUP2);  // bottom left
-    addIntersection(new Intersection(4, 696, 347), GROUP2);  // bottom left
-    addIntersection(new Intersection(4, 434, 81), GROUP2);  // top
-    addIntersection(new Intersection(4, 742, 172), GROUP2);  // upper right
-    addIntersection(new Intersection(4, 836, 478), GROUP2);  // bottom left
-    addIntersection(new Intersection(4, 568, 218), GROUP2);  // right
-    addIntersection(new Intersection(4, 876, 304), GROUP2);  // bottom right
+    addIntersection(new Intersection(4, 612, 42, GROUP2));  // bottom left
+    addIntersection(new Intersection(4, 696, 347, GROUP2)); // left
+    addIntersection(new Intersection(4, 434, 81, GROUP2));  // upper left
+    addIntersection(new Intersection(4, 742, 172, GROUP2));  // top
+    addIntersection(new Intersection(4, 836, 478, GROUP2));  // upper right
+    addIntersection(new Intersection(4, 568, 218, GROUP2));  // right
+    addIntersection(new Intersection(4, 876, 304, GROUP2));  // bottom right
 
     for (uint8_t i=0; i<7; i++) {
       Intersection *outerNeuron1 = inter[0][i*2+1];
@@ -30,13 +30,13 @@ void HeptagonStar::setup() {
     }
 
     // inner (inter[2)
-    addIntersection(new Intersection(4, 597, 320), GROUP3);
-    addIntersection(new Intersection(4, 55, 334), GROUP3);
-    addIntersection(new Intersection(4, 708, 69), GROUP3);
-    addIntersection(new Intersection(4, 722, 448), GROUP3); // top left
-    addIntersection(new Intersection(4, 462, 191), GROUP3); // top right
-    addIntersection(new Intersection(4, 848, 206), GROUP3); // right
-    addIntersection(new Intersection(4, 863, 582), GROUP3); // bottom right
+    addIntersection(new Intersection(4, 597, 320, GROUP3));
+    addIntersection(new Intersection(4, 55, 334, GROUP3));
+    addIntersection(new Intersection(4, 708, 69, GROUP3));
+    addIntersection(new Intersection(4, 722, 448, GROUP3)); // top left
+    addIntersection(new Intersection(4, 462, 191, GROUP3)); // top right
+    addIntersection(new Intersection(4, 848, 206, GROUP3)); // right
+    addIntersection(new Intersection(4, 863, 582, GROUP3)); // bottom right
 
   for (uint8_t i=0; i<7; i++) {
     Intersection *middleNeuron1 = inter[1][i];

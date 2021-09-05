@@ -41,14 +41,15 @@ public:
     void onAuto(const ofxOscMessage& m);
     void parseParams(EmitParams &p, const ofxOscMessage &m);
     void doCommand(char command);
+    glm::vec2 intersectionPos(Intersection* intersection, int8_t j = -1);
     ofColor getColor(uint16_t i);
 
     ofxOscReceiver receiver;
     bool showIntersections = false;
     bool showConnections = false;
-    bool showPalette = false;
     bool showAll = false;
     bool showFps = false;
     bool showHeap = false;
+    bool showPixels = false;
 
 };

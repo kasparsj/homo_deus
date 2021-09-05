@@ -2,6 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    ofSetFrameRate(62);
     heptagon = new HeptagonStar(PIXEL_COUNT);
     emitter = new Emitter(*heptagon);
     receiver.setup( OSC_PORT );
@@ -10,6 +11,10 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     updateOsc();
+
+    emitter->autoEmit(ofGetElapsedTimeMillis());
+    heptagon->update();
+    emitter->update();
 }
 
 void ofApp::updateOsc(){
@@ -150,7 +155,7 @@ void ofApp::doCommand(char command) {
       showConnections = !showConnections;
       break;
     case 'p':
-      showPalette = !showPalette;
+      showPixels = !showPixels;
       break;
     case '>':
       if (emitter->currentPalette < 32)
@@ -221,25 +226,68 @@ void ofApp::doCommand(char command) {
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    //ofClear(70);
+    ofBackground(70);
 
-    uint16_t size = 10;
-    uint16_t groupDiam[5] = {900, 400, 300, 0, 0};
+    uint16_t size = 2;
 
     ofPushMatrix();
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
     for (uint8_t i=0; i<5; i++) {
-        float offset = TWO_PI/4.f+(i%2*TWO_PI/7.f/2.f);
         if (heptagon->interCount[i] > 0) {
             for (uint8_t j=0; j<heptagon->interCount[i]; j++) {
-                float delta = heptagon->interCount[i] == 14 ? 0.05-(j%2)*0.1 : 0;
-                glm::vec2 point = pointOnEllipse(TWO_PI/7.f*j+offset+delta, groupDiam[i], groupDiam[i]);
                 ofSetColor(getColor(heptagon->inter[i][j]->topPixel));
+                glm::vec2 point = intersectionPos(heptagon->inter[i][j], j);
                 ofDrawCircle(point, size);
+                if (showPixels) {
+                    ofSetColor(255);
+                    ofDrawBitmapString(ofToString(heptagon->inter[i][j]->topPixel), point + glm::vec2(20, 20));
+                }
+            }
+        }
+        if (heptagon->connCount[i] > 0) {
+            for (uint8_t j=0; j<heptagon->connCount[i]; j++) {
+                Connection* conn = heptagon->conn[i][j];
+                glm::vec2 fromPos = intersectionPos(conn->from);
+                glm::vec2 toPos = intersectionPos(conn->to);
+                float dist = glm::distance(fromPos, toPos);
+                for (uint8_t k=0; k<conn->numLeds; k++) {
+                    glm::vec2 point = glm::mix(fromPos, toPos, (float) (k+1)/(conn->numLeds+1));
+                    ofSetColor(getColor(heptagon->conn[i][j]->getPixel(k)));
+                    ofDrawCircle(point, size);
+                }
             }
         }
     }
     ofPopMatrix();
 
+    if (showFps) {
+        ofSetColor(255);
+        ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, 20);
+    }
+
+}
+
+glm::vec2 ofApp::intersectionPos(Intersection* intersection, int8_t j) {
+    uint16_t groupDiam[5] = {900, 400, 300, 0, 0};
+
+    uint8_t i = log2(intersection->group);
+    if (j<0) {
+        for (j=0; j<heptagon->interCount[i]; j++) {
+            if (heptagon->inter[i][j] == intersection) {
+                break;
+            }
+        }
+    }
+
+    float offset = TWO_PI/4.f+(i%2*TWO_PI/7.f/2.f);
+    float delta = 0;
+    if (heptagon->interCount[i] == 14) {
+        float k = showPixels ? 0.1 : 0.01;
+        delta = (k/2)-((j+1)%2)*k;
+        j = j / 2;
+    }
+    return pointOnEllipse(TWO_PI/7.f*j+offset+delta, groupDiam[i], groupDiam[i]);
 }
 
 glm::vec2 pointOnEllipse(float rad, float w, float h) {
@@ -259,10 +307,10 @@ ofColor ofApp::getColor(uint16_t i) {
   if (showIntersections) {
     color.b = (heptagon->isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
-  if (showPalette && i < 256) {
-    pixel = emitter->paletteColor(i);
-    color = ofColor(pixel.R, pixel.G, pixel.B);
-  }
+//  if (showPalette && i < 256) {
+//    pixel = emitter->paletteColor(i);
+//    color = ofColor(pixel.R, pixel.G, pixel.B);
+//  }
   #endif
   return color;
   //return colorGamma.Correct(color);
@@ -275,7 +323,7 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-
+    doCommand(key);
 }
 
 //--------------------------------------------------------------

@@ -121,10 +121,10 @@ void Emitter::doEmit(Intersection* from, LightList *lightList) {
 }
 
 void Emitter::update() {
-  memset(pixelValuesR, 0, sizeof(pixelValuesR));
-  memset(pixelValuesG, 0, sizeof(pixelValuesG));
-  memset(pixelValuesB, 0, sizeof(pixelValuesB));
-  memset(pixelDiv, 0, sizeof(pixelDiv));
+  memset(pixelValuesR, 0, object.pixelCount);
+  memset(pixelValuesG, 0, object.pixelCount);
+  memset(pixelValuesB, 0, object.pixelCount);
+  memset(pixelDiv, 0, object.pixelCount);
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     bool allExpired = true;
