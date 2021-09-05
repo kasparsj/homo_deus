@@ -231,10 +231,10 @@ void doCommand(char command) {
       emitter->debug();
       break;
     case 'C':
-      heptagon.debugConnections();
+      heptagon.dumpConnections();
       break;
     case 'I':
-      heptagon.debugIntersections();
+      heptagon.dumpIntersections();
       break;
     #endif
     case '1':

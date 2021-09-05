@@ -6,7 +6,7 @@
 
 #define PIXEL_COUNT1 524
 #define PIXEL_COUNT2 395
-#define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2)
+#define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2) // 919
 #define OSC_PORT 54321
 
 class ofApp : public ofBaseApp{

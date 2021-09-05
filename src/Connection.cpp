@@ -3,7 +3,7 @@
 #include "Intersection.h"
 #include "LPObject.h"
 
-void Connection::setup(Intersection *from, Intersection *to, uint8_t group) {
+Connection::Connection(Intersection *from, Intersection *to, uint8_t group) {
   this->from = from;
   this->to = to;
   this->group = group;
