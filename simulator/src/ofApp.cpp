@@ -34,6 +34,9 @@ void ofApp::updateOsc(){
         else if (m.getAddress() == "/auto"){
             onAuto(m);
         }
+        else if (m.getAddress() == "/command") {
+            onCommand(m);
+        }
 
     }
 }

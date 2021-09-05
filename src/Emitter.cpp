@@ -121,19 +121,10 @@ void Emitter::doEmit(Intersection* from, LightList *lightList) {
 }
 
 void Emitter::update() {
-  #ifdef ARDUINO
-  memset(pixelValuesR, 0, object.pixelCount);
-  memset(pixelValuesG, 0, object.pixelCount);
-  memset(pixelValuesB, 0, object.pixelCount);
+  memset(pixelValuesR, 0, sizeof(uint16_t) * object.pixelCount);
+  memset(pixelValuesG, 0, sizeof(uint16_t) * object.pixelCount);
+  memset(pixelValuesB, 0, sizeof(uint16_t) * object.pixelCount);
   memset(pixelDiv, 0, object.pixelCount);
-  #else
-  for (uint16_t i=0; i<object.pixelCount; i++) {
-    pixelValuesR[i] = 0;
-    pixelValuesG[i] = 0;
-    pixelValuesB[i] = 0;
-    pixelDiv[i] = 0;
-  }
-  #endif
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     bool allExpired = true;

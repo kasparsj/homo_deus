@@ -72,12 +72,12 @@ class LPObject {
     }
     Intersection* addIntersection(Intersection *intersection);
     Connection* addConnection(Connection *connection);
-    void addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group) {
+    Connection* addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group) {
         Intersection *from = new Intersection(fromPixel, group);
         Intersection *to = new Intersection(toPixel, group);
         addIntersection(from);
         addIntersection(to);
-        addConnection(new Connection(from, to, group));
+        return addConnection(new Connection(from, to, group));
     }
     void update();
     Model* getModel(int i) {
