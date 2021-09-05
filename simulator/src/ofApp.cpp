@@ -229,11 +229,11 @@ void ofApp::draw(){
     //ofClear(70);
     ofBackground(70);
 
-    uint16_t size = 2;
+    uint16_t size = 3;
 
     ofPushMatrix();
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-    for (uint8_t i=0; i<5; i++) {
+    for (uint8_t i=0; i<MAX_GROUPS; i++) {
         if (heptagon->interCount[i] > 0) {
             for (uint8_t j=0; j<heptagon->interCount[i]; j++) {
                 ofSetColor(getColor(heptagon->inter[i][j]->topPixel));
@@ -269,7 +269,7 @@ void ofApp::draw(){
 }
 
 glm::vec2 ofApp::intersectionPos(Intersection* intersection, int8_t j) {
-    uint16_t groupDiam[5] = {900, 400, 300, 0, 0};
+    uint16_t groupDiam[MAX_GROUPS] = {1000, 400, 250, 0, 0};
 
     uint8_t i = log2(intersection->group);
     if (j<0) {

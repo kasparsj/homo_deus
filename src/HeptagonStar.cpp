@@ -3,6 +3,15 @@
 void HeptagonStar::setup() {
     initInter(14, 7, 7);
     initConn(7, 14, 14, 7);
+    initModels(7);
+
+    addModel(new Model(M_DEFAULT, 1, GROUP1));
+    addModel(new Model(M_STAR, 0, GROUP1));
+    addModel(new Model(M_OUTER_STAR, 1, GROUP1));
+    addModel(new Model(M_INNER_CIRCLE, 0, GROUP2));
+    addModel(new Model(M_HORNS, 0, GROUP1));
+    addModel(new Model(M_HALO, 0, GROUP2));
+    addModel(new Model(M_SPLATTER, 1, GROUP2 | GROUP3));
 
     // outer (inter[0])
     addBridge(918, 1, GROUP1); // bottom
@@ -43,37 +52,37 @@ void HeptagonStar::setup() {
     Intersection *middleNeuron2 = inter[1][(i-1+7) % 7];
     Connection *middleConnection1 = addConnection(new Connection(middleNeuron1, inter[2][i], GROUP3));
     Connection *middleConnection2 = addConnection(new Connection(middleNeuron2, inter[2][i], GROUP3));
-    models[M_STAR].put(middleConnection1->fromPort, middleNeuron1->ports[1], 1);
-    models[M_OUTER_STAR].put(middleConnection1, 0);
-    models[M_STAR].put(middleConnection2->fromPort, middleNeuron2->ports[0], 1);
-    models[M_OUTER_STAR].put(middleConnection2, 0);
-    models[M_INNER_CIRCLE].put(middleConnection1, 1);
-    models[M_INNER_CIRCLE].put(middleConnection2, 1);
+    models[M_STAR]->put(middleConnection1->fromPort, middleNeuron1->ports[1], 1);
+    models[M_OUTER_STAR]->put(middleConnection1, 0);
+    models[M_STAR]->put(middleConnection2->fromPort, middleNeuron2->ports[0], 1);
+    models[M_OUTER_STAR]->put(middleConnection2, 0);
+    models[M_INNER_CIRCLE]->put(middleConnection1, 1);
+    models[M_INNER_CIRCLE]->put(middleConnection2, 1);
   }
   
   for (uint8_t i=0; i<7; i++) {
     Intersection *innerNeuron1 = inter[2][i];
     Intersection *innerNeuron2 = inter[2][(i+1) % 7];
     Connection *innerConnection = addConnection(new Connection(innerNeuron1, innerNeuron2, GROUP4));
-    models[M_STAR].put(innerConnection->fromPort, innerNeuron1->ports[1], 1);
-    models[M_STAR].put(innerConnection->toPort, innerNeuron2->ports[0], 1);
-    models[M_OUTER_STAR].put(innerConnection, 0);
-    models[M_INNER_CIRCLE].put(innerConnection, 1);
+    models[M_STAR]->put(innerConnection->fromPort, innerNeuron1->ports[1], 1);
+    models[M_STAR]->put(innerConnection->toPort, innerNeuron2->ports[0], 1);
+    models[M_OUTER_STAR]->put(innerConnection, 0);
+    models[M_INNER_CIRCLE]->put(innerConnection, 1);
   }
 
-  models[M_HORNS].put(conn[1][5], 1);
-  models[M_HORNS].put(conn[1][6], 1);
-  models[M_HORNS].put(conn[1][7], 1);
-  models[M_HORNS].put(conn[1][8], 1);
-  models[M_HORNS].put(conn[2][6], 1);
-  models[M_HORNS].put(conn[2][7], 1);
-  models[M_HORNS].put(conn[2][8], 1);
-  models[M_HORNS].put(conn[2][9], 1);
-  //models[M_HORNS].put(conn[3][3], 1);
+  models[M_HORNS]->put(conn[1][5], 1);
+  models[M_HORNS]->put(conn[1][6], 1);
+  models[M_HORNS]->put(conn[1][7], 1);
+  models[M_HORNS]->put(conn[1][8], 1);
+  models[M_HORNS]->put(conn[2][6], 1);
+  models[M_HORNS]->put(conn[2][7], 1);
+  models[M_HORNS]->put(conn[2][8], 1);
+  models[M_HORNS]->put(conn[2][9], 1);
+  //models[M_HORNS]->put(conn[3][3], 1);
 
-  models[M_HALO].put(conn[3][3], 1);
-  models[M_HALO].put(conn[2][6], 1);
-  models[M_HALO].put(conn[2][9], 1);
+  models[M_HALO]->put(conn[3][3], 1);
+  models[M_HALO]->put(conn[2][6], 1);
+  models[M_HALO]->put(conn[2][9], 1);
   
   #ifdef LP_DEBUG
   LP_LOGF("HeptagonStar setup complete");

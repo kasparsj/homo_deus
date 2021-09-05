@@ -9,10 +9,12 @@ class LPObject {
   public:
     static LPObject* instance;
     uint16_t pixelCount;
-    uint8_t interCount[5] = {0};
-    uint8_t connCount[5] = {0};
-    Intersection **inter[5];
-    Connection **conn[5];
+    uint8_t interCount[MAX_GROUPS] = {0};
+    uint8_t connCount[MAX_GROUPS] = {0};
+    Intersection **inter[MAX_GROUPS];
+    Connection **conn[MAX_GROUPS];
+    uint8_t modelCount;
+    Model **models;
 
     LPObject(uint16_t pixelCount) : pixelCount(pixelCount) {
         instance = this;
@@ -22,7 +24,7 @@ class LPObject {
         #endif
     }
     ~LPObject() {
-        for (uint8_t i=0; i<5; i++) {
+        for (uint8_t i=0; i<MAX_GROUPS; i++) {
             if (interCount[i] > 0) {
                 delete[] inter[i];
             }
@@ -30,6 +32,7 @@ class LPObject {
                 delete[] conn[i];
             }
         }
+        delete[] models;
         #ifdef LP_TEST
         delete[] intersections;
         delete[] connections;
@@ -41,7 +44,7 @@ class LPObject {
         interCount[2] = inter3Count;
         interCount[3] = inter4Count;
         interCount[4] = inter5Count;
-        for (uint8_t i=0; i<5; i++) {
+        for (uint8_t i=0; i<MAX_GROUPS; i++) {
             if (interCount[i] > 0) {
                 inter[i] = new Intersection*[interCount[i]]{0};
             }
@@ -53,11 +56,19 @@ class LPObject {
         connCount[2] = conn3Count;
         connCount[3] = conn4Count;
         connCount[4] = conn5Count;
-        for (uint8_t i=0; i<5; i++) {
+        for (uint8_t i=0; i<MAX_GROUPS; i++) {
             if (connCount[i] > 0) {
                 conn[i] = new Connection*[connCount[i]]{0};
             }
         }
+    }
+    void initModels(uint8_t modelCount) {
+        this->modelCount = modelCount;
+        models = new Model*[modelCount]{0};
+    }
+    Model* addModel(Model *model) {
+        models[model->id] = model;
+        return model;
     }
     Intersection* addIntersection(Intersection *intersection);
     Connection* addConnection(Connection *connection);
@@ -69,7 +80,9 @@ class LPObject {
         addConnection(new Connection(from, to, group));
     }
     void update();
-    virtual Model* getModel(int i) = 0;
+    Model* getModel(int i) {
+      return models[i];
+    }
     Intersection* getIntersection(uint8_t i, uint8_t groups);
     Intersection* getFreeIntersection(uint8_t groups);
 
@@ -83,7 +96,7 @@ class LPObject {
     #endif
 
   private:
-    uint8_t nextInter[5] = {0};
-    uint8_t nextConn[5] = {0};
+    uint8_t nextInter[MAX_GROUPS] = {0};
+    uint8_t nextConn[MAX_GROUPS] = {0};
 
 };

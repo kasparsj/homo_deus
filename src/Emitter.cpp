@@ -20,7 +20,7 @@ uint16_t Emitter::randomLife() {
 }
 
 uint8_t Emitter::randomModel() {
-  return floor(LP_RANDOM(NUM_MODELS));
+  return floor(LP_RANDOM(object.modelCount));
 }
 
 uint16_t Emitter::randomLength() {
