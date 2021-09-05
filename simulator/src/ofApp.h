@@ -9,6 +9,8 @@
 #define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2) // 919
 #define OSC_PORT 54321
 
+glm::vec2 pointOnEllipse(float rad, float w, float h);
+
 class ofApp : public ofBaseApp{
 
 public:

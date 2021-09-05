@@ -222,10 +222,28 @@ void ofApp::doCommand(char command) {
 //--------------------------------------------------------------
 void ofApp::draw(){
 
-    for (uint16_t i=0; i<PIXEL_COUNT; i++) {
-        //strip.SetPixelColor(i, getColor(i));
-    }
+    uint16_t size = 10;
+    uint16_t groupDiam[5] = {900, 400, 300, 0, 0};
 
+    ofPushMatrix();
+    ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+    for (uint8_t i=0; i<5; i++) {
+        float offset = TWO_PI/4.f+(i%2*TWO_PI/7.f/2.f);
+        if (heptagon->interCount[i] > 0) {
+            for (uint8_t j=0; j<heptagon->interCount[i]; j++) {
+                float delta = heptagon->interCount[i] == 14 ? 0.05-(j%2)*0.1 : 0;
+                glm::vec2 point = pointOnEllipse(TWO_PI/7.f*j+offset+delta, groupDiam[i], groupDiam[i]);
+                ofSetColor(getColor(heptagon->inter[i][j]->topPixel));
+                ofDrawCircle(point, size);
+            }
+        }
+    }
+    ofPopMatrix();
+
+}
+
+glm::vec2 pointOnEllipse(float rad, float w, float h) {
+  return glm::vec2(cos(rad) * w / 2.f, sin(rad) * h/2.f);
 }
 
 ofColor ofApp::getColor(uint16_t i) {

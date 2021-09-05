@@ -19,6 +19,7 @@ class HeptagonStar : public LPObject {
     };
 
     HeptagonStar(uint16_t pixelCount) : LPObject(pixelCount) {
+        setup();
     }
 
     void setup();

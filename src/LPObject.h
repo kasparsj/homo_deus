@@ -9,6 +9,8 @@ class LPObject {
   public:
     static LPObject* instance;
     uint16_t pixelCount;
+    uint8_t interCount[5] = {0};
+    uint8_t connCount[5] = {0};
     Intersection **inter[5];
     Connection **conn[5];
 
@@ -119,8 +121,6 @@ class LPObject {
     #endif
 
   private:
-    uint8_t interCount[5] = {0};
-    uint8_t connCount[5] = {0};
     uint8_t nextInter[5] = {0};
     uint8_t nextConn[5] = {0};
 

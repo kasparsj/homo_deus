@@ -4,6 +4,7 @@ void HeptagonStar::setup() {
     initInter(14, 7, 7);
     initConn(7, 14, 14, 7);
 
+    // outer (inter[0])
     addBridge(918, 1, GROUP1); // bottom
     addBridge(653, 654, GROUP1); // bottom left
     addBridge(389, 390, GROUP1); // left
@@ -12,6 +13,7 @@ void HeptagonStar::setup() {
     addBridge(522, 525, GROUP1); // right
     addBridge(260, 263, GROUP1); // bottom right
 
+    // middle (inter[1])
     addIntersection(new Intersection(4, 612, 42), GROUP2);  // bottom left
     addIntersection(new Intersection(4, 696, 347), GROUP2);  // bottom left
     addIntersection(new Intersection(4, 434, 81), GROUP2);  // top
@@ -27,6 +29,7 @@ void HeptagonStar::setup() {
       addConnection(new Connection(outerNeuron2, inter[1][i], GROUP2));
     }
 
+    // inner (inter[2)
     addIntersection(new Intersection(4, 597, 320), GROUP3);
     addIntersection(new Intersection(4, 55, 334), GROUP3);
     addIntersection(new Intersection(4, 708, 69), GROUP3);
