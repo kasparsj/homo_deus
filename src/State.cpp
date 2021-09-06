@@ -1,4 +1,4 @@
-#include "Emitter.h"
+#include "State.h"
 #include "Model.h"
 #include "Behaviour.h"
 #include "HeptagonStar.h"
@@ -11,35 +11,35 @@
 #include <ArduinoOSC.h>
 #endif
 
-float Emitter::randomSpeed() {
+float State::randomSpeed() {
   return EMITTER_MIN_SPEED + LP_RANDOM(max(EMITTER_MAX_SPEED - EMITTER_MIN_SPEED, 0.f));
 }
 
-uint16_t Emitter::randomLife() {
+uint16_t State::randomLife() {
   return EMITTER_MIN_LIFE + LP_RANDOM(max(EMITTER_MAX_LIFE - EMITTER_MIN_LIFE, 0));
 }
 
-uint8_t Emitter::randomModel() {
+uint8_t State::randomModel() {
   return floor(LP_RANDOM(object.modelCount));
 }
 
-uint16_t Emitter::randomLength() {
+uint16_t State::randomLength() {
   return (uint16_t) (EMITTER_MIN_LENGTH + LP_RANDOM(max(EMITTER_MAX_LENGTH - EMITTER_MIN_LENGTH, 0)));
 }
 
-float Emitter::randomBrightness() {
+float State::randomBrightness() {
   return LP_RANDOM(1001) / 1000.f;
 }
 
-uint16_t Emitter::randomNextEmit() {
+uint16_t State::randomNextEmit() {
   return EMITTER_MIN_NEXT + LP_RANDOM(max(EMITTER_MAX_NEXT - EMITTER_MIN_NEXT, 0));
 }
 
-ColorRGB Emitter::randomColor() {
+ColorRGB State::randomColor() {
   return ColorRGB(LP_RANDOM(255), LP_RANDOM(255), LP_RANDOM(255));
 }
 
-ColorRGB Emitter::paletteColor(uint8_t color) {
+ColorRGB State::paletteColor(uint8_t color) {
   #ifdef ARDUINO
   const CRGBPalette16& palette = gGradientPalettes[currentPalette];
   CRGB crgb = ColorFromPalette(palette, color);
@@ -49,14 +49,14 @@ ColorRGB Emitter::paletteColor(uint8_t color) {
   #endif
 }
 
-void Emitter::autoEmit(unsigned long ms) {
+void State::autoEmit(unsigned long ms) {
   if (autoEnabled && nextEmit <= ms) {
     emit();
     nextEmit = ms + randomNextEmit();
   }
 }
 
-int8_t Emitter::emit(EmitParams &params) {
+int8_t State::emit(EmitParams &params) {
   uint16_t length = params.length > 0 ? params.length : randomLength();
   if (totalLights + length > MAX_TOTAL_LIGHTS) {
     LP_LOGF("emit failed, %d is over max %d lights\n", totalLights + length, MAX_TOTAL_LIGHTS);
@@ -65,16 +65,9 @@ int8_t Emitter::emit(EmitParams &params) {
   uint8_t which = params.model >= 0 ? params.model : randomModel();  
   Model *model = object.getModel(which);
   Behaviour *behaviour = new Behaviour(params);
-  Intersection *intersection = NULL;
-  uint8_t emitGroups = behaviour->emitGroups > 0 ? behaviour->emitGroups : model->emitGroups;
   int8_t from = params.from >= 0 ? params.from : -1;
-  if (from >= 0) {
-    intersection = object.getIntersection(from, emitGroups);
-  }
-  else {
-    intersection = object.getFreeIntersection(emitGroups);
-  }
-  if (intersection == NULL) {
+  LPEmitter *emitter = getEmitter(model, behaviour, from);
+  if (emitter == NULL) {
     LP_LOGF("emit failed, no free emitter.");
     return -1;
   }
@@ -101,7 +94,7 @@ int8_t Emitter::emit(EmitParams &params) {
         numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, brightness, params.fadeSpeed, totalLights + numFull + numTrail, totalLightLists + 1);      
       #endif
       lightLists[i]->setup(numFull, color, brightness, params.fadeSpeed, params.fadeThresh);
-      doEmit(intersection, lightLists[i]);
+      doEmit(emitter, lightLists[i]);
       #ifdef LP_OSC_REPLY
       LP_OSC_REPLY(i);
       #endif
@@ -114,14 +107,30 @@ int8_t Emitter::emit(EmitParams &params) {
   return -1;
 }
 
-void Emitter::doEmit(Intersection* from, LightList *lightList) {
+LPEmitter* State::getEmitter(Model* model, Behaviour* behaviour, int8_t from) {
+    if (behaviour->emitFromRandom()) {
+        from = from >= 0 ? from : LP_RANDOM(object.countConnections());
+        return object.getConnection(from, behaviour->emitGroups);
+    }
+    else {
+        uint8_t emitGroups = behaviour->emitGroups > 0 ? behaviour->emitGroups : model->emitGroups;
+        if (from >= 0) {
+          return object.getIntersection(from, emitGroups);
+        }
+        else {
+          return object.getFreeIntersection(emitGroups);
+        }
+    }
+}
+
+void State::doEmit(LPEmitter* from, LightList *lightList) {
   lightList->initEmit();
   from->add(lightList);
   totalLights += lightList->numLights;
   totalLightLists++;
 }
 
-void Emitter::update() {
+void State::update() {
   memset(pixelValuesR, 0, sizeof(uint16_t) * object.pixelCount);
   memset(pixelValuesG, 0, sizeof(uint16_t) * object.pixelCount);
   memset(pixelValuesB, 0, sizeof(uint16_t) * object.pixelCount);
@@ -179,7 +188,7 @@ void Emitter::update() {
   }
 }
 
-ColorRGB Emitter::getPixel(uint16_t i) {
+ColorRGB State::getPixel(uint16_t i) {
   ColorRGB color = ColorRGB(0, 0, 0);
   if (pixelDiv[i]) {
     color.R = min(pixelValuesR[i] / pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
@@ -189,35 +198,35 @@ ColorRGB Emitter::getPixel(uint16_t i) {
   return color;
 }
 
-void Emitter::setPixel(uint16_t pixel, ColorRGB &color) {
+void State::setPixel(uint16_t pixel, ColorRGB &color) {
   pixelValuesR[pixel] += color.R;
   pixelValuesG[pixel] += color.G;
   pixelValuesB[pixel] += color.B;
   pixelDiv[pixel]++;
 }
 
-void Emitter::colorAll() {
+void State::colorAll() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     lightLists[i]->setColor(randomColor());
   }
 }
 
-void Emitter::splitAll() {
+void State::splitAll() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     lightLists[i]->split();
   }
 }
 
-void Emitter::stopAll() {
+void State::stopAll() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     lightLists[i]->setLife(-1);
   }
 }
 
-void Emitter::stopNote(uint8_t noteId) {
+void State::stopNote(uint8_t noteId) {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     if (lightLists[i]->noteId == noteId) {
@@ -227,7 +236,7 @@ void Emitter::stopNote(uint8_t noteId) {
 }
 
 #ifdef LP_TEST
-void Emitter::debug() {
+void State::debug() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     LP_STRING lights = "";

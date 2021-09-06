@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Config.h"
+#include "LPEmitter.h"
 #include "LPBase.h"
 #include "Port.h"
 #include "Light.h"
 
 class Intersection;
 
-class Connection : public LPBase<uint16_t> {
+class Connection : public LPEmitter, public LPBase<uint16_t> {
 
   public:
     Intersection *from;
@@ -22,6 +23,9 @@ class Connection : public LPBase<uint16_t> {
     Connection(Intersection *from, Intersection *to, uint8_t group);
     void addLight(Light *light);
     void update();
+    void emitLightList(LightList* lightList) {
+        LPBase::emitLightList(lightList);
+    }
     void emitLight(Light* light);
     void updateLight(uint16_t i);
     void outgoing(Light *light, int16_t i = -1);

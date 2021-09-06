@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Config.h"
+#include "LPEmitter.h"
 #include "LPBase.h"
 #include "Port.h"
 #include "Behaviour.h"
 
-class Intersection : public LPBase<uint8_t> {
+class Intersection : public LPEmitter, public LPBase<uint8_t> {
 
   public:
 
@@ -31,6 +32,9 @@ class Intersection : public LPBase<uint8_t> {
     }
     
     void addPort(Port *p);
+    void emitLightList(LightList* lightList) {
+        LPBase::emitLightList(lightList);
+    }
     void emitLight(Light* light);
     void queueOutgoing(uint8_t i);
     Port* sendOut(uint8_t i);

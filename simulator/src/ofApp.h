@@ -15,7 +15,7 @@ class ofApp : public ofBaseApp{
 
 public:
     HeptagonStar *heptagon;
-    Emitter *emitter;
+    State *emitter;
 
     void setup();
     void update();

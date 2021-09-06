@@ -4,7 +4,7 @@
 #include "EmitParams.h"
 #include "LPObject.h"
 
-class Emitter {
+class State {
 
   public:
   
@@ -20,13 +20,13 @@ class Emitter {
     bool autoEnabled = false;
     uint8_t currentPalette = 0;
     
-    Emitter(LPObject &obj) : object(obj) {
+    State(LPObject &obj) : object(obj) {
       pixelValuesR = new uint16_t[obj.pixelCount]{0};
       pixelValuesG = new uint16_t[obj.pixelCount]{0};
       pixelValuesB = new uint16_t[obj.pixelCount]{0};
       pixelDiv = new uint8_t[obj.pixelCount]{0};
     }
-    ~Emitter() {
+    ~State() {
       delete[] pixelValuesR;
       delete[] pixelValuesG;
       delete[] pixelValuesB;
@@ -69,6 +69,7 @@ class Emitter {
       params.life = max(1, (int) (1.f/params.speed) + 1);
       return emit(params);
     }
+    LPEmitter* getEmitter(Model* model, Behaviour* behaviour, int8_t from);
     void update();
     void colorAll();
     void splitAll();
@@ -82,7 +83,7 @@ class Emitter {
     ColorRGB getPixel(uint16_t i);
     
   private:
-    void doEmit(Intersection* from, LightList *lightList);
+    void doEmit(LPEmitter* from, LightList *lightList);
     void setPixel(uint16_t pixel, ColorRGB &color);
 
 };

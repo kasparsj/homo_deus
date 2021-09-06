@@ -4,7 +4,7 @@
 void ofApp::setup(){
     ofSetFrameRate(62);
     heptagon = new HeptagonStar(PIXEL_COUNT);
-    emitter = new Emitter(*heptagon);
+    emitter = new State(*heptagon);
     receiver.setup( OSC_PORT );
 }
 

@@ -2,7 +2,7 @@
 
 #include "Config.h"
 #include "LPObject.h"
-#include "Emitter.h"
+#include "State.h"
 
 class HeptagonStar : public LPObject {
 

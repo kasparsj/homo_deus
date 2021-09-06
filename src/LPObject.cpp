@@ -50,7 +50,7 @@ void LPObject::update() {
 }
 
 Intersection* LPObject::getIntersection(uint8_t i, uint8_t groups) {
-    for (uint8_t j=0; i<MAX_GROUPS; i++) {
+    for (uint8_t j=0; j<MAX_GROUPS; j++) {
         if (groups & (uint8_t) pow(2, j)) {
           if (i < interCount[i]) {
             return inter[0][i];
@@ -71,6 +71,18 @@ Intersection* LPObject::getFreeIntersection(uint8_t groups) {
               return inter[i][j];
             }
           }
+        }
+    }
+    return NULL;
+}
+
+Connection* LPObject::getConnection(uint8_t i, uint8_t groups) {
+    for (uint8_t j=0; j<MAX_GROUPS; j++) {
+        if (groups == 0 || groups & (uint8_t) pow(2, j)) {
+          if (i < connCount[i]) {
+            return conn[0][i];
+          }
+          i -= connCount[i];
         }
     }
     return NULL;

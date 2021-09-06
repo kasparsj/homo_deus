@@ -34,4 +34,7 @@ class Behaviour {
     bool expireImmediately() {
         return flags && B_EXPIRE_IMMEDIATE;
     }
+    bool emitFromRandom() {
+        return flags && B_EMIT_FROM_RANDOM;
+    }
 };
