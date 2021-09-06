@@ -27,7 +27,7 @@ NeoPixelBus<NeoGrbFeature, NeoWs2813Method> strip1(PIXEL_COUNT1, PIXEL_PIN1);
 NeoPixelBus<NeoGrbFeature, NeoEsp32Rmt5Ws2812xMethod> strip2(PIXEL_COUNT2, PIXEL_PIN2);
 NeoGamma<NeoGammaTableMethod> colorGamma;
 HeptagonStar heptagon(PIXEL_COUNT);
-Emitter *emitter;
+State *state;
 bool showIntersections = false;
 bool showConnections = false;
 bool showPalette = false;
@@ -55,7 +55,7 @@ void setup() {
 
   pinMode(BUTTON_PIN, INPUT);
 
-  emitter = new Emitter(heptagon);
+  state = new State(heptagon);
 
   #ifdef LP_DEBUG
   Serial.println("setup complete");
@@ -113,9 +113,9 @@ void update() {
   fpsIndex = (fpsIndex + 1) % AVG_FPS_FRAMES;
   #endif
   gPrevMillis = gMillis;
-  emitter->autoEmit(gMillis);
+  state->autoEmit(gMillis);
   heptagon.update();
-  emitter->update();
+  state->update();
 }
 
 float getFPS() {
@@ -138,7 +138,7 @@ void draw() {
 }
 
 RgbColor getColor(uint16_t i) {
-  ColorRGB pixel = emitter->getPixel(i);
+  ColorRGB pixel = state->getPixel(i);
   RgbColor color = RgbColor(pixel.R, pixel.G, pixel.B);
   #ifdef LP_TEST
   if (showAll) {
@@ -151,7 +151,7 @@ RgbColor getColor(uint16_t i) {
     color.B = (heptagon.isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
   if (showPalette && i < 256) {
-    pixel = emitter->paletteColor(i);
+    pixel = state->paletteColor(i);
     color = RgbColor(pixel.R, pixel.G, pixel.B);
   }
   #endif
@@ -184,17 +184,17 @@ void doCommand(char command) {
       ESP.restart();
       break;
     case 'e':
-      emitter->autoEnabled = !emitter->autoEnabled;
-      Serial.printf("AutoEmitter is %s", emitter->autoEnabled ? "enabled" : "disabled");
+      state->autoEnabled = !state->autoEnabled;
+      Serial.printf("AutoEmitter is %s", state->autoEnabled ? "enabled" : "disabled");
       break;
     case '.':
-      emitter->stopAll();
+      state->stopAll();
       break;
     case '!':
-      emitter->colorAll();
+      state->colorAll();
       break;        
     case 's':
-      emitter->splitAll();
+      state->splitAll();
       break;
     #ifdef LP_TEST
     case 'f':
@@ -216,19 +216,19 @@ void doCommand(char command) {
       showPalette = !showPalette;
       break;
     case '>':
-      if (emitter->currentPalette < 32)
-      emitter->currentPalette++;
+      if (state->currentPalette < 32)
+      state->currentPalette++;
       break;
     case '<':
-      if (emitter->currentPalette > 0) {
-        emitter->currentPalette--;
+      if (state->currentPalette > 0) {
+        state->currentPalette--;
       }
       break;
     case 'l':
-      Serial.printf("Total %d lights\n", emitter->totalLights);
+      Serial.printf("Total %d lights\n", state->totalLights);
       break;
     case 'L':
-      emitter->debug();
+      state->debug();
       break;
     case 'C':
       heptagon.dumpConnections();
@@ -243,40 +243,40 @@ void doCommand(char command) {
     case '4':
     case '5':
     case '6':
-      emitter->emit(command - '1');
+      state->emit(command - '1');
       break;
     case '7': {
       EmitParams p;
       p.model = M_STAR;
       p.colorChangeGroups |= GROUP1;
-      emitter->emit(p);
+      state->emit(p);
       break;
     }
     case '+':
-      emitter->emitSplatter();
+      state->emitSplatter();
       break;
     case '*':
-      emitter->emitRandom();
+      state->emitRandom();
       break;        
     case '/': { // emitSegment
       EmitParams params;
       params.behaviourFlags |= B_RENDER_SEGMENT;
       params.length = 1;
-      emitter->emit(params);
+      state->emit(params);
       break;
     }
     case '-': { // emitBounce
       EmitParams params;
       params.model = M_STAR;
-      params.behaviourFlags |= B_RND_PORT_BOUNCE;
-      emitter->emit(params);
+      params.behaviourFlags |= B_FORCE_BOUNCE;
+      state->emit(params);
       break;
     }
     case '?': { // emitNoise
       EmitParams params;
       //params.order = LIST_NOISE;
       params.behaviourFlags |= B_BRI_CONST_NOISE;
-      emitter->emit(params);
+      state->emit(params);
       break;
     }
   }
@@ -344,29 +344,29 @@ void onCommand(const OscMessage& m) {
 void onEmit(const OscMessage& m) {
   EmitParams params;
   parseParams(params, m);
-  emitter->emit(params);
+  state->emit(params);
 }
 
 void onNoteOn(const OscMessage& m) {
   EmitParams params;
   params.life = INFINITE_LIFE;
   parseParams(params, m);
-  emitter->emit(params);
+  state->emit(params);
 }
 
 void onNoteOff(const OscMessage& m) {
   if (m.size() > 0) {
     uint16_t noteId = m.arg<uint16_t>(0);
-    emitter->stopNote(noteId);
+    state->stopNote(noteId);
   }
   else {
-    emitter->stopAll();
+    state->stopAll();
   }
 }
 
 void onPalette(const OscMessage& m) {
   if (m.size() > 0) {
-    emitter->currentPalette = m.arg<uint8_t>(0);
+    state->currentPalette = m.arg<uint8_t>(0);
   }
 }
 
@@ -375,28 +375,28 @@ void onColor(const OscMessage &m) {
     uint8_t i = m.arg<uint8_t>(0);
     if (m.size() > 1) {
       uint8_t color = m.arg<uint8_t>(1);
-      emitter->lightLists[i]->setColor(emitter->paletteColor(color));
+      state->lightLists[i]->setColor(state->paletteColor(color));
     }
     else {
-      emitter->lightLists[i]->setColor(emitter->randomColor());
+      state->lightLists[i]->setColor(state->randomColor());
     }
   }
   else {
-    emitter->colorAll();
+    state->colorAll();
   }
 }
 
 void onSplit(const OscMessage &m) {
   if (m.size() > 0) {
     uint8_t i = m.arg<uint8_t>(0);
-    emitter->lightLists[i]->split();
+    state->lightLists[i]->split();
   }
   else {
-    emitter->splitAll();
+    state->splitAll();
   }
 }
 
 void onAuto(const OscMessage &m) {
-  emitter->autoEnabled = !emitter->autoEnabled;
+  state->autoEnabled = !state->autoEnabled;
 }
 #endif
