@@ -3,10 +3,9 @@
 #include "Intersection.h"
 #include "LPObject.h"
 
-Connection::Connection(Intersection *from, Intersection *to, uint8_t group) {
+Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LPBase(group) {
   this->from = from;
   this->to = to;
-  this->group = group;
   
   fromPort = new Port(this, from, false, group);
   toPort = new Port(this, to, true, group);    
@@ -42,37 +41,26 @@ Connection::Connection(Intersection *from, Intersection *to, uint8_t group) {
   }
   if (leds > 0) {
     numLeds = leds;
-    maxLights = min(numLeds * CONNECTION_MAX_MULT, CONNECTION_MAX_LIGHTS);
-    lights = new Light*[maxLights]();
-    for (uint16_t i=0; i<maxLights; i++) {
-      lights[i] = NULL;
-    }    
+    initLights(min(numLeds * CONNECTION_MAX_MULT, CONNECTION_MAX_LIGHTS));
   }
 }
 
 void Connection::addLight(Light *light) {
   if (numLeds > 0) {
-    if (freeLight < maxLights) {
-      lights[freeLight] = light;
-      uint8_t i;
-      for (i=freeLight+1; i<maxLights; i++) {
-        if (lights[i] == NULL) {
-          break;
-        }
-      }
-      freeLight = i;
-    }
-    else {
-      LP_LOGF("Connection addLight no free slot: %d - %d\n", fromPixel, toPixel);
-    }
+    LPBase::addLight(light);
   }
   else {
     outgoing(light);
   }
 }
 
+void Connection::emitLight(Light* light) {
+    // todo: implement
+}
+
 void Connection::update() {
   if (numLeds == 0) return;
+  updateLightLists();
   for (uint16_t i=0; i<maxLights; i++) {
     updateLight(i);
   }
@@ -82,9 +70,10 @@ void Connection::updateLight(uint16_t i) {
   Light *light = lights[i];
   if (light != NULL) {
     light->resetPixels();
+    Behaviour *behaviour = light->getBehaviour();
     // hack: fix rounding error
     float pos = round(light->position * 1000) / 1000.0;
-    if (light->speed == 0 && light->shouldExpire()) {
+    if (light->shouldExpire() && (light->speed == 0 || (behaviour != NULL && behaviour->expireImmediately()))) {
       light->isExpired = true;
       removeLight(i);
     }
@@ -101,13 +90,6 @@ void Connection::updateLight(uint16_t i) {
       outgoing(light, i);
     }
   }
-}
-
-void Connection::removeLight(uint16_t i) {
-  lights[i] = NULL;
-  if (i < freeLight) {
-    freeLight = i;
-  }  
 }
 
 void Connection::outgoing(Light* light, int16_t i) {

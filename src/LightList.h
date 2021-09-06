@@ -19,7 +19,8 @@ class LightList {
     float fadeSpeed = 0;
     float fadeThresh = 0;
     int16_t life = INFINITE_LIFE;
-    ListOrder order = LIST_SEQUENTIAL;
+    ListOrder order = LIST_ORDER_SEQUENTIAL;
+    ListHead head = LIST_HEAD_FRONT;
     bool linked = true;
     Model *model = 0;
     Behaviour *behaviour = 0;
@@ -51,9 +52,6 @@ class LightList {
       return lights[i];
     }
     
-    void setOrder(ListOrder order) {
-      this->order = order;
-    }
     void setSpeed(float speed);
     void setFade(float fadeSpeed, float fadeThresh = 0) {
       this->fadeSpeed = fadeSpeed;
@@ -62,12 +60,6 @@ class LightList {
     void setLife(int16_t numFrames);
     void setColor(ColorRGB color);
     void setLinked(bool linked);
-    void setTrail(uint16_t length) {
-      trail = length;
-    }
-    void setNoteId(uint16_t noteId) {
-      this->noteId = noteId;
-    }
     void initEmit();
     void split();
     float getPosition(Light *light);

@@ -33,7 +33,9 @@ class EmitParams {
     float fadeSpeed = 0;
     float fadeThresh = 0;
     uint16_t length = 0;
-    ListOrder order = LIST_SEQUENTIAL;
+    float lengthChange = 0;
+    ListOrder order = LIST_ORDER_SEQUENTIAL;
+    ListHead head = LIST_HEAD_FRONT;
     bool linked = true;
     int8_t from = -1;
     int16_t life = DEFAULT_LIFE;
@@ -46,7 +48,7 @@ class EmitParams {
 
     uint16_t getTrail(float speed, uint16_t length) {
       uint16_t trail = 0;
-      if (order == LIST_SEQUENTIAL && linked && !(behaviourFlags & B_RENDER_SEGMENT)) {
+      if (order == LIST_ORDER_SEQUENTIAL && linked && !(behaviourFlags & B_RENDER_SEGMENT)) {
         trail = min((int) (speed * max(1, length / 2)), max(EMITTER_MAX_LENGTH, EMITTER_MAX_LIGHTS) - 1);
       }
       return trail;

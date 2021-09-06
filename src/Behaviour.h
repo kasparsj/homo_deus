@@ -22,7 +22,16 @@ class Behaviour {
     float getPosition(Light *light);
     ColorRGB getColor(Light *light, uint8_t group);
 
-    bool isRenderSegment() {
-      return flags & B_RENDER_SEGMENT;
+    bool renderSegment() {
+        return flags & B_RENDER_SEGMENT;
+    }
+    bool allowBounce() {
+        return flags & B_ALLOW_BOUNCE;
+    }
+    bool forceBounce() {
+        return flags & B_FORCE_BOUNCE;
+    }
+    bool expireImmediately() {
+        return flags && B_EXPIRE_IMMEDIATE;
     }
 };

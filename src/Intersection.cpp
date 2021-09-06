@@ -4,21 +4,21 @@
 
 uint8_t Intersection::nextId = 0;
 
-Intersection::Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel, uint8_t group) {
+Intersection::Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel, uint8_t group) : LPBase(group) {
   this->id = nextId++;
   this->numPorts = numPorts;
   this->topPixel = topPixel;
   this->bottomPixel = bottomPixel;
-  this->group = group;
-  this->ports = new Port*[numPorts]();
+  this->ports = new Port*[numPorts]{0};
   for (uint8_t i=0; i<numPorts; i++) {
-    ports[i] = 0;
+    ports[i] = NULL;
   }
+  initLights(EMITTER_MAX_LIGHTS);
 }
 
 void Intersection::addPort(Port *p) {
   for (uint8_t i=0; i<numPorts; i++) {
-    if (ports[i] == 0) {
+    if (ports[i] == NULL) {
       ports[i] = p;
       p->intersection = this;
       break;
@@ -26,68 +26,22 @@ void Intersection::addPort(Port *p) {
   }
 }
 
-void Intersection::add(LightList *lightList) {
-  for (uint8_t j=0; j<EMITTER_MAX_LIGHT_LISTS; j++) {
-    if (lightLists[j] == 0) {
-      lightLists[j] = lightList;
-      return;
-    }
-  }
-  LP_LOGF("Intersection %d addLightList no free slot\n", topPixel);
-}
-
-void Intersection::emit(uint8_t k) {
-  LightList *lightList = lightLists[k];
-  if (lightList->numEmitted < lightList->numLights) {
-    uint8_t batchSize = min(lightList->numLights - lightList->numEmitted, EMITTER_MAX_LIGHTS - numLights);
-    uint8_t j = lightList->numEmitted;      
-    for (uint8_t i=0; i<batchSize; i++) {
-      Light *light = (*lightList)[i+j];
-      if (light->position < 0) {
-        break;
-      }
-      lightList->numEmitted++;
-      // go straight out of zeroConnection
-      Behaviour *behaviour = lightList->behaviour;
-      if (numPorts == 2) {
-        for (uint8_t i=0; i<2; i++) {
-          if (behaviour->flags & B_RND_PORT_BOUNCE ? ports[i]->connection->numLeds > 0 : ports[i]->connection->numLeds == 0) {
-            light->setInPort(ports[i]);
-            break;
-          }
+void Intersection::emitLight(Light* light) {
+    // go straight out of zeroConnection
+    Behaviour *behaviour = light->getBehaviour();
+    if (numPorts == 2) {
+      for (uint8_t i=0; i<2; i++) {
+        if (behaviour->forceBounce() ? ports[i]->connection->numLeds > 0 : ports[i]->connection->numLeds == 0) {
+          light->setInPort(ports[i]);
+          break;
         }
       }
-      addLight(light);
     }
-  }
-  if (lightList->numEmitted >= lightList->numLights) {
-    lightLists[k] = 0;
-  }
-}
-
-void Intersection::addLight(Light *light) {
-  if (freeLight < EMITTER_MAX_LIGHTS) {
-    lights[freeLight] = light;
-    numLights++;
-    uint8_t i;
-    for (i=freeLight+1; i<EMITTER_MAX_LIGHTS; i++) {
-      if (lights[i] == 0) {
-        break;
-      }
-    }
-    freeLight = i;
-  }
-  else {
-    LP_LOGF("Intersection %d addLight no free slot\n", topPixel);
-  }
+    addLight(light);
 }
 
 void Intersection::update() {
-  for (uint8_t i=0; i<EMITTER_MAX_LIGHT_LISTS; i++) {
-    if (lightLists[i] != 0) {
-      emit(i);
-    }
-  }
+  updateLightLists();
   for (uint8_t i=0; i<EMITTER_MAX_LIGHTS; i++) {
     updateLight(i);
   }
@@ -116,14 +70,6 @@ void Intersection::updateLight(uint8_t i) {
     if (light->position >= 0.f) {
       light->pixel1 = topPixel;
     }
-  }
-}
-
-void Intersection::removeLight(uint8_t i) {
-  numLights--;
-  lights[i] = NULL;
-  if (i < freeLight) {
-    freeLight = i;
   }
 }
 
@@ -189,7 +135,7 @@ Port *Intersection::randomPort(Port *incoming, Behaviour *behaviour) {
   Port *port;
   do {
     port = ports[(uint8_t) LP_RANDOM(numPorts)];
-  } while (behaviour->flags & B_RND_PORT_BOUNCE ? port != incoming : port == incoming);
+  } while (!behaviour->allowBounce() && behaviour->forceBounce() ? port != incoming : port == incoming);
   return port;
 }
 

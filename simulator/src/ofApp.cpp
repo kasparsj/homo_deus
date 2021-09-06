@@ -213,7 +213,7 @@ void ofApp::doCommand(char command) {
     case '-': { // emitBounce
       EmitParams params;
       params.model = M_STAR;
-      params.behaviourFlags |= B_RND_PORT_BOUNCE;
+      params.behaviourFlags |= B_FORCE_BOUNCE;
       emitter->emit(params);
       break;
     }

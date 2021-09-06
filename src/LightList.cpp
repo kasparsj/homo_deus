@@ -86,7 +86,7 @@ float LightList::getPosition(Light *light) {
 
 void LightList::initPosition(uint16_t i, Light* light) {
   float position = i * (speed != 0 ? -1.f : 1.f);
-  if (order == LIST_RANDOM) {
+  if (order == LIST_ORDER_RANDOM) {
     position = LP_RANDOM(model->getMaxLength());
   }
   light->position = position;
@@ -94,12 +94,12 @@ void LightList::initPosition(uint16_t i, Light* light) {
 
 void LightList::initBri(uint16_t i, Light* light) {
   switch (order) {
-    case LIST_RANDOM:
+    case LIST_ORDER_RANDOM:
       if (fadeThresh > 0) {
         light->bri = (LP_RANDOM(fadeThresh * 3000.f) - (fadeThresh * 2000.f)) / 1000.f;
       }
       break;
-    case LIST_NOISE:
+    case LIST_ORDER_NOISE:
       light->bri = gPerlinNoise.GetValue(id * 10, i * 100);
       break;
   }
@@ -114,7 +114,7 @@ float LightList::getBri(Light *light) {
 
 void LightList::initLife(uint16_t i, Light* light) {
   int16_t life = light->life;    
-  if (life > 0 && order == LIST_SEQUENTIAL) {
+  if (life > 0 && order == LIST_ORDER_SEQUENTIAL) {
     life += ceil(1.0 / light->speed * i);
   }
   light->life = life;

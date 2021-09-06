@@ -38,37 +38,46 @@ struct ColorRGB {
 };
 
 enum HeptagonStarModel { 
-  M_DEFAULT, 
-  M_STAR, 
-  M_OUTER_STAR, 
-  M_INNER_CIRCLE,
-  M_HORNS,
-  M_HALO,
-  M_SPLATTER,
+    M_DEFAULT,
+    M_STAR,
+    M_OUTER_STAR,
+    M_INNER_CIRCLE,
+    M_HORNS,
+    M_HALO,
+    M_SPLATTER,
 };
 
 enum Groups {
-  GROUP1 = 1,
-  GROUP2 = 2,
-  GROUP3 = 4,
-  GROUP4 = 8,
-  GROUP5 = 16,
-  GROUP6 = 32,
-  GROUP7 = 64,
-  GROUP8 = 128,
+    GROUP1 = 1,
+    GROUP2 = 2,
+    GROUP3 = 4,
+    GROUP4 = 8,
+    GROUP5 = 16,
+    GROUP6 = 32,
+    GROUP7 = 64,
+    GROUP8 = 128,
 };
 
 enum BehaviourFlags {
-  B_POS_CHANGE_FADE = 1,
-  B_BRI_CONST_NOISE = 2,
-  B_RENDER_SEGMENT = 4,
-  B_RND_PORT_BOUNCE = 8,
+    B_POS_CHANGE_FADE = 1,
+    B_BRI_CONST_NOISE = 2,
+    B_RENDER_SEGMENT = 4,
+    B_ALLOW_BOUNCE = 8,
+    B_FORCE_BOUNCE = 16,
+    B_EXPIRE_IMMEDIATE = 32,
+    B_EMIT_FROM_RANDOM = 64,
 };
 
 enum ListOrder { 
-  LIST_SEQUENTIAL, 
-  LIST_RANDOM, 
-  LIST_NOISE,
+    LIST_ORDER_SEQUENTIAL,
+    LIST_ORDER_RANDOM,
+    LIST_ORDER_NOISE,
+};
+
+enum ListHead {
+    LIST_HEAD_FRONT,
+    LIST_HEAD_MIDDLE,
+    LIST_HEAD_BACK,
 };
 
 #define LP_DEBUG

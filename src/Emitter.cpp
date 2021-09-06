@@ -84,16 +84,17 @@ int8_t Emitter::emit(EmitParams &params) {
       uint16_t life = params.life >= 0 ? params.life : randomLife();
       ColorRGB color = params.color >= 0 ? paletteColor(params.color) : randomColor();
       float brightness = params.brightness >= 0 ? params.brightness : randomBrightness();
+      uint16_t numTrail = params.getTrail(speed, length);
       lightLists[i] = new LightList();
-      lightLists[i]->setOrder(params.order);
-      lightLists[i]->setSpeed(speed);
       lightLists[i]->model = model;
       lightLists[i]->behaviour = behaviour;
+      lightLists[i]->order = params.order;
+      lightLists[i]->head = params.head;
+      lightLists[i]->setSpeed(speed);
       lightLists[i]->setLinked(params.linked);
       lightLists[i]->setLife(life); 
-      lightLists[i]->setNoteId(params.noteId);
-      uint16_t numTrail = params.getTrail(speed, length);
-      lightLists[i]->setTrail(numTrail);
+      lightLists[i]->noteId = params.noteId;
+      lightLists[i]->trail = numTrail;
       uint16_t numFull = max(1, length - numTrail);
       #ifdef LP_DEBUG
       LP_LOGF("emitting %d %s lights (%d/%.1f/%d/%d/%.1f/%.3f), total: %d (%d)\n",
@@ -144,7 +145,7 @@ void Emitter::update() {
       ColorRGB color = light->getColor();
       allExpired = false;
       // todo: perhaps it's OK to always retrieve pixels
-      if (lightLists[i]->behaviour != NULL && lightLists[i]->behaviour->isRenderSegment()) {
+      if (lightLists[i]->behaviour != NULL && lightLists[i]->behaviour->renderSegment()) {
         uint16_t* pixels = light->getPixels();
         if (pixels != NULL) {
           // first value is length
