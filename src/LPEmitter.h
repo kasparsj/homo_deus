@@ -6,12 +6,16 @@
 class LPEmitter {
 
   public:
-    LightList *lightLists[EMITTER_MAX_LIGHT_LISTS] = {0};
 
+    LPEmitter() {
+        for (uint8_t i=0; i<EMITTER_MAX_LIGHT_LISTS; i++) {
+            lightLists[i] = NULL;
+        }
+    }
     void add(LightList *lightList) {
-        for (uint8_t j=0; j<EMITTER_MAX_LIGHT_LISTS; j++) {
-          if (lightLists[j] == 0) {
-            lightLists[j] = lightList;
+        for (uint8_t i=0; i<EMITTER_MAX_LIGHT_LISTS; i++) {
+          if (lightLists[i] == NULL) {
+            lightLists[i] = lightList;
             return;
           }
         }
@@ -19,7 +23,7 @@ class LPEmitter {
     }
     void updateLightLists() {
         for (uint8_t i=0; i<EMITTER_MAX_LIGHT_LISTS; i++) {
-          if (lightLists[i] != 0) {
+          if (lightLists[i] != NULL) {
             emit(i);
           }
         }
@@ -28,9 +32,13 @@ class LPEmitter {
         LightList *lightList = lightLists[k];
         emitLightList(lightList);
         if (lightList->numEmitted >= lightList->numLights) {
-          lightLists[k] = 0;
+          lightLists[k] = NULL;
         }
     }
     virtual void emitLightList(LightList *lightList) = 0;
+    
+  protected:
+    
+    LightList *lightLists[EMITTER_MAX_LIGHT_LISTS];
 
 };

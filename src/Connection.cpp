@@ -3,7 +3,7 @@
 #include "Intersection.h"
 #include "LPObject.h"
 
-Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LPBase(group) {
+Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LPEmitter(), LPBase(group) {
   this->from = from;
   this->to = to;
   

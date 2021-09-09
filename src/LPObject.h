@@ -46,8 +46,12 @@ class LPObject {
         interCount[4] = inter5Count;
         for (uint8_t i=0; i<MAX_GROUPS; i++) {
             if (interCount[i] > 0) {
-                inter[i] = new Intersection*[interCount[i]]{0};
+                inter[i] = new Intersection*[interCount[i]];
+                for (uint8_t j=0; j<interCount[i]; j++) {
+                    inter[i][j] = NULL;
+                }
             }
+            nextInter[i] = 0;
         }
     }
     void initConn(uint8_t conn1Count, uint8_t conn2Count=0, uint8_t conn3Count=0, uint8_t conn4Count=0, uint8_t conn5Count=0) {
@@ -58,13 +62,20 @@ class LPObject {
         connCount[4] = conn5Count;
         for (uint8_t i=0; i<MAX_GROUPS; i++) {
             if (connCount[i] > 0) {
-                conn[i] = new Connection*[connCount[i]]{0};
+                conn[i] = new Connection*[connCount[i]];
+                for (uint8_t j=0; j<connCount[i]; j++) {
+                    conn[i][j] = NULL;
+                }
             }
+            nextConn[i] = 0;
         }
     }
     void initModels(uint8_t modelCount) {
         this->modelCount = modelCount;
-        models = new Model*[modelCount]{0};
+        models = new Model*[modelCount];
+        for (uint8_t i=0; i<modelCount; i++) {
+            models[i] = NULL;
+        }
     }
     Model* addModel(Model *model) {
         models[model->id] = model;
@@ -72,13 +83,7 @@ class LPObject {
     }
     Intersection* addIntersection(Intersection *intersection);
     Connection* addConnection(Connection *connection);
-    Connection* addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group) {
-        Intersection *from = new Intersection(fromPixel, group);
-        Intersection *to = new Intersection(toPixel, group);
-        addIntersection(from);
-        addIntersection(to);
-        return addConnection(new Connection(from, to, group));
-    }
+    Connection* addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group);
     void update();
     Model* getModel(int i) {
       return models[i];
@@ -104,7 +109,7 @@ class LPObject {
     #endif
 
   private:
-    uint8_t nextInter[MAX_GROUPS] = {0};
-    uint8_t nextConn[MAX_GROUPS] = {0};
+    uint8_t nextInter[MAX_GROUPS];
+    uint8_t nextConn[MAX_GROUPS];
 
 };
