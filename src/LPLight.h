@@ -44,6 +44,7 @@ class LPLight
     virtual Behaviour* getBehaviour();
     virtual float getSpeed();
     virtual ColorRGB getColor();
+    virtual void setColor(ColorRGB color) {}
     virtual float getBrightness();
     virtual ColorRGB getPixelColor();
     uint16_t* getPixels();

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		04B85B5F6452FA21E2D034A3 /* ofxOscMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F22D73D403734B978E0825D /* ofxOscMessage.cpp */; };
+		2B367AAA26EBFCF6006FA9EC /* LPDebugger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B367AA826EBFCF5006FA9EC /* LPDebugger.cpp */; };
+		2B367AAB26EBFCF6006FA9EC /* LPLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B367AA926EBFCF6006FA9EC /* LPLight.cpp */; };
 		2B3E2E8B26E964AF0020216C /* Intersection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B3E2E6D26E964AE0020216C /* Intersection.cpp */; };
 		2B3E2E8C26E964AF0020216C /* LightList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B3E2E7026E964AE0020216C /* LightList.cpp */; };
 		2B3E2E8D26E964AF0020216C /* Light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B3E2E7726E964AE0020216C /* Light.cpp */; };
@@ -52,6 +54,10 @@
 		08ECDF7695F54BB777C6612D /* ofxOscSender.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ofxOscSender.cpp; path = ../../of_v0.11.0/addons/ofxOsc/src/ofxOscSender.cpp; sourceTree = SOURCE_ROOT; };
 		21F489E58264FC7DF2C76E25 /* OscHostEndianness.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = OscHostEndianness.h; path = ../../of_v0.11.0/addons/ofxOsc/libs/oscpack/src/osc/OscHostEndianness.h; sourceTree = SOURCE_ROOT; };
 		26BD3254420A7E0F17D71D88 /* OscOutboundPacketStream.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = OscOutboundPacketStream.h; path = ../../of_v0.11.0/addons/ofxOsc/libs/oscpack/src/osc/OscOutboundPacketStream.h; sourceTree = SOURCE_ROOT; };
+		2B367AA626EBFCF5006FA9EC /* LPLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPLight.h; sourceTree = "<group>"; };
+		2B367AA726EBFCF5006FA9EC /* LPDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPDebugger.h; sourceTree = "<group>"; };
+		2B367AA826EBFCF5006FA9EC /* LPDebugger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LPDebugger.cpp; sourceTree = "<group>"; };
+		2B367AA926EBFCF6006FA9EC /* LPLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LPLight.cpp; sourceTree = "<group>"; };
 		2B3E2E6C26E964AE0020216C /* Connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Connection.h; sourceTree = "<group>"; };
 		2B3E2E6D26E964AE0020216C /* Intersection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Intersection.cpp; sourceTree = "<group>"; };
 		2B3E2E6E26E964AE0020216C /* Port.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Port.h; sourceTree = "<group>"; };
@@ -308,10 +314,15 @@
 		2B3E2E6B26E964AE0020216C /* src */ = {
 			isa = PBXGroup;
 			children = (
+				2B367AA826EBFCF5006FA9EC /* LPDebugger.cpp */,
+				2B367AA726EBFCF5006FA9EC /* LPDebugger.h */,
+				2B367AA926EBFCF6006FA9EC /* LPLight.cpp */,
+				2B367AA626EBFCF5006FA9EC /* LPLight.h */,
 				2B3E2E6E26E964AE0020216C /* Port.h */,
 				2B3E2E8826E964AE0020216C /* Port.cpp */,
 				2B3E2E6F26E964AE0020216C /* Intersection.h */,
 				2B3E2E6D26E964AE0020216C /* Intersection.cpp */,
+				2B3E2E7A26E964AE0020216C /* LightList.h */,
 				2B3E2E7026E964AE0020216C /* LightList.cpp */,
 				2B3E2E7126E964AE0020216C /* FastNoise.h */,
 				2B3E2E7226E964AE0020216C /* Palettes.h */,
@@ -323,7 +334,6 @@
 				2B3E2E7726E964AE0020216C /* Light.cpp */,
 				2B3E2E8926E964AE0020216C /* State.h */,
 				2B3E2E7926E964AE0020216C /* State.cpp */,
-				2B3E2E7A26E964AE0020216C /* LightList.h */,
 				2B3E2E7B26E964AE0020216C /* HashMap.h */,
 				2B3E2E7C26E964AE0020216C /* LPObject.h */,
 				2B3E2E7E26E964AE0020216C /* LPObject.cpp */,
@@ -858,7 +868,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B367AAB26EBFCF6006FA9EC /* LPLight.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
+				2B367AAA26EBFCF6006FA9EC /* LPDebugger.cpp in Sources */,
 				2B3E2E9326E964AF0020216C /* Model.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				2B3E2E8C26E964AF0020216C /* LightList.cpp in Sources */,

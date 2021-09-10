@@ -3,6 +3,8 @@
 #define BUTTON_PIN 25
 #define HD_WIFI
 #define HD_OSC
+#define HD_SERIAL
+#define HD_DEBUGGER
 #define SC_HOST "192.168.43.101"
 #define SC_PORT 57120
 //#define LP_OSC_REPLY(I) OscWiFi.publish(SC_HOST, SC_PORT, "/emit", (I));
@@ -22,6 +24,9 @@
 #ifdef HD_OSC
 #include <ArduinoOSC.h>
 #endif
+#ifdef HD_DEBUGGER
+#include "src/LPDebugger.h"
+#endif
 
 NeoPixelBus<NeoGrbFeature, NeoWs2813Method> strip1(PIXEL_COUNT1, PIXEL_PIN1);
 NeoPixelBus<NeoGrbFeature, NeoEsp32Rmt5Ws2812xMethod> strip2(PIXEL_COUNT2, PIXEL_PIN2);
@@ -34,9 +39,8 @@ bool showPalette = false;
 bool showAll = false;
 unsigned long gMillis;
 unsigned long gPrevMillis = 0;
-#ifdef LP_TEST
-float fps[AVG_FPS_FRAMES] = {0.f};
-uint8_t fpsIndex = 0;
+#ifdef HD_DEBUGGER
+LPDebugger *debugger;
 #endif
 #ifdef HD_WIFI
 bool wifiConnected = false;
@@ -55,7 +59,10 @@ void setup() {
 
   state = new State(heptagon);
 
-  #ifdef LP_DEBUG
+  #ifdef HD_DEBUGGER
+  debugger = new LPDebugger(heptagon);
+  #endif
+  #ifdef HD_SERIAL
   Serial.println("setup complete");
   #endif
 }
@@ -106,22 +113,12 @@ void setupComms() {
 
 void update() {
   gMillis = millis();
-  #ifdef LP_TEST
-  fps[fpsIndex] = 1000.f / float(gMillis - gPrevMillis);
-  fpsIndex = (fpsIndex + 1) % AVG_FPS_FRAMES;
+  #ifdef HD_DEBUGGER
+  debugger->update(gMillis);
   #endif
-  gPrevMillis = gMillis;
   state->autoEmit(gMillis);
   heptagon.update();
   state->update();
-}
-
-float getFPS() {
-  float avg = 0;
-  for (uint8_t i=0; i<AVG_FPS_FRAMES; i++) {
-    avg += fps[i];
-  }
-  return avg / AVG_FPS_FRAMES;
 }
 
 void draw() {
@@ -138,15 +135,15 @@ void draw() {
 RgbColor getColor(uint16_t i) {
   ColorRGB pixel = state->getPixel(i);
   RgbColor color = RgbColor(pixel.R, pixel.G, pixel.B);
-  #ifdef LP_TEST
+  #ifdef HD_DEBUGGER
   if (showAll) {
     color.R = MAX_BRIGHTNESS / 2;
   }
   if (showConnections) {
-    color.G = (heptagon.isConnection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
+    color.G = (debugger->isConnection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
   if (showIntersections) {
-    color.B = (heptagon.isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
+    color.B = (debugger->isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
   if (showPalette && i < 256) {
     pixel = state->paletteColor(i);
@@ -164,7 +161,7 @@ void loop() {
   update();
   draw();
 
-  #ifdef LP_DEBUG
+  #ifdef HD_SERIAL
   readSerial();
   #endif
 }
@@ -194,12 +191,12 @@ void doCommand(char command) {
     case 's':
       state->splitAll();
       break;
-    #ifdef LP_TEST
-    case 'f':
-      Serial.printf("FPS: %f\n", getFPS());
-      break;
     case 'h':
       Serial.printf("Free heap: %d\n", ESP.getFreeHeap());
+      break;
+    #ifdef HD_DEBUGGER
+    case 'f':
+      Serial.printf("FPS: %f\n", debugger->getFPS());
       break;
     case 'a':
       showAll = !showAll;
@@ -229,10 +226,10 @@ void doCommand(char command) {
       state->debug();
       break;
     case 'C':
-      heptagon.dumpConnections();
+      debugger->dumpConnections();
       break;
     case 'I':
-      heptagon.dumpIntersections();
+      debugger->dumpIntersections();
       break;
     #endif
     case '1':
@@ -251,7 +248,7 @@ void doCommand(char command) {
       break;
     }
     case '+':
-      state->emitSplatter();
+      state->emitSplatter(M_SPLATTER);
       break;
     case '*':
       state->emitRandom();

@@ -40,10 +40,10 @@ void LightList::setLife(int16_t numFrames) {
 
 void LightList::setColor(ColorRGB color) {
     this->color = color;
-    if (numLights > 0 && dynamic_cast<Light*>((*this)[0]) != NULL) {
+    if (numLights > 0) {
         for (uint16_t i=0; i<numLights; i++) {
             if ((*this)[i] == 0) continue;
-            dynamic_cast<Light*>((*this)[i])->setColor(color);
+            ((*this)[i])->setColor(color);
         }
     }
 }

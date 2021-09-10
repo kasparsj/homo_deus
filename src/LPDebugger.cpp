@@ -45,6 +45,20 @@ LPDebugger::~LPDebugger() {
     delete[] weightPixels;
 }
 
+void LPDebugger::update(unsigned long millis) {
+    fps[fpsIndex] = 1000.f / float(millis - prevMillis);
+    fpsIndex = (fpsIndex + 1) % AVG_FPS_FRAMES;
+    prevMillis = millis;
+}
+
+float LPDebugger::getFPS() {
+    float avg = 0;
+    for (uint8_t i=0; i<AVG_FPS_FRAMES; i++) {
+        avg += fps[i];
+    }
+    return avg / AVG_FPS_FRAMES;
+}
+
 bool LPDebugger::isModelWeight(uint8_t id, uint16_t i) {
   return weightPixels[id][i];
 }

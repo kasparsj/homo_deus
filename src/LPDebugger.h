@@ -2,6 +2,8 @@
 
 #include "LPObject.h"
 
+#define AVG_FPS_FRAMES 120
+
 class LPDebugger
 {
 
@@ -9,15 +11,22 @@ class LPDebugger
 
     LPDebugger(LPObject &object);
     ~LPDebugger();
-
-    LPObject &object;
-    bool **weightPixels;
+    
+    void update(unsigned long millis);
+    float getFPS();
     bool isModelWeight(uint8_t id, uint16_t i);
-    bool *interPixels;
     bool isIntersection(uint16_t i);
-    bool *connPixels;
     bool isConnection(uint16_t i);
     void dumpConnections();
     void dumpIntersections();
+
+  private:
+    LPObject &object;
+    bool **weightPixels;
+    bool *interPixels;
+    bool *connPixels;
+    float fps[AVG_FPS_FRAMES] = {0.f};
+    uint8_t fpsIndex = 0;
+    unsigned long prevMillis = 0;
 
 };

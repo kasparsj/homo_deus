@@ -112,7 +112,7 @@ Port* Intersection::sendOut(uint8_t i) {
   outgoingLights[i] = -1;
   if (port != NULL) { 
     if (behaviour->colorChangeGroups & port->group) {
-      dynamic_cast<Light*>(light)->setColor(behaviour->getColor(light, port->group));
+      (light)->setColor(behaviour->getColor(light, port->group));
     }
     port->connection->addLight(light);
   }

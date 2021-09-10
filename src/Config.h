@@ -100,4 +100,3 @@ enum ListHead {
 #define DEFAULT_SPEED 1.0
 #define DEFAULT_LIFE -1 // -1 = random, 0 = infinite
 #define DEFAULT_BRIGHTNESS 1.0
-#define AVG_FPS_FRAMES 120
