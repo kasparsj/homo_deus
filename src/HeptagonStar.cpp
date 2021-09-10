@@ -4,6 +4,8 @@ void HeptagonStar::setup() {
     initInter(14, 7, 7);
     initConn(7, 14, 14, 7);
     initModels(7);
+    
+    Model::maxWeights = 7 * 4 * 1.5;
 
     addModel(new Model(M_DEFAULT, 1, GROUP1));
     addModel(new Model(M_STAR, 0, GROUP1));

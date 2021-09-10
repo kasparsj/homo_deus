@@ -45,8 +45,6 @@ bool wifiConnected = false;
 void setup() {
   setupComms();
 
-  heptagon.setup();
-
   strip1.Begin();
   strip1.Show();
 

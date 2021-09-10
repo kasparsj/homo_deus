@@ -34,6 +34,14 @@ Connection* LPObject::addConnection(Connection *connection) {
     return connection;
 }
 
+Connection* LPObject::addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group) {
+    Intersection *from = new Intersection(fromPixel, group);
+    Intersection *to = new Intersection(toPixel, group);
+    addIntersection(from);
+    addIntersection(to);
+    return addConnection(new Connection(from, to, group));
+}
+
 void LPObject::update() {
   for (uint8_t k=0; k<UPDATES_PER_FRAME; k++) {
     for (uint8_t i=0; i<MAX_GROUPS; i++) {

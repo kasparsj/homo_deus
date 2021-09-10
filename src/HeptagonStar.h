@@ -12,6 +12,7 @@ class HeptagonStar : public LPObject {
         setup();
     }
 
+  private:
     void setup();
 
 };

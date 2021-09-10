@@ -17,6 +17,11 @@ class LPEmitter {
         }
     }
 
+    LPEmitter() {
+        for (uint8_t i=0; i<EMITTER_MAX_LIGHT_LISTS; i++) {
+            lightLists[i] = NULL;
+        }
+    }
     void add(LightList *lightList) {
         for (uint8_t j=0; j<maxLightLists; j++) {
           if (lightLists[j] == NULL) {
@@ -41,5 +46,9 @@ class LPEmitter {
         }
     }
     virtual void emitLightList(LightList *lightList) = 0;
+    
+  protected:
+    
+    LightList *lightLists[EMITTER_MAX_LIGHT_LISTS];
 
 };

@@ -11,20 +11,20 @@ class Model {
 
   public:
 
+    static uint8_t maxWeights;
+     
     uint8_t id;
     float defaultW;
     uint8_t emitGroups;
-    // todo: perhaps better use HashMap
-    Weight *weights[MAX_PORTS] = {0};
+    HashMap<uint8_t, Weight*> *weights;
     
-    Model(uint8_t id, float defaultW, uint8_t emitGroups) {
-      this->id = id;
-      this->defaultW = defaultW;
-      this->emitGroups = emitGroups;
+    Model(uint8_t id, float defaultW, uint8_t emitGroups) : id(id), defaultW(defaultW), emitGroups(emitGroups) {
+        weights = new HashMap<uint8_t, Weight*>(maxWeights);
+        weights->setNullValue(NULL);
     }
   
     ~Model() {
-      delete[] weights;
+        delete weights;
     }
     
     void put(Port *outgoing, Port *incoming, float weight) {
@@ -49,20 +49,20 @@ class Model {
       if (outgoing == incoming) {
         return 0;
       }
-      Weight *weight = weights[outgoing->id];
-      if (weight) {
+      Weight *weight = weights->get(outgoing->id);
+      if (weight != NULL) {
         return weight->get(incoming);      
       }
       return defaultW;
     }
     
     Weight *_getOrCreate(Port *outgoing, float w) {
-      Weight *weight = weights[outgoing->id];
-      if (!weight) {
-        weight = new Weight(w);
-        weights[outgoing->id] = weight;
-      }
-      return weight;
+        Weight *weight = weights->get(outgoing->id);
+        if (weight == NULL) {
+            weight = new Weight(w);
+            weights->set(outgoing->id, weight);
+        }
+        return weight;
     }
 
     uint16_t getMaxLength();

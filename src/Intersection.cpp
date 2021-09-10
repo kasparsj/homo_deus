@@ -9,7 +9,7 @@ Intersection::Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPi
   this->numPorts = numPorts;
   this->topPixel = topPixel;
   this->bottomPixel = bottomPixel;
-  this->ports = new Port*[numPorts]{0};
+  ports = new Port*[numPorts];
   for (uint8_t i=0; i<numPorts; i++) {
     ports[i] = NULL;
   }
