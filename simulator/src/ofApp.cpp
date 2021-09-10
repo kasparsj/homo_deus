@@ -213,7 +213,7 @@ void ofApp::doCommand(char command) {
       break;
     }
     case '+':
-      emitter->emitSplatter();
+      emitter->emitSplatter(M_SPLATTER);
       break;
     case '*':
       emitter->emitRandom();

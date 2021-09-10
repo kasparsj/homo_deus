@@ -61,9 +61,9 @@ class State {
       params.behaviourFlags |= B_POS_CHANGE_FADE;
       return emit(params);
     }
-    int8_t emitSplatter() {
+    int8_t emitSplatter(uint8_t model) {
       EmitParams params;
-      params.model = M_SPLATTER;
+      params.model = model;
       params.speed = randomSpeed();
       params.linked = false;
       params.life = max(1, (int) (1.f/params.speed) + 1);

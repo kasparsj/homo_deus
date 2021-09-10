@@ -37,16 +37,6 @@ struct ColorRGB {
   }
 };
 
-enum HeptagonStarModel { 
-    M_DEFAULT,
-    M_STAR,
-    M_OUTER_STAR,
-    M_INNER_CIRCLE,
-    M_HORNS,
-    M_HALO,
-    M_SPLATTER,
-};
-
 enum Groups {
     GROUP1 = 1,
     GROUP2 = 2,
