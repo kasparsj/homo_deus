@@ -3,7 +3,7 @@
 #include "Config.h"
 #include "EmitParams.h"
 
-class Light;
+class LPLight;
 
 class Behaviour {
 
@@ -16,9 +16,9 @@ class Behaviour {
       colorChangeGroups = params.colorChangeGroups;
     }
 
-    float getBri(Light *light);
-    float getPosition(Light *light);
-    ColorRGB getColor(Light *light, uint8_t group);
+    float getBri(LPLight *light);
+    float getPosition(LPLight *light);
+    ColorRGB getColor(LPLight *light, uint8_t group);
 
     bool renderSegment() {
         return flags & B_RENDER_SEGMENT;

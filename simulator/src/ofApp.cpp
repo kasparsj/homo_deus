@@ -166,6 +166,12 @@ void ofApp::doCommand(char command) {
     case 'c':
       showConnections = !showConnections;
       break;
+    case 'm':
+      showModel++;
+      if (showModel >= heptagon->modelCount) {
+          showModel = 0;
+      }
+      break;
     case 'p':
       showPixels = !showPixels;
       break;
@@ -321,6 +327,9 @@ ofColor ofApp::getColor(uint16_t i) {
   }
   if (showIntersections) {
     color.b = (heptagon->isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
+  }
+  if (showModel > 0) {
+    color.g = (heptagon->isModelWeight(showModel - 1, i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
 //  if (showPalette && i < 256) {
 //    pixel = emitter->paletteColor(i);

@@ -82,8 +82,9 @@ int8_t State::emit(EmitParams &params) {
       lightLists[i]->behaviour = behaviour;
       lightLists[i]->order = params.order;
       lightLists[i]->head = params.head;
-      lightLists[i]->setSpeed(speed);
-      lightLists[i]->setLinked(params.linked);
+      lightLists[i]->color = color;
+      lightLists[i]->speed = speed;
+      lightLists[i]->linked = params.linked;
       lightLists[i]->setLife(life); 
       lightLists[i]->setFade(params.fadeSpeed, params.fadeThresh);
       lightLists[i]->setLeadTrail(numTrail);
@@ -93,7 +94,7 @@ int8_t State::emit(EmitParams &params) {
       LP_LOGF("emitting %d %s lights (%d/%.1f/%d/%d/%.1f/%.3f), total: %d (%d)\n",
         numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, brightness, params.fadeSpeed, totalLights + numFull + numTrail, totalLightLists + 1);      
       #endif
-      lightLists[i]->setup(numFull, color, brightness);
+      lightLists[i]->setup(numFull, brightness);
       doEmit(emitter, lightLists[i], params);
       #ifdef LP_OSC_REPLY
       LP_OSC_REPLY(i);
@@ -146,14 +147,14 @@ void State::update() {
       }
       if (lightList->lights[j]->isExpired) {
         if (((j+1) < lightList->numLights) && (lightList->lights[(j+1)] != NULL)) {
-          lightList->lights[(j+1)]->linkedPrev = NULL;
+          lightList->lights[(j+1)]->idx = 0;
         }
         delete lightList->lights[j];
         lightList->lights[j] = NULL;
         continue;
       }
-      Light* light = lightList->lights[j];
-      ColorRGB color = light->getColor();
+      LPLight* light = lightList->lights[j];
+      ColorRGB color = light->getPixelColor();
       allExpired = false;
       // todo: perhaps it's OK to always retrieve pixels
       if (lightList->behaviour != NULL && lightList->behaviour->renderSegment()) {
@@ -171,6 +172,7 @@ void State::update() {
       }
       light->update();
     }
+    lightList->update();
     if (allExpired) {
       totalLights -= lightList->numLights;
       totalLightLists--;

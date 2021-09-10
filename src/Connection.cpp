@@ -45,7 +45,7 @@ Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LP
   }
 }
 
-void Connection::addLight(Light *light) {
+void Connection::addLight(LPLight *light) {
   if (numLeds > 0) {
     LPBase::addLight(light);
   }
@@ -54,7 +54,7 @@ void Connection::addLight(Light *light) {
   }
 }
 
-void Connection::emitLight(Light* light) {
+void Connection::emitLight(LPLight* light) {
     light->setOutPort(fromPort, from->id);
     addLight(light);
 }
@@ -68,20 +68,20 @@ void Connection::update() {
 }
 
 void Connection::updateLight(uint16_t i) {
-  Light *light = lights[i];
+  LPLight *light = lights[i];
   if (light != NULL) {
     light->resetPixels();
     Behaviour *behaviour = light->getBehaviour();
     // hack: float inprecision
     float pos = round(light->position * 1000) / 1000.0;
-    if (light->shouldExpire() && (light->speed == 0 || (behaviour != NULL && behaviour->expireImmediately()))) {
+    if (light->shouldExpire() && (light->getSpeed() == 0 || (behaviour != NULL && behaviour->expireImmediately()))) {
       light->isExpired = true;
       removeLight(i);
     }
     else if (pos < numLeds) {      
       if (light->outPort == NULL) {
         #ifdef LP_DEBUG
-        LP_LOGF("light: %d outport NULL, conn: %d - %d\n", light->id, fromPixel, toPixel);
+        LP_LOGF("light: %d outport NULL, conn: %d - %d\n", light->idx, fromPixel, toPixel);
         #endif
       }
       uint16_t ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
@@ -93,7 +93,7 @@ void Connection::updateLight(uint16_t i) {
   }
 }
 
-void Connection::outgoing(Light* light, int16_t i) {
+void Connection::outgoing(LPLight* light, int16_t i) {
   Intersection *neuron = light->outPort->direction ? from : to;
   Port *port = light->outPort->direction ? fromPort : toPort;
   light->position -= numLeds;

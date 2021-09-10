@@ -47,6 +47,7 @@ public:
     ofxOscReceiver receiver;
     bool showIntersections = false;
     bool showConnections = false;
+    uint8_t showModel = 0;
     bool showAll = false;
     bool showFps = false;
     bool showHeap = false;

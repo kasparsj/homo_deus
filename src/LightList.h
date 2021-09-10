@@ -5,6 +5,7 @@
 
 class Model;
 class Light;
+class LPLight;
 
 class LightList {
 
@@ -27,7 +28,9 @@ class LightList {
     uint16_t numLights = 0;
     uint16_t lead = 0;
     uint16_t trail = 0;
-    Light **lights;
+    ColorRGB color;
+    LPLight **lights;
+    uint16_t age = 0;
     uint16_t numEmitted = 0;
     uint8_t numSplits = 0;
     
@@ -43,17 +46,27 @@ class LightList {
     }
 
     void init(uint16_t numLights);
-    void setup(uint16_t numLights, ColorRGB color, float brightness = 1);
+    void setup(uint16_t numLights, float brightness = 1);
+    float getBriMult(uint16_t i) {
+        float mult = 1.f;
+        if (i < lead) {
+            mult = (255.f / (lead + 1)) * (i + 1) / 255.f;
+        }
+        else if (i >= lead + body()) {
+            uint16_t j = i - (lead + body());
+            mult = (255.f - (255.f / (trail + 1)) * (j + 1)) / 255.f;
+        }
+        return mult;
+    }
 
-    Light* operator [] (uint16_t i) const {
+    LPLight* operator [] (uint16_t i) const {
       return lights[i];
     }
 
-    Light*& operator [] (uint16_t i) {
+    LPLight*& operator [] (uint16_t i) {
       return lights[i];
     }
     
-    void setSpeed(float speed);
     void setFade(float fadeSpeed, float fadeThresh = 0) {
       this->fadeSpeed = fadeSpeed;
       this->fadeThresh = fadeThresh;
@@ -61,19 +74,22 @@ class LightList {
     void setLeadTrail(uint16_t trail);
     void setLife(int16_t numFrames);
     void setColor(ColorRGB color);
-    void setLinked(bool linked);
     void initEmit(uint8_t posOffset = 0);
+    void update() {
+        age++;
+    }
     void split();
-    float getPosition(Light *light);
-    float getBri(Light *light);
+    float getPosition(LPLight *light);
+    float getBri(LPLight *light);
 
   private:
 
-    void initPosition(uint16_t i, Light* light);
-    void initBri(uint16_t i, Light* light);
-    void initLife(uint16_t i, Light* light);
+    LPLight* createLight(uint16_t i, float brightness);
+    void initPosition(uint16_t i, LPLight* light);
+    void initBri(uint16_t i, LPLight* light);
+    void initLife(uint16_t i, LPLight* light);
     uint16_t body() {
         return numLights - lead - trail;
     }
-  
+
 };

@@ -35,13 +35,13 @@ class Intersection : public LPEmitter, public LPBase<uint8_t> {
     void emitLightList(LightList* lightList) {
         LPBase::emitLightList(lightList);
     }
-    void emitLight(Light* light);
+    void emitLight(LPLight* light);
     void queueOutgoing(uint8_t i);
     Port* sendOut(uint8_t i);
     void update();
     void updateLight(uint8_t i);
     float sumW(Model *model, Port *incoming);
     Port *randomPort(Port *incoming, Behaviour *behaviour);
-    Port *choosePort(Model *model, Light* light);
+    Port *choosePort(Model *model, LPLight* light);
   
 };

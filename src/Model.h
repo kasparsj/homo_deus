@@ -5,8 +5,6 @@
 #include "Connection.h"
 #include "Intersection.h"
 
-class Light;
-
 class Model {
 
   public:

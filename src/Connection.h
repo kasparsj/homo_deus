@@ -4,7 +4,7 @@
 #include "LPEmitter.h"
 #include "LPBase.h"
 #include "Port.h"
-#include "Light.h"
+#include "LPLight.h"
 
 class Intersection;
 
@@ -21,14 +21,14 @@ class Connection : public LPEmitter, public LPBase<uint16_t> {
     uint16_t toPixel;
     
     Connection(Intersection *from, Intersection *to, uint8_t group);
-    void addLight(Light *light);
+    void addLight(LPLight *light);
     void update();
     void emitLightList(LightList* lightList) {
         LPBase::emitLightList(lightList);
     }
-    void emitLight(Light* light);
+    void emitLight(LPLight* light);
     void updateLight(uint16_t i);
-    void outgoing(Light *light, int16_t i = -1);
+    void outgoing(LPLight *light, int16_t i = -1);
     uint16_t getPixel(uint16_t i) {
       return fromPixel + (i * (pixelDir ? 1 : -1));
     }

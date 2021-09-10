@@ -16,71 +16,14 @@ class LPObject {
     uint8_t modelCount;
     Model **models;
 
-    LPObject(uint16_t pixelCount) : pixelCount(pixelCount) {
-        instance = this;
-        #ifdef LP_TEST
-        intersections = new bool[pixelCount]{false};
-        connections = new bool[pixelCount]{false};
-        #endif
-    }
-    ~LPObject() {
-        for (uint8_t i=0; i<MAX_GROUPS; i++) {
-            if (interCount[i] > 0) {
-                delete[] inter[i];
-            }
-            if (connCount[i] > 0) {
-                delete[] conn[i];
-            }
-        }
-        delete[] models;
-        #ifdef LP_TEST
-        delete[] intersections;
-        delete[] connections;
-        #endif
-    }
-    void initInter(uint8_t inter1Count, uint8_t inter2Count=0, uint8_t inter3Count=0, uint8_t inter4Count=0, uint8_t inter5Count=0) {
-        interCount[0] = inter1Count;
-        interCount[1] = inter2Count;
-        interCount[2] = inter3Count;
-        interCount[3] = inter4Count;
-        interCount[4] = inter5Count;
-        for (uint8_t i=0; i<MAX_GROUPS; i++) {
-            if (interCount[i] > 0) {
-                inter[i] = new Intersection*[interCount[i]];
-                for (uint8_t j=0; j<interCount[i]; j++) {
-                    inter[i][j] = NULL;
-                }
-            }
-            nextInter[i] = 0;
-        }
-    }
-    void initConn(uint8_t conn1Count, uint8_t conn2Count=0, uint8_t conn3Count=0, uint8_t conn4Count=0, uint8_t conn5Count=0) {
-        connCount[0] = conn1Count;
-        connCount[1] = conn2Count;
-        connCount[2] = conn3Count;
-        connCount[3] = conn4Count;
-        connCount[4] = conn5Count;
-        for (uint8_t i=0; i<MAX_GROUPS; i++) {
-            if (connCount[i] > 0) {
-                conn[i] = new Connection*[connCount[i]];
-                for (uint8_t j=0; j<connCount[i]; j++) {
-                    conn[i][j] = NULL;
-                }
-            }
-            nextConn[i] = 0;
-        }
-    }
-    void initModels(uint8_t modelCount) {
-        this->modelCount = modelCount;
-        models = new Model*[modelCount];
-        for (uint8_t i=0; i<modelCount; i++) {
-            models[i] = NULL;
-        }
-    }
-    Model* addModel(Model *model) {
-        models[model->id] = model;
-        return model;
-    }
+    LPObject(uint16_t pixelCount);
+    ~LPObject();
+
+    void initInter(uint8_t inter1Count, uint8_t inter2Count=0, uint8_t inter3Count=0, uint8_t inter4Count=0, uint8_t inter5Count=0);
+    void initConn(uint8_t conn1Count, uint8_t conn2Count=0, uint8_t conn3Count=0, uint8_t conn4Count=0, uint8_t conn5Count=0);
+    void initModels(uint8_t modelCount);
+    void setupWeightPixels();
+    Model* addModel(Model *model);
     Intersection* addIntersection(Intersection *intersection);
     Connection* addConnection(Connection *connection);
     Connection* addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group);
@@ -100,9 +43,11 @@ class LPObject {
     }
 
     #ifdef LP_TEST
-    bool *intersections;
+    bool **weightPixels;
+    bool isModelWeight(uint8_t id, uint16_t i);
+    bool *interPixels;
     bool isIntersection(uint16_t i);
-    bool *connections;
+    bool *connPixels;
     bool isConnection(uint16_t i);
     void dumpConnections();
     void dumpIntersections();

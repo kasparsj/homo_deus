@@ -1,6 +1,7 @@
 #include "Intersection.h"
 #include "Connection.h"
 #include "Model.h"
+#include "Light.h"
 
 uint8_t Intersection::nextId = 0;
 
@@ -26,7 +27,7 @@ void Intersection::addPort(Port *p) {
   }
 }
 
-void Intersection::emitLight(Light* light) {
+void Intersection::emitLight(LPLight* light) {
     // go straight out of zeroConnection
     Behaviour *behaviour = light->getBehaviour();
     if (numPorts == 2) {
@@ -54,11 +55,11 @@ void Intersection::update() {
 }
 
 void Intersection::updateLight(uint8_t i) {
-  Light *light = lights[i];
+  LPLight *light = lights[i];
   if (light != NULL && !light->isExpired) {
     light->resetPixels();
     if (light->shouldExpire()) {
-      if (light->speed == 0 || light->position >= 1.f) {
+      if (light->getSpeed() == 0 || light->position >= 1.f) {
         light->isExpired = true;
         removeLight(i);
       }
@@ -84,18 +85,19 @@ void Intersection::queueOutgoing(uint8_t i) {
 }
 
 Port* Intersection::sendOut(uint8_t i) {
-  Light *light = lights[outgoingLights[i]];
+  LPLight *light = lights[outgoingLights[i]];
   Port *port = NULL;
-  if (light->linkedPrev != NULL) {
+  LPLight* linkedPrev = light->getPrev();
+  if (linkedPrev != NULL) {
     uint8_t maxOutgoing = freeOutgoing;
     for (uint8_t k=0; k<maxOutgoing; k++) {
-      if (outgoingLights[k] >= 0 && lights[outgoingLights[k]] == light->linkedPrev) {
+      if (outgoingLights[k] >= 0 && lights[outgoingLights[k]] == linkedPrev) {
         port = sendOut(k);
         break;
       }
     }
     if (port == NULL) {    
-      port = light->linkedPrev->getOutPort(id);
+      port = linkedPrev->getOutPort(id);
     }
   }
   Model *model = light->getModel();
@@ -110,7 +112,7 @@ Port* Intersection::sendOut(uint8_t i) {
   outgoingLights[i] = -1;
   if (port != NULL) { 
     if (behaviour->colorChangeGroups & port->group) {
-      light->color = behaviour->getColor(light, port->group);
+      dynamic_cast<Light*>(light)->setColor(behaviour->getColor(light, port->group));
     }
     port->connection->addLight(light);
   }
@@ -139,7 +141,7 @@ Port *Intersection::randomPort(Port *incoming, Behaviour *behaviour) {
   return port;
 }
 
-Port *Intersection::choosePort(Model *model, Light *light) {
+Port *Intersection::choosePort(Model *model, LPLight *light) {
     Port *incoming = light->inPort;
     float sum = sumW(model, incoming);
     if (sum <= 0.f) {
