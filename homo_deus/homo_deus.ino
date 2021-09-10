@@ -183,7 +183,7 @@ void doCommand(char command) {
       break;
     case 'e':
       state->autoEnabled = !state->autoEnabled;
-      Serial.printf("AutoEmitter is %s", state->autoEnabled ? "enabled" : "disabled");
+      Serial.printf("AutoEmitter is %s\n", state->autoEnabled ? "enabled" : "disabled");
       break;
     case '.':
       state->stopAll();

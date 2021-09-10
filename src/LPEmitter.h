@@ -6,7 +6,6 @@
 class LPEmitter {
 
   public:
-    LightList **lightLists;
     uint8_t maxLightLists;
 
     LPEmitter(uint8_t maxLightLists) {
@@ -16,12 +15,10 @@ class LPEmitter {
             lightLists[i] = NULL;
         }
     }
-
-    LPEmitter() {
-        for (uint8_t i=0; i<EMITTER_MAX_LIGHT_LISTS; i++) {
-            lightLists[i] = NULL;
-        }
+    ~LPEmitter() {
+        delete[] lightLists;
     }
+
     void add(LightList *lightList) {
         for (uint8_t i=0; i<maxLightLists; i++) {
           if (lightLists[i] == NULL) {
@@ -49,6 +46,6 @@ class LPEmitter {
     
   protected:
     
-    LightList *lightLists[EMITTER_MAX_LIGHT_LISTS];
+    LightList **lightLists;
 
 };

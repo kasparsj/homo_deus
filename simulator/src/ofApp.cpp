@@ -281,7 +281,10 @@ void ofApp::draw(){
 }
 
 glm::vec2 ofApp::intersectionPos(Intersection* intersection, int8_t j) {
-    uint16_t groupDiam[MAX_GROUPS] = {1000, 400, 250, 0, 0};
+    uint16_t groupDiam[MAX_GROUPS] = {0};
+    groupDiam[0] = ofGetHeight();
+    groupDiam[1] = ofGetHeight()*0.4;
+    groupDiam[2] = ofGetHeight()*0.25;
 
     uint8_t i = log2(intersection->group);
     if (j<0) {
