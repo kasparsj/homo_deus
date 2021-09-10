@@ -69,7 +69,7 @@ class State {
       params.life = max(1, (int) (1.f/params.speed) + 1);
       return emit(params);
     }
-    LPEmitter* getEmitter(Model* model, Behaviour* behaviour, int8_t from);
+    LPEmitter* getEmitter(Model* model, Behaviour* behaviour, EmitParams& params);
     void update();
     void colorAll();
     void splitAll();
@@ -83,7 +83,7 @@ class State {
     ColorRGB getPixel(uint16_t i);
     
   private:
-    void doEmit(LPEmitter* from, LightList *lightList);
+    void doEmit(LPEmitter* from, LightList *lightList, EmitParams& params);
     void setPixel(uint16_t pixel, ColorRGB &color);
 
 };

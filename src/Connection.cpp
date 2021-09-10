@@ -3,7 +3,7 @@
 #include "Intersection.h"
 #include "LPObject.h"
 
-Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LPBase(group) {
+Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LPEmitter(1), LPBase(group) {
   this->from = from;
   this->to = to;
   
@@ -55,7 +55,8 @@ void Connection::addLight(Light *light) {
 }
 
 void Connection::emitLight(Light* light) {
-    // todo: implement
+    light->setOutPort(fromPort, from->id);
+    addLight(light);
 }
 
 void Connection::update() {
@@ -71,7 +72,7 @@ void Connection::updateLight(uint16_t i) {
   if (light != NULL) {
     light->resetPixels();
     Behaviour *behaviour = light->getBehaviour();
-    // hack: fix rounding error
+    // hack: float inprecision
     float pos = round(light->position * 1000) / 1000.0;
     if (light->shouldExpire() && (light->speed == 0 || (behaviour != NULL && behaviour->expireImmediately()))) {
       light->isExpired = true;

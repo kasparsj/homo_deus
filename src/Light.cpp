@@ -17,7 +17,8 @@ float Light::getBrightness() {
   float value = fmod(bri, 2.f);
   value = (value > 1.f ? 2.f - value : value);
   value = (value - parent->fadeThresh) / (1.f - parent->fadeThresh);
-  return value * maxBri;
+  // hack: float inprecision
+  return round(value * maxBri * 10000) / 10000.f;
 }
 
 void Light::update() {

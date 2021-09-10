@@ -65,8 +65,7 @@ int8_t State::emit(EmitParams &params) {
   uint8_t which = params.model >= 0 ? params.model : randomModel();  
   Model *model = object.getModel(which);
   Behaviour *behaviour = new Behaviour(params);
-  int8_t from = params.from >= 0 ? params.from : -1;
-  LPEmitter *emitter = getEmitter(model, behaviour, from);
+  LPEmitter *emitter = getEmitter(model, behaviour, params);
   if (emitter == NULL) {
     LP_LOGF("emit failed, no free emitter.");
     return -1;
@@ -77,7 +76,7 @@ int8_t State::emit(EmitParams &params) {
       uint16_t life = params.life >= 0 ? params.life : randomLife();
       ColorRGB color = params.color >= 0 ? paletteColor(params.color) : randomColor();
       float brightness = params.brightness >= 0 ? params.brightness : randomBrightness();
-      uint16_t numTrail = params.getTrail(speed, length);
+      uint16_t numTrail = params.speed == 0 ? params.trail : params.getSpeedTrail(speed, length);
       lightLists[i] = new LightList();
       lightLists[i]->model = model;
       lightLists[i]->behaviour = behaviour;
@@ -86,15 +85,16 @@ int8_t State::emit(EmitParams &params) {
       lightLists[i]->setSpeed(speed);
       lightLists[i]->setLinked(params.linked);
       lightLists[i]->setLife(life); 
+      lightLists[i]->setFade(params.fadeSpeed, params.fadeThresh);
+      lightLists[i]->setLeadTrail(numTrail);
       lightLists[i]->noteId = params.noteId;
-      lightLists[i]->trail = numTrail;
       uint16_t numFull = max(1, length - numTrail);
       #ifdef LP_DEBUG
       LP_LOGF("emitting %d %s lights (%d/%.1f/%d/%d/%.1f/%.3f), total: %d (%d)\n",
         numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, brightness, params.fadeSpeed, totalLights + numFull + numTrail, totalLightLists + 1);      
       #endif
-      lightLists[i]->setup(numFull, color, brightness, params.fadeSpeed, params.fadeThresh);
-      doEmit(emitter, lightLists[i]);
+      lightLists[i]->setup(numFull, color, brightness);
+      doEmit(emitter, lightLists[i], params);
       #ifdef LP_OSC_REPLY
       LP_OSC_REPLY(i);
       #endif
@@ -107,13 +107,14 @@ int8_t State::emit(EmitParams &params) {
   return -1;
 }
 
-LPEmitter* State::getEmitter(Model* model, Behaviour* behaviour, int8_t from) {
-    if (behaviour->emitFromRandom()) {
+LPEmitter* State::getEmitter(Model* model, Behaviour* behaviour, EmitParams& params) {
+    int8_t from = params.from >= 0 ? params.from : -1;
+    if (behaviour->emitFromConnection()) {
         from = from >= 0 ? from : LP_RANDOM(object.countConnections());
-        return object.getConnection(from, behaviour->emitGroups);
+        return object.getConnection(from, params.emitGroups);
     }
     else {
-        uint8_t emitGroups = behaviour->emitGroups > 0 ? behaviour->emitGroups : model->emitGroups;
+        uint8_t emitGroups = params.emitGroups > 0 ? params.emitGroups : model->emitGroups;
         if (from >= 0) {
           return object.getIntersection(from, emitGroups);
         }
@@ -123,8 +124,8 @@ LPEmitter* State::getEmitter(Model* model, Behaviour* behaviour, int8_t from) {
     }
 }
 
-void State::doEmit(LPEmitter* from, LightList *lightList) {
-  lightList->initEmit();
+void State::doEmit(LPEmitter* from, LightList *lightList, EmitParams& params) {
+  lightList->initEmit(params.emitOffset);
   from->add(lightList);
   totalLights += lightList->numLights;
   totalLightLists++;
@@ -136,25 +137,26 @@ void State::update() {
   memset(pixelValuesB, 0, sizeof(uint16_t) * object.pixelCount);
   memset(pixelDiv, 0, object.pixelCount);
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
-    if (lightLists[i] == NULL) continue;
+    LightList* lightList = lightLists[i];
+    if (lightList == NULL) continue;
     bool allExpired = true;
-    for (uint16_t j=0; j<lightLists[i]->numLights; j++) {
-      if (lightLists[i]->lights[j] == NULL) {
+    for (uint16_t j=0; j<lightList->numLights; j++) {
+      if (lightList->lights[j] == NULL) {
         continue;
       }
-      if (lightLists[i]->lights[j]->isExpired) {
-        if (((j+1) < lightLists[i]->numLights) && (lightLists[i]->lights[(j+1)] != NULL)) {
-          lightLists[i]->lights[(j+1)]->linkedPrev = NULL;
+      if (lightList->lights[j]->isExpired) {
+        if (((j+1) < lightList->numLights) && (lightList->lights[(j+1)] != NULL)) {
+          lightList->lights[(j+1)]->linkedPrev = NULL;
         }
-        delete lightLists[i]->lights[j];
-        lightLists[i]->lights[j] = NULL;
+        delete lightList->lights[j];
+        lightList->lights[j] = NULL;
         continue;
       }
-      Light* light = lightLists[i]->lights[j];
+      Light* light = lightList->lights[j];
       ColorRGB color = light->getColor();
       allExpired = false;
       // todo: perhaps it's OK to always retrieve pixels
-      if (lightLists[i]->behaviour != NULL && lightLists[i]->behaviour->renderSegment()) {
+      if (lightList->behaviour != NULL && lightList->behaviour->renderSegment()) {
         uint16_t* pixels = light->getPixels();
         if (pixels != NULL) {
           // first value is length
@@ -167,17 +169,10 @@ void State::update() {
       else if (light->pixel1 >= 0) {
         setPixel(light->pixel1, color);
       }
-      // if (light->pixel2 >= 0) {
-      //   ColorRGB color = light->getColor(light->pixel2Bri);
-      //   pixelValuesR[light->pixel2] += color.R;
-      //   pixelValuesG[light->pixel2] += color.G;
-      //   pixelValuesB[light->pixel2] += color.B;
-      //   pixelDiv[light->pixel2]++;
-      // }
       light->update();
     }
     if (allExpired) {
-      totalLights -= lightLists[i]->numLights;
+      totalLights -= lightList->numLights;
       totalLightLists--;
       delete lightLists[i];
       lightLists[i] = NULL;

@@ -76,54 +76,63 @@ void ofApp::onAuto(const ofxOscMessage &m) {
 }
 
 void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
-  for (uint8_t i=0; i<m.getNumArgs() / 2; i++) {
-    EmitParam param = static_cast<EmitParam>(m.getArgAsInt(i*2));
-    uint8_t j = i*2+1;
-    switch (param) {
-      case P_MODEL:
-        p.model = m.getArgAsInt(j);
-        break;
-      case P_SPEED:
-        p.speed = m.getArgAsFloat(j);
-        break;
-      case P_LENGTH:
-        p.length = m.getArgAsInt(j);
-        break;
-      case P_FADE:
-        p.fadeSpeed = m.getArgAsFloat(j);
-        break;
-      case P_ORDER:
-        p.order = static_cast<ListOrder>(m.getArgAsInt(j));
-        break;
-      case P_LINKED:
-        p.linked = m.getArgAsInt(j) > 0;
-        break;
-      case P_FROM:
-        p.from = m.getArgAsInt(j);
-        break;
-      case P_LIFE:
-        p.life = m.getArgAsInt(j);
-        break;
-      case P_COLOR:
-        p.color = m.getArgAsInt(j);
-        break;
-      case P_NOTE_ID:
-        p.noteId = m.getArgAsInt(j);
-        break;
-      case P_BRIGHTNESS:
-        p.brightness = m.getArgAsFloat(j);
-        break;
-      case P_BEHAVIOUR:
-        p.behaviourFlags = m.getArgAsInt(j);
-        break;
-      case P_EMIT_GROUPS:
-        p.emitGroups = m.getArgAsInt(j);
-        break;
-      case P_COLOR_CHANGE_GROUPS:
-        p.colorChangeGroups = m.getArgAsInt(j);
-        break;
+    for (uint8_t i=0; i<m.getNumArgs() / 2; i++) {
+        EmitParam param = static_cast<EmitParam>(m.getArgAsInt(i*2));
+        uint8_t j = i*2+1;
+        switch (param) {
+            case P_MODEL:
+                p.model = m.getArgAsInt(j);
+                break;
+            case P_SPEED:
+                p.speed = m.getArgAsFloat(j);
+                break;
+            case P_LENGTH:
+                p.length = m.getArgAsInt(j);
+                break;
+            case P_TRAIL:
+                p.trail = m.getArgAsInt(j);
+                break;
+            case P_FADE:
+                p.fadeSpeed = m.getArgAsFloat(j);
+                break;
+            case P_ORDER:
+                p.order = static_cast<ListOrder>(m.getArgAsInt(j));
+                break;
+            case P_HEAD:
+                p.head = static_cast<ListHead>(m.getArgAsInt(j));
+                break;
+            case P_LINKED:
+                p.linked = m.getArgAsInt(j) > 0;
+                break;
+            case P_FROM:
+                p.from = m.getArgAsInt(j);
+                break;
+            case P_LIFE:
+                p.life = m.getArgAsInt(j);
+                break;
+            case P_COLOR:
+                p.color = m.getArgAsInt(j);
+                break;
+            case P_NOTE_ID:
+                p.noteId = m.getArgAsInt(j);
+                break;
+            case P_BRIGHTNESS:
+                p.brightness = m.getArgAsFloat(j);
+                break;
+            case P_BEHAVIOUR:
+                p.behaviourFlags = m.getArgAsInt(j);
+                break;
+            case P_EMIT_GROUPS:
+                p.emitGroups = m.getArgAsInt(j);
+                break;
+            case P_EMIT_OFFSET:
+                p.emitOffset = m.getArgAsInt(j);
+                break;
+            case P_COLOR_CHANGE_GROUPS:
+                p.colorChangeGroups = m.getArgAsInt(j);
+                break;
+        }
     }
-  }
 }
 
 void ofApp::doCommand(char command) {

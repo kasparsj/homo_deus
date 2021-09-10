@@ -4,7 +4,7 @@
 
 uint8_t Intersection::nextId = 0;
 
-Intersection::Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel, uint8_t group) : LPBase(group) {
+Intersection::Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel, uint8_t group) : LPEmitter(EMITTER_MAX_LIGHT_LISTS), LPBase(group) {
   this->id = nextId++;
   this->numPorts = numPorts;
   this->topPixel = topPixel;

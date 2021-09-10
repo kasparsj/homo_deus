@@ -6,11 +6,20 @@
 class LPEmitter {
 
   public:
-    LightList *lightLists[EMITTER_MAX_LIGHT_LISTS] = {0};
+    LightList **lightLists;
+    uint8_t maxLightLists;
+
+    LPEmitter(uint8_t maxLightLists) {
+        this->maxLightLists = maxLightLists;
+        this->lightLists = new LightList*[maxLightLists];
+        for (uint8_t i=0; i<maxLightLists; i++) {
+            lightLists[i] = NULL;
+        }
+    }
 
     void add(LightList *lightList) {
-        for (uint8_t j=0; j<EMITTER_MAX_LIGHT_LISTS; j++) {
-          if (lightLists[j] == 0) {
+        for (uint8_t j=0; j<maxLightLists; j++) {
+          if (lightLists[j] == NULL) {
             lightLists[j] = lightList;
             return;
           }
@@ -18,8 +27,8 @@ class LPEmitter {
         LP_LOGF("LPBase addLightList no free slot\n");
     }
     void updateLightLists() {
-        for (uint8_t i=0; i<EMITTER_MAX_LIGHT_LISTS; i++) {
-          if (lightLists[i] != 0) {
+        for (uint8_t i=0; i<maxLightLists; i++) {
+          if (lightLists[i] != NULL) {
             emit(i);
           }
         }
@@ -28,7 +37,7 @@ class LPEmitter {
         LightList *lightList = lightLists[k];
         emitLightList(lightList);
         if (lightList->numEmitted >= lightList->numLights) {
-          lightLists[k] = 0;
+          lightLists[k] = NULL;
         }
     }
     virtual void emitLightList(LightList *lightList) = 0;

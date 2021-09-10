@@ -65,13 +65,14 @@ enum BehaviourFlags {
     B_ALLOW_BOUNCE = 8,
     B_FORCE_BOUNCE = 16,
     B_EXPIRE_IMMEDIATE = 32,
-    B_EMIT_FROM_RANDOM = 64,
+    B_EMIT_FROM_CONN = 64,
 };
 
 enum ListOrder { 
     LIST_ORDER_SEQUENTIAL,
     LIST_ORDER_RANDOM,
     LIST_ORDER_NOISE,
+    LIST_ORDER_OFFSET,
 };
 
 enum ListHead {

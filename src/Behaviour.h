@@ -9,12 +9,10 @@ class Behaviour {
 
   public:
     uint8_t flags = 0;
-    uint8_t emitGroups = 0;
     uint8_t colorChangeGroups = 0;
 
     Behaviour(EmitParams &params) {
       flags = params.behaviourFlags;
-      emitGroups = params.emitGroups;
       colorChangeGroups = params.colorChangeGroups;
     }
 
@@ -34,7 +32,7 @@ class Behaviour {
     bool expireImmediately() {
         return flags && B_EXPIRE_IMMEDIATE;
     }
-    bool emitFromRandom() {
-        return flags && B_EMIT_FROM_RANDOM;
+    bool emitFromConnection() {
+        return flags && B_EMIT_FROM_CONN;
     }
 };

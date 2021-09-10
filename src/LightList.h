@@ -25,6 +25,7 @@ class LightList {
     Model *model = 0;
     Behaviour *behaviour = 0;
     uint16_t numLights = 0;
+    uint16_t lead = 0;
     uint16_t trail = 0;
     Light **lights;
     uint16_t numEmitted = 0;
@@ -42,7 +43,7 @@ class LightList {
     }
 
     void init(uint16_t numLights);
-    void setup(uint16_t numLights, ColorRGB color, float brightness = 1, float fadeSpeed = 0, float fadeThresh = 0);
+    void setup(uint16_t numLights, ColorRGB color, float brightness = 1);
 
     Light* operator [] (uint16_t i) const {
       return lights[i];
@@ -57,10 +58,11 @@ class LightList {
       this->fadeSpeed = fadeSpeed;
       this->fadeThresh = fadeThresh;
     }
+    void setLeadTrail(uint16_t trail);
     void setLife(int16_t numFrames);
     void setColor(ColorRGB color);
     void setLinked(bool linked);
-    void initEmit();
+    void initEmit(uint8_t posOffset = 0);
     void split();
     float getPosition(Light *light);
     float getBri(Light *light);
@@ -70,5 +72,8 @@ class LightList {
     void initPosition(uint16_t i, Light* light);
     void initBri(uint16_t i, Light* light);
     void initLife(uint16_t i, Light* light);
+    uint16_t body() {
+        return numLights - lead - trail;
+    }
   
 };

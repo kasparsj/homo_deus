@@ -297,6 +297,9 @@ void parseParams(EmitParams &p, const OscMessage &m) {
       case P_LENGTH:
         p.length = m.arg<uint16_t>(j);
         break;
+      case P_TRAIL:
+        p.trail = m.arg<uint16_t>(j);
+        break;
       case P_FADE:
         p.fadeSpeed = m.arg<float>(j);
         break;

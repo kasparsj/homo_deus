@@ -13,28 +13,26 @@ void LightList::init(uint16_t numLights) {
   }
 }
 
-void LightList::setup(uint16_t numLights, ColorRGB color, float brightness, float fadeSpeed, float fadeThresh) {
-  init(numLights + trail);
-  setFade(fadeSpeed, fadeThresh);
-  for (uint16_t i=0; i<numLights; i++) {
-    Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : 0;
-    Light *light = new Light(brightness, speed, life, this, linkedPrev);
-    light->setColor(color);
-    #ifdef LP_DEBUG
-    light->id = i;
-    #endif
-    (*this)[i] = light;
-  }
-  for (uint16_t i=0; i<trail; i++) {
-    Light *linkedPrev = linked ? (*this)[numLights + i - 1] : 0;
-    float bri = (255.f - (255.f / (trail + 1)) * (i + 1)) / 255.f;
-    Light *light = new Light(brightness * bri, speed, life, this, linkedPrev);
-    light->setColor(color);
-    #ifdef LP_DEBUG
-    light->id = numLights + i;
-    #endif
-    (*this)[numLights + i] = light;
-  }
+void LightList::setup(uint16_t numLights, ColorRGB color, float brightness) {
+    init(lead + numLights + trail);
+    uint16_t body = this->body();
+    for (uint16_t i=0; i<this->numLights; i++) {
+        Light *linkedPrev = linked && i > 0 ? (*this)[i - 1] : 0;
+        float mult = 1.f;
+        if (i < lead) {
+            mult = (255.f / (lead + 1)) * (i + 1) / 255.f;
+        }
+        else if (i >= lead + body) {
+            uint16_t j = i - (lead + body);
+            mult = (255.f - (255.f / (trail + 1)) * (j + 1)) / 255.f;
+        }
+        Light *light = new Light(brightness * mult, speed, life, this, linkedPrev);
+        light->setColor(color);
+        #ifdef LP_DEBUG
+        light->id = i;
+        #endif
+        (*this)[i] = light;
+    }
 }
 
 void LightList::setLinked(bool linked) {
@@ -68,13 +66,31 @@ void LightList::setColor(ColorRGB color) {
   }
 }
 
-void LightList::initEmit() {
-  for (uint16_t i=0; i<numLights; i++) {
-    Light *light = (*this)[i];
-    initPosition(i, light);
-    initBri(i, light);
-    initLife(i, light);
-  }
+void LightList::setLeadTrail(uint16_t trail) {
+    if (head == LIST_HEAD_FRONT) {
+        if (trail > 0) {
+            this->lead = 1;
+            trail -= 1;
+        }
+        this->trail = trail;
+    }
+    else if (head == LIST_HEAD_BACK) {
+        this->lead = trail;
+    }
+    else {
+        this->lead = (uint16_t) trail / 2;
+        this->trail = (uint16_t) ceil(trail / 2.f);
+    }
+}
+
+void LightList::initEmit(uint8_t posOffset) {
+    for (uint16_t i=0; i<numLights; i++) {
+        Light *light = (*this)[i];
+        initPosition(i, light);
+        light->position += posOffset;
+        initBri(i, light);
+        initLife(i, light);
+    }
 }
 
 float LightList::getPosition(Light *light) {
@@ -85,7 +101,7 @@ float LightList::getPosition(Light *light) {
 }
 
 void LightList::initPosition(uint16_t i, Light* light) {
-  float position = i * (speed != 0 ? -1.f : 1.f);
+  float position = (speed != 0 ? i * -1.f : numLights - 1 - i * 1.f);
   if (order == LIST_ORDER_RANDOM) {
     position = LP_RANDOM(model->getMaxLength());
   }
