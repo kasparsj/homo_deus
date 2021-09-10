@@ -86,8 +86,6 @@ void HeptagonStar::setup() {
   models[M_HALO]->put(conn[2][6], 1);
   models[M_HALO]->put(conn[2][9], 1);
 
-  setupWeightPixels();
-  
   #ifdef LP_DEBUG
   LP_LOGF("HeptagonStar setup complete");
   #endif

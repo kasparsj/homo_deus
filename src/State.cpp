@@ -232,7 +232,7 @@ void State::stopNote(uint8_t noteId) {
   }
 }
 
-#ifdef LP_TEST
+#ifdef LP_DEBUG
 void State::debug() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;

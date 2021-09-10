@@ -6,10 +6,6 @@ LPObject* LPObject::instance = 0;
 
 LPObject::LPObject(uint16_t pixelCount) : pixelCount(pixelCount) {
     instance = this;
-    #ifdef LP_TEST
-    interPixels = new bool[pixelCount]{false};
-    connPixels = new bool[pixelCount]{false};
-    #endif
 }
 
 LPObject::~LPObject() {
@@ -22,15 +18,6 @@ LPObject::~LPObject() {
         }
     }
     delete[] models;
-    #ifdef LP_TEST
-    delete[] interPixels;
-    delete[] connPixels;
-    for (uint8_t i=0; i<modelCount; i++) {
-        delete[] weightPixels[i];
-        weightPixels[i] = NULL;
-    }
-    delete[] weightPixels;
-    #endif
 }
 
 void LPObject::initInter(uint8_t inter1Count, uint8_t inter2Count, uint8_t inter3Count, uint8_t inter4Count, uint8_t inter5Count) {
@@ -70,28 +57,8 @@ void LPObject::initConn(uint8_t conn1Count, uint8_t conn2Count, uint8_t conn3Cou
 void LPObject::initModels(uint8_t modelCount) {
     this->modelCount = modelCount;
     models = new Model*[modelCount];
-    #ifdef LP_TEST
-    weightPixels = new bool*[modelCount];
-    #endif
     for (uint8_t i=0; i<modelCount; i++) {
         models[i] = NULL;
-        #ifdef LP_TEST
-        weightPixels[i] = new bool[pixelCount]{false};
-        #endif
-    }
-}
-
-void LPObject::setupWeightPixels() {
-    #ifdef LP_TEST
-    for (uint8_t i=0; i<modelCount; i++) {
-        Model* model = models[i];
-        for (uint8_t j=0; j<model->weights->size(); j++) {
-            uint8_t portId = model->weights->keyAt(j);
-            Port* port = Port::pool[portId];
-            //Weight* weight = model->weights->valueAt(j);
-            weightPixels[model->id][port->intersection->topPixel] = true;
-        }
-        #endif
     }
 }
 
@@ -107,12 +74,6 @@ Intersection* LPObject::addIntersection(Intersection *intersection) {
             break;
         }
     }
-    #ifdef LP_TEST
-    interPixels[intersection->topPixel] = true;
-    if (intersection->bottomPixel >= 0) {
-        interPixels[intersection->bottomPixel] = true;
-    }
-    #endif
     return intersection;
 }
 
@@ -123,11 +84,6 @@ Connection* LPObject::addConnection(Connection *connection) {
             break;
         }
     }
-
-    #ifdef LP_TEST
-    connPixels[connection->fromPixel] = true;
-    connPixels[connection->toPixel] = true;
-    #endif
     return connection;
 }
 
@@ -192,31 +148,3 @@ Connection* LPObject::getConnection(uint8_t i, uint8_t groups) {
     }
     return NULL;
 }
-
-#ifdef LP_TEST
-bool LPObject::isModelWeight(uint8_t id, uint16_t i) {
-  return weightPixels[id][i];
-}
-bool LPObject::isIntersection(uint16_t i) {
-  return interPixels[i];
-}
-bool LPObject::isConnection(uint16_t i) {
-  return connPixels[i];
-}
-void LPObject::dumpConnections() {
-  LP_LOGLN("--- CONNECTIONS ---");
-  for (uint8_t i=0; i<MAX_GROUPS; i++) {
-      for (uint8_t j=0; j<connCount[i]; j++) {
-        LP_LOGF("Connection%d %d - %d: %d / %d\n", i, conn[i][j]->fromPixel, conn[i][j]->toPixel, conn[i][j]->freeLight, conn[i][j]->maxLights);
-      }
-  }
-}
-void LPObject::dumpIntersections() {
-  LP_LOGLN("--- INTERSECTIONS ---");
-  for (uint8_t i=0; i<MAX_GROUPS; i++) {
-      for (uint8_t j=0; j<interCount[i]; i++) {
-        LP_LOGF("Intersection%d %d: %d\n", i, inter[i][j]->id, inter[i][j]->freeLight);
-      }
-  }
-}
-#endif

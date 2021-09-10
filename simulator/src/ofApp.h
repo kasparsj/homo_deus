@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxOsc.h"
 #include "HeptagonStar.h"
+#include "LPDebugger.h"
 
 #define PIXEL_COUNT1 524
 #define PIXEL_COUNT2 395
@@ -16,6 +17,7 @@ class ofApp : public ofBaseApp{
 public:
     HeptagonStar *heptagon;
     State *emitter;
+    LPDebugger *debugger;
 
     void setup();
     void update();

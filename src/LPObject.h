@@ -22,7 +22,6 @@ class LPObject {
     void initInter(uint8_t inter1Count, uint8_t inter2Count=0, uint8_t inter3Count=0, uint8_t inter4Count=0, uint8_t inter5Count=0);
     void initConn(uint8_t conn1Count, uint8_t conn2Count=0, uint8_t conn3Count=0, uint8_t conn4Count=0, uint8_t conn5Count=0);
     void initModels(uint8_t modelCount);
-    void setupWeightPixels();
     Model* addModel(Model *model);
     Intersection* addIntersection(Intersection *intersection);
     Connection* addConnection(Connection *connection);
@@ -41,17 +40,6 @@ class LPObject {
         }
         return count;
     }
-
-    #ifdef LP_TEST
-    bool **weightPixels;
-    bool isModelWeight(uint8_t id, uint16_t i);
-    bool *interPixels;
-    bool isIntersection(uint16_t i);
-    bool *connPixels;
-    bool isConnection(uint16_t i);
-    void dumpConnections();
-    void dumpIntersections();
-    #endif
 
   private:
     uint8_t nextInter[MAX_GROUPS];

@@ -75,12 +75,11 @@ class State {
     void splitAll();
     void stopAll();
     void stopNote(uint8_t i);
-    #ifdef LP_TEST
-    uint16_t numLights();
+    ColorRGB getPixel(uint16_t i);
+
+    #ifdef LP_DEBUG
     void debug();
     #endif
-
-    ColorRGB getPixel(uint16_t i);
     
   private:
     void doEmit(LPEmitter* from, LightList *lightList, EmitParams& params);

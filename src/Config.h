@@ -72,7 +72,6 @@ enum ListHead {
 };
 
 #define LP_DEBUG
-#define LP_TEST
 #define EMITTER_MAX_LIGHT_LISTS 3 // max 127 (int8_t)
 #define EMITTER_MAX_LIGHTS 110 // max 127 (int8_t)
 #define EMITTER_MIN_SPEED 0.5f

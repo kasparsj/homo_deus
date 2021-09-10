@@ -5,6 +5,7 @@ void ofApp::setup(){
     ofSetFrameRate(62);
     heptagon = new HeptagonStar(PIXEL_COUNT);
     emitter = new State(*heptagon);
+    debugger = new LPDebugger(*heptagon);
     receiver.setup( OSC_PORT );
 }
 
@@ -150,7 +151,6 @@ void ofApp::doCommand(char command) {
     case 's':
       emitter->splitAll();
       break;
-    #ifdef LP_TEST
     case 'f':
       showFps = !showFps;
       break;
@@ -191,12 +191,11 @@ void ofApp::doCommand(char command) {
       emitter->debug();
       break;
     case 'C':
-      heptagon->dumpConnections();
+      debugger->dumpConnections();
       break;
     case 'I':
-      heptagon->dumpIntersections();
+      debugger->dumpIntersections();
       break;
-    #endif
     case '1':
     case '2':
     case '3':
@@ -318,24 +317,22 @@ glm::vec2 pointOnEllipse(float rad, float w, float h) {
 ofColor ofApp::getColor(uint16_t i) {
   ColorRGB pixel = emitter->getPixel(i);
   ofColor color = ofColor(pixel.R, pixel.G, pixel.B);
-  #ifdef LP_TEST
   if (showAll) {
     color.r = MAX_BRIGHTNESS / 2;
   }
   if (showConnections) {
-    color.g = (heptagon->isConnection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
+    color.g = (debugger->isConnection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
   if (showIntersections) {
-    color.b = (heptagon->isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
+    color.b = (debugger->isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
   if (showModel > 0) {
-    color.g = (heptagon->isModelWeight(showModel - 1, i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
+    color.g = (debugger->isModelWeight(showModel - 1, i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
 //  if (showPalette && i < 256) {
 //    pixel = emitter->paletteColor(i);
 //    color = ofColor(pixel.R, pixel.G, pixel.B);
 //  }
-  #endif
   return color;
   //return colorGamma.Correct(color);
 }

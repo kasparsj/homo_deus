@@ -9,10 +9,6 @@ class Port {
 
   public:
 
-    #ifdef LP_TEST
-    static Port* pool[255];
-    #endif
-
     uint8_t id;
     Connection *connection;
     Intersection *intersection;
