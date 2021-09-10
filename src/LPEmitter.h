@@ -23,9 +23,9 @@ class LPEmitter {
         }
     }
     void add(LightList *lightList) {
-        for (uint8_t j=0; j<maxLightLists; j++) {
-          if (lightLists[j] == NULL) {
-            lightLists[j] = lightList;
+        for (uint8_t i=0; i<maxLightLists; i++) {
+          if (lightLists[i] == NULL) {
+            lightLists[i] = lightList;
             return;
           }
         }
