@@ -15,7 +15,7 @@ class LPLight
 
     uint16_t idx;
     float maxBri;
-    LightList *parent;
+    LightList *list;
     Port *inPort = 0;
     Port *outPort = 0;
     Port *outPorts[OUT_PORTS_MEMORY] = {0}; // 4 bytes * 7
@@ -27,7 +27,7 @@ class LPLight
     float bri = 1.f;
     float brightness = 0;
 
-    LPLight(LightList *parent, int16_t life, uint16_t idx = 0, float maxBri = 1.f) : parent(parent), life(life), idx(idx), maxBri(maxBri) {
+    LPLight(LightList *list, int16_t life, uint16_t idx = 0, float maxBri = 1.f) : list(list), life(life), idx(idx), maxBri(maxBri) {
         position = -1;
     }
 

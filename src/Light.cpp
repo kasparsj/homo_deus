@@ -2,7 +2,7 @@
 #include "Light.h"
 #include "LightList.h"
 
-Light::Light(LightList *parent, float speed, int16_t life, uint16_t idx, float maxBri) : LPLight(parent, life, idx, maxBri) {
+Light::Light(LightList *list, float speed, int16_t life, uint16_t idx, float maxBri) : LPLight(list, life, idx, maxBri) {
   this->speed = speed;
   this->color = ColorRGB(255, 255, 255);
 }
@@ -10,7 +10,7 @@ Light::Light(LightList *parent, float speed, int16_t life, uint16_t idx, float m
 float Light::getBrightness() {
   float value = fmod(bri, 2.f);
   value = (value > 1.f ? 2.f - value : value);
-  value = (value - parent->fadeThresh) / (1.f - parent->fadeThresh);
+  value = (value - list->fadeThresh) / (1.f - list->fadeThresh);
   // hack: float inprecision
   return round(value * maxBri * 10000) / 10000.f;
 }
@@ -23,13 +23,13 @@ ColorRGB Light::getPixelColor() {
 }
 
 void Light::update() {
-  bri = parent->getBri(this);
+  bri = list->getBri(this);
   brightness = max(0.f, getBrightness());
-  if (parent == NULL) {
+  if (list == NULL) {
     position += speed;
   }
   else {
-    position = parent->getPosition(this);
+    position = list->getPosition(this);
   }
   age++;
 }
@@ -38,19 +38,19 @@ bool Light::shouldExpire() {
   if (life == 0) {
     return false;
   }
-  return age >= life && (parent->fadeSpeed == 0 || brightness == 0);
+  return age >= life && (list->fadeSpeed == 0 || brightness == 0);
 }
 
 Model* Light::getModel() {
-  if (parent != NULL) {
-    return parent->model;
+  if (list != NULL) {
+    return list->model;
   }
   return NULL;
 }
 
 Behaviour* Light::getBehaviour() {
-  if (parent != NULL) {
-    return parent->behaviour;
+  if (list != NULL) {
+    return list->behaviour;
   }
   return NULL;
 }

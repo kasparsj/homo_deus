@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		04B85B5F6452FA21E2D034A3 /* ofxOscMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F22D73D403734B978E0825D /* ofxOscMessage.cpp */; };
+		2B05CFE826EF82A3009A0242 /* EmitParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B05CFE626EF82A3009A0242 /* EmitParams.cpp */; };
 		2B367AAA26EBFCF6006FA9EC /* LPDebugger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B367AA826EBFCF5006FA9EC /* LPDebugger.cpp */; };
 		2B367AAB26EBFCF6006FA9EC /* LPLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B367AA926EBFCF6006FA9EC /* LPLight.cpp */; };
 		2B3E2E8B26E964AF0020216C /* Intersection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B3E2E6D26E964AE0020216C /* Intersection.cpp */; };
@@ -54,6 +55,8 @@
 		08ECDF7695F54BB777C6612D /* ofxOscSender.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ofxOscSender.cpp; path = ../../of_v0.11.0/addons/ofxOsc/src/ofxOscSender.cpp; sourceTree = SOURCE_ROOT; };
 		21F489E58264FC7DF2C76E25 /* OscHostEndianness.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = OscHostEndianness.h; path = ../../of_v0.11.0/addons/ofxOsc/libs/oscpack/src/osc/OscHostEndianness.h; sourceTree = SOURCE_ROOT; };
 		26BD3254420A7E0F17D71D88 /* OscOutboundPacketStream.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = OscOutboundPacketStream.h; path = ../../of_v0.11.0/addons/ofxOsc/libs/oscpack/src/osc/OscOutboundPacketStream.h; sourceTree = SOURCE_ROOT; };
+		2B05CFE626EF82A3009A0242 /* EmitParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmitParams.cpp; sourceTree = "<group>"; };
+		2B05CFE726EF82A3009A0242 /* ofxEasing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxEasing.h; sourceTree = "<group>"; };
 		2B367AA626EBFCF5006FA9EC /* LPLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPLight.h; sourceTree = "<group>"; };
 		2B367AA726EBFCF5006FA9EC /* LPDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPDebugger.h; sourceTree = "<group>"; };
 		2B367AA826EBFCF5006FA9EC /* LPDebugger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LPDebugger.cpp; sourceTree = "<group>"; };
@@ -314,6 +317,7 @@
 		2B3E2E6B26E964AE0020216C /* src */ = {
 			isa = PBXGroup;
 			children = (
+				2B05CFE726EF82A3009A0242 /* ofxEasing.h */,
 				2B367AA826EBFCF5006FA9EC /* LPDebugger.cpp */,
 				2B367AA726EBFCF5006FA9EC /* LPDebugger.h */,
 				2B367AA926EBFCF6006FA9EC /* LPLight.cpp */,
@@ -345,6 +349,7 @@
 				2B3E2E8326E964AE0020216C /* Model.h */,
 				2B3E2E8426E964AE0020216C /* Model.cpp */,
 				2B3E2E8526E964AE0020216C /* EmitParams.h */,
+				2B05CFE626EF82A3009A0242 /* EmitParams.cpp */,
 				2B3E2E6C26E964AE0020216C /* Connection.h */,
 				2B3E2E8726E964AE0020216C /* Connection.cpp */,
 				2B3E2E8626E964AE0020216C /* LPBase.h */,
@@ -887,6 +892,7 @@
 				2B3E2E9526E964AF0020216C /* Port.cpp in Sources */,
 				4AC9576E194B74311C013778 /* ofxOscBundle.cpp in Sources */,
 				2B3E2E9426E964AF0020216C /* Connection.cpp in Sources */,
+				2B05CFE826EF82A3009A0242 /* EmitParams.cpp in Sources */,
 				04B85B5F6452FA21E2D034A3 /* ofxOscMessage.cpp in Sources */,
 				56776ACD8DF840AFA79D5CC7 /* ofxOscParameterSync.cpp in Sources */,
 				2B3E2E9626E964AF0020216C /* HeptagonStar.cpp in Sources */,

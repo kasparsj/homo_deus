@@ -34,20 +34,20 @@ void LPLight::setOutPort(Port *port, int8_t intersectionId) {
 float LPLight::getBrightness() {
     float value = fmod(bri, 2.f);
     value = (value > 1.f ? 2.f - value : value);
-    value = max(0.f, min(1.f, (value - parent->fadeThresh) / (1.f - parent->fadeThresh)));
+    value = max(0.f, min(1.f, (value - list->fadeThresh) / (1.f - list->fadeThresh)));
     // handle float inprecision
     value = round(value * 10000) / 10000.f;
     if (value > 0) {
-        value = ofxeasing::map(value, 0.f, 1.f, parent->minBri, maxBri, parent->fadeEase);
+        value = ofxeasing::map(value, 0.f, 1.f, list->minBri, maxBri, list->fadeEase);
     }
     return value;
 }
 
 ColorRGB LPLight::getPixelColor() {
     if (brightness == 1.f) {
-        return parent->color;
+        return list->color;
     }
-    return parent->color.Dim(255 * brightness);
+    return list->color.Dim(255 * brightness);
 }
 
 uint16_t* LPLight::getPixels() {
@@ -72,38 +72,38 @@ uint16_t* LPLight::getPixels() {
 }
 
 void LPLight::update() {
-  bri = parent->getBri(this);
+  bri = list->getBri(this);
   brightness = getBrightness();
-  position = parent->getPosition(this);
+  position = list->getPosition(this);
 }
 
 bool LPLight::shouldExpire() {
   if (life == 0) {
     return false;
   }
-  return parent->age >= life && (parent->fadeSpeed == 0 || brightness == 0);
+  return list->age >= life && (list->fadeSpeed == 0 || brightness == 0);
 }
 
 LPLight* LPLight::getPrev() {
-    return idx > 0 ? (*parent)[idx - 1] : NULL;
+    return idx > 0 ? (*list)[idx - 1] : NULL;
 }
 
 float LPLight::getSpeed() {
-    return parent->speed;
+    return list->speed;
 }
 
 ofxeasing::function LPLight::getEasing() {
-    return parent->ease;
+    return list->ease;
 }
 
 ColorRGB LPLight::getColor() {
-    return parent->color;
+    return list->color;
 }
 
 Model* LPLight::getModel() {
-    return parent->model;
+    return list->model;
 }
 
 Behaviour* LPLight::getBehaviour() {
-    return parent->behaviour;
+    return list->behaviour;
 }
