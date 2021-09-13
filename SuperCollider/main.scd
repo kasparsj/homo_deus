@@ -5,8 +5,8 @@ s.waitForBoot {
 	"hd.scd".loadRelative;
 
 	//~hd.net = NetAddr("192.168.45.104", 54321);
-	//~hd.net = NetAddr("192.168.43.181", 54321); // esp32 via Redmi
-	~hd.net = NetAddr("127.0.0.1", 54321);
+	~hd.net = NetAddr("192.168.1.181", 54321); // esp32 via Redmi
+	//~hd.net = NetAddr("127.0.0.1", 54321);
 };
 
 )

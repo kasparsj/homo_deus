@@ -196,7 +196,7 @@ void doCommand(char command) {
       break;
     #ifdef HD_DEBUGGER
     case 'f':
-      Serial.printf("FPS: %f\n", debugger->getFPS());
+      Serial.printf("FPS: %f (%d)\n", debugger->getFPS(), state->totalLights);
       break;
     case 'a':
       showAll = !showAll;
