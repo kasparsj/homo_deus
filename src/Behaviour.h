@@ -35,4 +35,7 @@ class Behaviour {
     bool emitFromConnection() {
         return flags && B_EMIT_FROM_CONN;
     }
+    bool fillEase() {
+        return flags & B_FILL_EASE;
+    }
 };

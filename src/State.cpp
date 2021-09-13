@@ -137,46 +137,35 @@ void State::update() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     LightList* lightList = lightLists[i];
     if (lightList == NULL) continue;
-    lightList->update();
-    bool allExpired = true;
-    for (uint16_t j=0; j<lightList->numLights; j++) {
-      if (lightList->lights[j] == NULL) {
-        continue;
-      }
-      if (lightList->lights[j]->isExpired) {
-        if (((j+1) < lightList->numLights) && (lightList->lights[(j+1)] != NULL)) {
-          lightList->lights[(j+1)]->idx = 0;
-        }
-        delete lightList->lights[j];
-        lightList->lights[j] = NULL;
-        continue;
-      }
-      LPLight* light = lightList->lights[j];
-      light->update();
-      ColorRGB color = light->getPixelColor();
-      allExpired = false;
-      // todo: perhaps it's OK to always retrieve pixels
-      if (lightList->behaviour != NULL && lightList->behaviour->renderSegment()) {
-        uint16_t* pixels = light->getPixels();
-        if (pixels != NULL) {
-          // first value is length
-          uint16_t numPixels = pixels[0];
-          for (uint16_t k=1; k<numPixels+1; k++) {
-            setPixel(pixels[k], color);
-          }
-        }
-      }
-      else if (light->pixel1 >= 0) {
-        setPixel(light->pixel1, color);
-      }
-      light->nextFrame();
-    }
-    lightList->nextFrame();
+    bool allExpired = lightList->update();
     if (allExpired) {
       totalLights -= lightList->numLights;
       totalLightLists--;
       delete lightLists[i];
       lightLists[i] = NULL;
+    }
+    else {
+        for (uint16_t j=0; j<lightList->numLights; j++) {
+            LPLight* light = lightList->lights[j];
+            if (light == NULL) continue;
+            ColorRGB color = light->getPixelColor();
+            // todo: perhaps it's OK to always retrieve pixels
+            if (lightList->behaviour != NULL && (lightList->behaviour->renderSegment() || lightList->behaviour->fillEase())) {
+                uint16_t* pixels = light->getPixels();
+                if (pixels != NULL) {
+                    // first value is length
+                    uint16_t numPixels = pixels[0];
+                    for (uint16_t k=1; k<numPixels+1; k++) {
+                        setPixel(pixels[k], color);
+                    }
+                }
+            }
+            else if (light->pixel1 >= 0) {
+                setPixel(light->pixel1, color);
+            }
+            light->nextFrame();
+        }
+        lightList->nextFrame();
     }
   }
 }

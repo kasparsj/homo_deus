@@ -65,7 +65,7 @@ class EmitParams {
     uint16_t getSpeedTrail(float speed, uint16_t length) {
       uint16_t trail = 0;
       if (order == LIST_ORDER_SEQUENTIAL && linked && !(behaviourFlags & B_RENDER_SEGMENT)) {
-        trail = min((int) (speed * max(1, length / 2)), max(EMITTER_MAX_LENGTH, EMITTER_MAX_LIGHTS) - 1);
+        trail = min((int) (speed * max(1, length / 2)), EMITTER_MAX_LENGTH - 1);
       }
       return trail;
     }

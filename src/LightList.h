@@ -34,7 +34,7 @@ class LightList {
     uint16_t trail = 0;
     ColorRGB color;
     LPLight **lights;
-    LPOwner *emitter;
+    LPOwner *emitter = 0;
     uint16_t age = 0;
     uint16_t numEmitted = 0;
     uint8_t numSplits = 0;
@@ -89,7 +89,7 @@ class LightList {
     void setLife(int16_t numFrames);
     void setColor(ColorRGB color);
     void initEmit(uint8_t posOffset = 0);
-    void update();
+    bool update();
     void nextFrame();
     void split();
     float getPosition(LPLight *light);

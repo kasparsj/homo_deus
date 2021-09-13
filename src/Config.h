@@ -56,6 +56,7 @@ enum BehaviourFlags {
     B_FORCE_BOUNCE = 16,
     B_EXPIRE_IMMEDIATE = 32,
     B_EMIT_FROM_CONN = 64,
+    B_FILL_EASE = 128,
 };
 
 enum ListOrder { 
@@ -100,8 +101,6 @@ enum Ease {
 };
 
 #define LP_DEBUG
-#define EMITTER_MAX_LIGHT_LISTS 3 // max 127 (int8_t)
-#define EMITTER_MAX_LIGHTS 110 // max 127 (int8_t)
 #define EMITTER_MIN_SPEED 0.5f
 #define EMITTER_MAX_SPEED 10.f
 #define EMITTER_MIN_LENGTH 1
@@ -120,7 +119,6 @@ enum Ease {
 #define CONNECTION_MAX_LIGHTS 340
 #define CONNECTION_MAX_LEDS 48
 #define OUT_PORTS_MEMORY 3
-#define UPDATES_PER_FRAME 3
 //#define LP_OSC_REPLY(I) OscWiFi.publish(SC_HOST, SC_PORT, "/emit", (I));
 #define INFINITE_LIFE 0
 #define DEFAULT_SPEED 1.0

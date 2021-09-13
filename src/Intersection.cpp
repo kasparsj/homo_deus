@@ -26,7 +26,7 @@ void Intersection::addPort(Port *p) {
   }
 }
 
-void Intersection::emitLight(LPLight* light) {
+void Intersection::emit(LPLight* light) {
     // go straight out of zeroConnection
     Behaviour *behaviour = light->getBehaviour();
     if (numPorts == 2) {
@@ -37,10 +37,10 @@ void Intersection::emitLight(LPLight* light) {
         }
       }
     }
-    addLight(light);
+    add(light);
 }
 
-void Intersection::updateLight(LPLight *light) {
+void Intersection::update(LPLight *light) {
   if (!light->isExpired) {
     light->resetPixels();
     if (light->shouldExpire()) {
@@ -78,7 +78,7 @@ Port* Intersection::sendOut(LPLight *light) {
     if (behaviour->colorChangeGroups & port->group) {
       (light)->setColor(behaviour->getColor(light, port->group));
     }
-    port->connection->addLight(light);
+    port->connection->add(light);
   }
   return port;
 }

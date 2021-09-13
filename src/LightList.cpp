@@ -118,7 +118,7 @@ void LightList::initLife(uint16_t i, LPLight* light) {
   light->life = life;
 }
 
-void LightList::update() {
+bool LightList::update() {
     if (numEmitted < numLights) {
         uint8_t batchSize = numLights - numEmitted;
         uint8_t j = numEmitted;
@@ -128,9 +128,26 @@ void LightList::update() {
                 break;
             }
             numEmitted++;
-            emitter->emitLight(light);
+            emitter->emit(light);
         }
     }
+    bool allExpired = true;
+    for (uint16_t j=0; j<numLights; j++) {
+        LPLight* light = lights[j];
+        if (light == NULL) continue;
+        if (light->isExpired) {
+          LPLight *next = light->getNext();
+          if (next != NULL) {
+            next->idx = 0;
+          }
+          delete lights[j];
+          lights[j] = NULL;
+          continue;
+        }
+        allExpired = false;
+        light->update();
+    }
+    return allExpired;
 }
 
 void LightList::nextFrame() {

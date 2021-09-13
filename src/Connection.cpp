@@ -44,21 +44,21 @@ Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LP
   }
 }
 
-void Connection::addLight(LPLight *light) {
+void Connection::add(LPLight *light) {
     if (numLeds > 0) {
-        LPOwner::addLight(light);
+        LPOwner::add(light);
     }
     else {
         outgoing(light);
     }
 }
 
-void Connection::emitLight(LPLight* light) {
+void Connection::emit(LPLight* light) {
     light->setOutPort(fromPort, from->id);
-    addLight(light);
+    add(light);
 }
 
-void Connection::updateLight(LPLight *light) {
+void Connection::update(LPLight *light) {
     light->resetPixels();
     Behaviour *behaviour = light->getBehaviour();
     if (light->shouldExpire() && (light->getSpeed() == 0 || (behaviour != NULL && behaviour->expireImmediately()))) {
@@ -85,8 +85,7 @@ void Connection::outgoing(LPLight* light) {
   light->position -= numLeds;
   light->setInPort(port);
   light->setOutPort(NULL);
-  light->owner = neuron;
-  light->update();
+  neuron->add(light);
 }
 
 uint16_t Connection::getFromPixel() {

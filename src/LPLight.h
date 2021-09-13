@@ -44,6 +44,7 @@ class LPLight
     virtual bool shouldExpire();
 
     LPLight* getPrev();
+    LPLight* getNext();
     virtual Model* getModel();
     virtual Behaviour* getBehaviour();
     virtual float getSpeed();
@@ -55,5 +56,9 @@ class LPLight
     uint16_t* getPixels();
 
   private:
+    void setPixel1();
+    void setSegmentPixels();
+    void setLinkPixels();
+
     static uint16_t pixels[CONNECTION_MAX_LEDS];
 };
