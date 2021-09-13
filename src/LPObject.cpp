@@ -97,11 +97,11 @@ Connection* LPObject::addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t gr
 
 Intersection* LPObject::getIntersection(uint8_t i, uint8_t groups) {
     for (uint8_t j=0; j<MAX_GROUPS; j++) {
-        if (groups & (uint8_t) pow(2, j)) {
-          if (i < interCount[i]) {
-            return inter[0][i];
+        if (groups == 0 || groups & (uint8_t) pow(2, j)) {
+          if (i < interCount[j]) {
+            return inter[j][i];
           }
-          i -= interCount[i];
+          i -= interCount[j];
         }
     }
     return NULL;
@@ -110,10 +110,10 @@ Intersection* LPObject::getIntersection(uint8_t i, uint8_t groups) {
 Connection* LPObject::getConnection(uint8_t i, uint8_t groups) {
     for (uint8_t j=0; j<MAX_GROUPS; j++) {
         if (groups == 0 || groups & (uint8_t) pow(2, j)) {
-          if (i < connCount[i]) {
-            return conn[0][i];
+          if (i < connCount[j]) {
+            return conn[j][i];
           }
-          i -= connCount[i];
+          i -= connCount[j];
         }
     }
     return NULL;

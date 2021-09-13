@@ -57,6 +57,7 @@
 		26BD3254420A7E0F17D71D88 /* OscOutboundPacketStream.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = OscOutboundPacketStream.h; path = ../../of_v0.11.0/addons/ofxOsc/libs/oscpack/src/osc/OscOutboundPacketStream.h; sourceTree = SOURCE_ROOT; };
 		2B05CFE626EF82A3009A0242 /* EmitParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmitParams.cpp; sourceTree = "<group>"; };
 		2B05CFE726EF82A3009A0242 /* ofxEasing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxEasing.h; sourceTree = "<group>"; };
+		2B05CFE926EFA023009A0242 /* LPOwner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPOwner.h; sourceTree = "<group>"; };
 		2B367AA626EBFCF5006FA9EC /* LPLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPLight.h; sourceTree = "<group>"; };
 		2B367AA726EBFCF5006FA9EC /* LPDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPDebugger.h; sourceTree = "<group>"; };
 		2B367AA826EBFCF5006FA9EC /* LPDebugger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LPDebugger.cpp; sourceTree = "<group>"; };
@@ -83,11 +84,9 @@
 		2B3E2E7F26E964AE0020216C /* Behaviour.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Behaviour.cpp; sourceTree = "<group>"; };
 		2B3E2E8026E964AE0020216C /* FastNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FastNoise.cpp; sourceTree = "<group>"; };
 		2B3E2E8126E964AE0020216C /* HeptagonStar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeptagonStar.h; sourceTree = "<group>"; };
-		2B3E2E8226E964AE0020216C /* LPEmitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPEmitter.h; sourceTree = "<group>"; };
 		2B3E2E8326E964AE0020216C /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		2B3E2E8426E964AE0020216C /* Model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Model.cpp; sourceTree = "<group>"; };
 		2B3E2E8526E964AE0020216C /* EmitParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmitParams.h; sourceTree = "<group>"; };
-		2B3E2E8626E964AE0020216C /* LPBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPBase.h; sourceTree = "<group>"; };
 		2B3E2E8726E964AE0020216C /* Connection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Connection.cpp; sourceTree = "<group>"; };
 		2B3E2E8826E964AE0020216C /* Port.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Port.cpp; sourceTree = "<group>"; };
 		2B3E2E8926E964AE0020216C /* State.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = State.h; sourceTree = "<group>"; };
@@ -317,6 +316,7 @@
 		2B3E2E6B26E964AE0020216C /* src */ = {
 			isa = PBXGroup;
 			children = (
+				2B05CFE926EFA023009A0242 /* LPOwner.h */,
 				2B05CFE726EF82A3009A0242 /* ofxEasing.h */,
 				2B367AA826EBFCF5006FA9EC /* LPDebugger.cpp */,
 				2B367AA726EBFCF5006FA9EC /* LPDebugger.h */,
@@ -352,8 +352,6 @@
 				2B05CFE626EF82A3009A0242 /* EmitParams.cpp */,
 				2B3E2E6C26E964AE0020216C /* Connection.h */,
 				2B3E2E8726E964AE0020216C /* Connection.cpp */,
-				2B3E2E8626E964AE0020216C /* LPBase.h */,
-				2B3E2E8226E964AE0020216C /* LPEmitter.h */,
 			);
 			name = src;
 			path = ../src;

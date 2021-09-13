@@ -118,7 +118,6 @@ void update() {
   debugger->update(gMillis);
   #endif
   state->autoEmit(gMillis);
-  heptagon.update();
   state->update();
 }
 
