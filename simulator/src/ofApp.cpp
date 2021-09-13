@@ -4,7 +4,7 @@
 void ofApp::setup(){
     ofSetFrameRate(62);
     heptagon = new HeptagonStar(PIXEL_COUNT);
-    emitter = new State(*heptagon);
+    state = new State(*heptagon);
     debugger = new LPDebugger(*heptagon);
     receiver.setup( OSC_PORT );
 }
@@ -13,9 +13,9 @@ void ofApp::setup(){
 void ofApp::update(){
     updateOsc();
 
-    emitter->autoEmit(ofGetElapsedTimeMillis());
+    state->autoEmit(ofGetElapsedTimeMillis());
     heptagon->update();
-    emitter->update();
+    state->update();
 }
 
 void ofApp::updateOsc(){
@@ -52,28 +52,28 @@ void ofApp::onCommand(const ofxOscMessage& m) {
 void ofApp::onEmit(const ofxOscMessage& m) {
   EmitParams params;
   parseParams(params, m);
-  emitter->emit(params);
+  state->emit(params);
 }
 
 void ofApp::onNoteOn(const ofxOscMessage& m) {
   EmitParams params;
   params.life = INFINITE_LIFE;
   parseParams(params, m);
-  emitter->emit(params);
+  state->emit(params);
 }
 
 void ofApp::onNoteOff(const ofxOscMessage& m) {
   if (m.getNumArgs() > 0) {
     uint16_t noteId = m.getArgAsInt(0);
-    emitter->stopNote(noteId);
+    state->stopNote(noteId);
   }
   else {
-    emitter->stopAll();
+    state->stopAll();
   }
 }
 
 void ofApp::onAuto(const ofxOscMessage &m) {
-  emitter->autoEnabled = !emitter->autoEnabled;
+  state->autoEnabled = !state->autoEnabled;
 }
 
 void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
@@ -87,6 +87,9 @@ void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
             case P_SPEED:
                 p.speed = m.getArgAsFloat(j);
                 break;
+            case P_EASE:
+                p.ease = m.getArgAsInt(j);
+                break;
             case P_LENGTH:
                 p.length = m.getArgAsInt(j);
                 break;
@@ -95,6 +98,12 @@ void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
                 break;
             case P_FADE:
                 p.fadeSpeed = m.getArgAsFloat(j);
+                break;
+            case P_FADE_THRESH:
+                p.fadeThresh = m.getArgAsFloat(j);
+                break;
+            case P_FADE_EASE:
+                p.fadeEase = m.getArgAsInt(j);
                 break;
             case P_ORDER:
                 p.order = static_cast<ListOrder>(m.getArgAsInt(j));
@@ -117,8 +126,11 @@ void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
             case P_NOTE_ID:
                 p.noteId = m.getArgAsInt(j);
                 break;
-            case P_BRIGHTNESS:
-                p.brightness = m.getArgAsFloat(j);
+            case P_MIN_BRI:
+                p.minBri = m.getArgAsFloat(j);
+                break;
+            case P_MAX_BRI:
+                p.maxBri = m.getArgAsFloat(j);
                 break;
             case P_BEHAVIOUR:
                 p.behaviourFlags = m.getArgAsInt(j);
@@ -139,17 +151,17 @@ void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
 void ofApp::doCommand(char command) {
   switch (command) {
     case 'e':
-      emitter->autoEnabled = !emitter->autoEnabled;
-      ofLog(OF_LOG_NOTICE, "AutoEmitter is %s", emitter->autoEnabled ? "enabled" : "disabled");
+      state->autoEnabled = !state->autoEnabled;
+      ofLog(OF_LOG_NOTICE, "AutoEmitter is %s", state->autoEnabled ? "enabled" : "disabled");
       break;
     case '.':
-      emitter->stopAll();
+      state->stopAll();
       break;
     case '!':
-      emitter->colorAll();
+      state->colorAll();
       break;
     case 's':
-      emitter->splitAll();
+      state->splitAll();
       break;
     case 'f':
       showFps = !showFps;
@@ -176,19 +188,19 @@ void ofApp::doCommand(char command) {
       showPixels = !showPixels;
       break;
     case '>':
-      if (emitter->currentPalette < 32)
-      emitter->currentPalette++;
+      if (state->currentPalette < 32)
+      state->currentPalette++;
       break;
     case '<':
-      if (emitter->currentPalette > 0) {
-        emitter->currentPalette--;
+      if (state->currentPalette > 0) {
+        state->currentPalette--;
       }
       break;
     case 'l':
-      ofLog(OF_LOG_NOTICE, "Total %d lights\n", emitter->totalLights);
+      ofLog(OF_LOG_NOTICE, "Total %d lights\n", state->totalLights);
       break;
     case 'L':
-      emitter->debug();
+      state->debug();
       break;
     case 'C':
       debugger->dumpConnections();
@@ -202,40 +214,40 @@ void ofApp::doCommand(char command) {
     case '4':
     case '5':
     case '6':
-      emitter->emit(command - '1');
+      state->emit(command - '1');
       break;
     case '7': {
       EmitParams p;
       p.model = M_STAR;
       p.colorChangeGroups |= GROUP1;
-      emitter->emit(p);
+      state->emit(p);
       break;
     }
     case '+':
-      emitter->emitSplatter(M_SPLATTER);
+      state->emitSplatter(M_SPLATTER);
       break;
     case '*':
-      emitter->emitRandom();
+      state->emitRandom();
       break;
     case '/': { // emitSegment
       EmitParams params;
       params.behaviourFlags |= B_RENDER_SEGMENT;
       params.length = 1;
-      emitter->emit(params);
+      state->emit(params);
       break;
     }
     case '-': { // emitBounce
       EmitParams params;
       params.model = M_STAR;
       params.behaviourFlags |= B_FORCE_BOUNCE;
-      emitter->emit(params);
+      state->emit(params);
       break;
     }
     case '?': { // emitNoise
       EmitParams params;
       //params.order = LIST_NOISE;
       params.behaviourFlags |= B_BRI_CONST_NOISE;
-      emitter->emit(params);
+      state->emit(params);
       break;
     }
   }
@@ -315,7 +327,7 @@ glm::vec2 pointOnEllipse(float rad, float w, float h) {
 }
 
 ofColor ofApp::getColor(uint16_t i) {
-  ColorRGB pixel = emitter->getPixel(i);
+  ColorRGB pixel = state->getPixel(i, MAX_BRIGHTNESS);
   ofColor color = ofColor(pixel.R, pixel.G, pixel.B);
   if (showAll) {
     color.r = MAX_BRIGHTNESS / 2;

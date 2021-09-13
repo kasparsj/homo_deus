@@ -2,6 +2,7 @@
 
 #include "Config.h"
 #include "Port.h"
+#include "ofxEasing.h"
 
 class LightList;
 class Model;
@@ -43,6 +44,7 @@ class LPLight
     virtual Model* getModel();
     virtual Behaviour* getBehaviour();
     virtual float getSpeed();
+    virtual ofxeasing::function getEasing();
     virtual ColorRGB getColor();
     virtual void setColor(ColorRGB color) {}
     virtual float getBrightness();

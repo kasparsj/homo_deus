@@ -71,6 +71,34 @@ enum ListHead {
     LIST_HEAD_BACK,
 };
 
+enum Ease {
+    EASE_NONE = 0,
+    EASE_LINEAR_IN = 1,
+    EASE_LINEAR_OUT = 2,
+    EASE_LINEAR_INOUT = 3,
+    EASE_SINE_IN = 4,
+    EASE_SINE_OUT = 5,
+    EASE_SINE_INOUT = 6,
+    EASE_CIRCULAR_IN = 7,
+    EASE_CIRCULAR_OUT = 8,
+    EASE_CIRCULAR_INOUT = 9,
+    EASE_QUADRATIC_IN = 10,
+    EASE_QUADRATIC_OUT = 11,
+    EASE_QUADRATIC_INOUT = 12,
+    EASE_CUBIC_IN = 13,
+    EASE_CUBIC_OUT = 14,
+    EASE_CUBIC_INOUT = 15,
+    EASE_QUARTIC_IN = 16,
+    EASE_QUARTIC_OUT = 17,
+    EASE_QUARTIC_INOUT = 18,
+    EASE_QUINTIC_IN = 19,
+    EASE_QUINTIC_OUT = 20,
+    EASE_QUINTIC_INOUT = 21,
+    EASE_EXPONENTIAL_IN = 22,
+    EASE_EXPONENTIAL_OUT = 23,
+    EASE_EXPONENTIAL_INOUT = 24,
+};
+
 #define LP_DEBUG
 #define EMITTER_MAX_LIGHT_LISTS 3 // max 127 (int8_t)
 #define EMITTER_MAX_LIGHTS 110 // max 127 (int8_t)
@@ -86,7 +114,6 @@ enum ListHead {
 #define EMITTER_MAX_NEXT 20000 // ms, ~1250 frames (avg fps is 62.5)
 #define MAX_GROUPS 5
 #define MAX_LIGHT_LISTS 20
-#define MAX_BRIGHTNESS 255
 #define MAX_CONDITIONAL_WEIGHTS 10
 #define MAX_TOTAL_LIGHTS 1100
 #define CONNECTION_MAX_MULT 10
@@ -96,7 +123,4 @@ enum ListHead {
 #define UPDATES_PER_FRAME 3
 //#define LP_OSC_REPLY(I) OscWiFi.publish(SC_HOST, SC_PORT, "/emit", (I));
 #define INFINITE_LIFE 0
-#define DEFAULT_MODEL -1
 #define DEFAULT_SPEED 1.0
-#define DEFAULT_LIFE -1 // -1 = random, 0 = infinite
-#define DEFAULT_BRIGHTNESS 1.0

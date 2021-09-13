@@ -9,6 +9,7 @@
 #define PIXEL_COUNT2 395
 #define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2) // 919
 #define OSC_PORT 54321
+#define MAX_BRIGHTNESS 255
 
 glm::vec2 pointOnEllipse(float rad, float w, float h);
 
@@ -16,7 +17,7 @@ class ofApp : public ofBaseApp{
 
 public:
     HeptagonStar *heptagon;
-    State *emitter;
+    State *state;
     LPDebugger *debugger;
 
     void setup();

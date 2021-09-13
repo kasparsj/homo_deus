@@ -75,7 +75,7 @@ class State {
     void splitAll();
     void stopAll();
     void stopNote(uint8_t i);
-    ColorRGB getPixel(uint16_t i);
+    ColorRGB getPixel(uint16_t i, uint8_t maxBrightness = 255);
 
     #ifdef LP_DEBUG
     void debug();

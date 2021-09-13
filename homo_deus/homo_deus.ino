@@ -12,6 +12,7 @@
 #define PIXEL_COUNT2 395
 #define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2)
 #define OSC_PORT 54321
+#define MAX_BRIGHTNESS 255
 
 #include "BluetoothSerial.h"
 #include "esp_bt.h"
@@ -133,7 +134,7 @@ void draw() {
 }
 
 RgbColor getColor(uint16_t i) {
-  ColorRGB pixel = state->getPixel(i);
+  ColorRGB pixel = state->getPixel(i, MAX_BRIGHTNESS);
   RgbColor color = RgbColor(pixel.R, pixel.G, pixel.B);
   #ifdef HD_DEBUGGER
   if (showAll) {
@@ -289,6 +290,9 @@ void parseParams(EmitParams &p, const OscMessage &m) {
       case P_SPEED:
         p.speed = m.arg<float>(j);
         break;
+      case P_EASE:
+        p.ease = m.arg<uint8_t>(j);
+        break;        
       case P_LENGTH:
         p.length = m.arg<uint16_t>(j);
         break;
@@ -316,8 +320,11 @@ void parseParams(EmitParams &p, const OscMessage &m) {
       case P_NOTE_ID:
         p.noteId = m.arg<uint16_t>(j);
         break;
-      case P_BRIGHTNESS:
-        p.brightness = m.arg<float>(j);
+      case P_MIN_BRI:
+        p.minBri = m.arg<float>(j);
+        break;
+      case P_MAX_BRI:
+        p.maxBri = m.arg<float>(j);
         break;
       case P_BEHAVIOUR:
         p.behaviourFlags = m.arg<uint8_t>(j);

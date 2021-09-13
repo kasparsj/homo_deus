@@ -1,6 +1,7 @@
 #include "LPLight.h"
 #include "LightList.h"
 #include "Connection.h"
+#include "ofxEasing.h"
 
 uint16_t LPLight::pixels[CONNECTION_MAX_LEDS] = {0};
 
@@ -33,9 +34,13 @@ void LPLight::setOutPort(Port *port, int8_t intersectionId) {
 float LPLight::getBrightness() {
     float value = fmod(bri, 2.f);
     value = (value > 1.f ? 2.f - value : value);
-    value = (value - parent->fadeThresh) / (1.f - parent->fadeThresh);
-    // hack: float inprecision
-    return round(value * maxBri * 10000) / 10000.f;
+    value = max(0.f, min(1.f, (value - parent->fadeThresh) / (1.f - parent->fadeThresh)));
+    // handle float inprecision
+    value = round(value * 10000) / 10000.f;
+    if (value > 0) {
+        value = ofxeasing::map(value, 0.f, 1.f, parent->minBri, maxBri, parent->fadeEase);
+    }
+    return value;
 }
 
 ColorRGB LPLight::getPixelColor() {
@@ -68,7 +73,7 @@ uint16_t* LPLight::getPixels() {
 
 void LPLight::update() {
   bri = parent->getBri(this);
-  brightness = max(0.f, getBrightness());
+  brightness = getBrightness();
   position = parent->getPosition(this);
 }
 
@@ -85,6 +90,10 @@ LPLight* LPLight::getPrev() {
 
 float LPLight::getSpeed() {
     return parent->speed;
+}
+
+ofxeasing::function LPLight::getEasing() {
+    return parent->ease;
 }
 
 ColorRGB LPLight::getColor() {

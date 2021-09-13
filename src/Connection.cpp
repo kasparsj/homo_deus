@@ -72,23 +72,21 @@ void Connection::updateLight(uint16_t i) {
   if (light != NULL) {
     light->resetPixels();
     Behaviour *behaviour = light->getBehaviour();
-    // hack: float inprecision
-    float pos = round(light->position * 1000) / 1000.0;
     if (light->shouldExpire() && (light->getSpeed() == 0 || (behaviour != NULL && behaviour->expireImmediately()))) {
       light->isExpired = true;
       removeLight(i);
     }
-    else if (pos < numLeds) {      
-      if (light->outPort == NULL) {
-        #ifdef LP_DEBUG
-        LP_LOGF("light: %d outport NULL, conn: %d - %d\n", light->idx, fromPixel, toPixel);
-        #endif
-      }
-      uint16_t ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
-      light->pixel1 = getPixel(ledIdx);
-    }
     else {
-      outgoing(light, i);
+        // handle float inprecision
+        float pos = round(light->position * 10000) / 10000.0;
+        if (pos < numLeds) {
+          pos = ofxeasing::map(light->position, 0, numLeds, 0, numLeds, light->getEasing());
+          uint16_t ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
+          light->pixel1 = getPixel(ledIdx);
+        }
+        else {
+          outgoing(light, i);
+        }
     }
   }
 }

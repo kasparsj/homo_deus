@@ -10,31 +10,41 @@ using std::max;
 enum EmitParam {
     P_MODEL = 0,
     P_SPEED = 1,
-    P_FADE = 2,
-    P_LENGTH = 3,
-    P_TRAIL = 4,
-    P_ORDER = 5,
-    P_HEAD = 6,
-    P_LINKED = 7,
-    P_FROM = 8,
-    P_LIFE = 9,
-    P_COLOR = 10,
-    P_NOTE_ID = 11,
-    P_BRIGHTNESS = 12,
-    P_BEHAVIOUR = 13,
-    P_EMIT_GROUPS = 14,
-    P_EMIT_OFFSET = 15,
-    P_COLOR_CHANGE_GROUPS = 16,
+    P_EASE = 2,
+    P_FADE = 3,
+    P_FADE_THRESH = 4,
+    P_FADE_EASE = 5,
+    P_LENGTH = 6,
+    P_TRAIL = 7,
+    P_ORDER = 8,
+    P_HEAD = 9,
+    P_LINKED = 10,
+    P_FROM = 11,
+    P_LIFE = 12,
+    P_COLOR = 13,
+    P_NOTE_ID = 14,
+    P_MIN_BRI = 15,
+    P_MAX_BRI = 16,
+    P_BEHAVIOUR = 17,
+    P_EMIT_GROUPS = 18,
+    P_EMIT_OFFSET = 19,
+    P_COLOR_CHANGE_GROUPS = 20,
 };
 
 class EmitParams {
 
   public:
 
+    static int8_t DEFAULT_LIFE;
+    static int8_t DEFAULT_MODEL;
+    static float DEFAULT_BRIGHTNESS;
+
     int8_t model = DEFAULT_MODEL;
     float speed = DEFAULT_SPEED;
+    uint8_t ease = 0;
     float fadeSpeed = 0;
     float fadeThresh = 0;
+    uint8_t fadeEase = 0;
     uint16_t length = 0;
     uint16_t trail = 0;
     float lengthChange = 0;
@@ -45,7 +55,8 @@ class EmitParams {
     int16_t life = DEFAULT_LIFE;
     int8_t color = -1;
     uint16_t noteId = 0;
-    float brightness = DEFAULT_BRIGHTNESS;
+    float minBri = 0.f;
+    float maxBri = DEFAULT_BRIGHTNESS;
     uint8_t behaviourFlags = 0;
     uint8_t emitGroups = 0;
     uint8_t emitOffset = 0;

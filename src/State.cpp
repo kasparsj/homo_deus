@@ -75,7 +75,7 @@ int8_t State::emit(EmitParams &params) {
       float speed = params.speed >= 0 ? params.speed : randomSpeed();
       uint16_t life = params.life >= 0 ? params.life : randomLife();
       ColorRGB color = params.color >= 0 ? paletteColor(params.color) : randomColor();
-      float brightness = params.brightness >= 0 ? params.brightness : randomBrightness();
+      float maxBri = params.maxBri >= 0 ? params.maxBri : randomBrightness();
       uint16_t numTrail = params.speed == 0 ? params.trail : params.getSpeedTrail(speed, length);
       lightLists[i] = new LightList();
       lightLists[i]->model = model;
@@ -83,18 +83,19 @@ int8_t State::emit(EmitParams &params) {
       lightLists[i]->order = params.order;
       lightLists[i]->head = params.head;
       lightLists[i]->color = color;
-      lightLists[i]->speed = speed;
       lightLists[i]->linked = params.linked;
+      lightLists[i]->minBri = params.minBri;
+      lightLists[i]->setSpeed(speed, params.ease);
       lightLists[i]->setLife(life); 
-      lightLists[i]->setFade(params.fadeSpeed, params.fadeThresh);
+      lightLists[i]->setFade(params.fadeSpeed, params.fadeThresh, params.fadeEase);
       lightLists[i]->setLeadTrail(numTrail);
       lightLists[i]->noteId = params.noteId;
       uint16_t numFull = max(1, length - numTrail);
       #ifdef LP_DEBUG
       LP_LOGF("emitting %d %s lights (%d/%.1f/%d/%d/%.1f/%.3f), total: %d (%d)\n",
-        numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, brightness, params.fadeSpeed, totalLights + numFull + numTrail, totalLightLists + 1);      
+        numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, maxBri, params.fadeSpeed, totalLights + numFull + numTrail, totalLightLists + 1);
       #endif
-      lightLists[i]->setup(numFull, brightness);
+      lightLists[i]->setup(numFull, maxBri);
       doEmit(emitter, lightLists[i], params);
       #ifdef LP_OSC_REPLY
       LP_OSC_REPLY(i);
@@ -185,12 +186,12 @@ void State::update() {
   }
 }
 
-ColorRGB State::getPixel(uint16_t i) {
+ColorRGB State::getPixel(uint16_t i, uint8_t maxBrightness) {
   ColorRGB color = ColorRGB(0, 0, 0);
   if (pixelDiv[i]) {
-    color.R = min(pixelValuesR[i] / pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
-    color.G = min(pixelValuesG[i] / pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
-    color.B = min(pixelValuesB[i] / pixelDiv[i] / 255.f, 1.f) * MAX_BRIGHTNESS;
+    color.R = min(pixelValuesR[i] / pixelDiv[i] / 255.f, 1.f) * maxBrightness;
+    color.G = min(pixelValuesG[i] / pixelDiv[i] / 255.f, 1.f) * maxBrightness;
+    color.B = min(pixelValuesB[i] / pixelDiv[i] / 255.f, 1.f) * maxBrightness;
   }
   return color;
 }

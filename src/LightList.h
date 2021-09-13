@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config.h"
+#include "ofxEasing.h"
 #include "Behaviour.h"
 
 class Model;
@@ -11,14 +12,16 @@ class LightList {
 
   public:
 
-    //static FastNoise fastNoise;
     static uint16_t nextId;
   
     uint16_t id;
     uint16_t noteId;
     float speed = DEFAULT_SPEED;
+    ofxeasing::function ease = ofxeasing::linear::easeNone;
     float fadeSpeed = 0;
     float fadeThresh = 0;
+    float minBri = 0;
+    ofxeasing::function fadeEase = ofxeasing::linear::easeNone;
     int16_t life = INFINITE_LIFE;
     ListOrder order = LIST_ORDER_SEQUENTIAL;
     ListHead head = LIST_HEAD_FRONT;
@@ -67,9 +70,18 @@ class LightList {
       return lights[i];
     }
     
-    void setFade(float fadeSpeed, float fadeThresh = 0) {
-      this->fadeSpeed = fadeSpeed;
-      this->fadeThresh = fadeThresh;
+    void setSpeed(float speed, uint8_t ease = 0) {
+        this->speed = speed;
+        this->ease = ease == EASE_NONE ?
+            ofxeasing::linear::easeNone :
+            ofxeasing::easing(static_cast<ofxeasing::Function>((ease - 1) / 3), static_cast<ofxeasing::Type>((ease - 1) % 3));
+    }
+    void setFade(float fadeSpeed, float fadeThresh = 0, uint8_t fadeEase = 0) {
+        this->fadeSpeed = fadeSpeed;
+        this->fadeThresh = fadeThresh;
+        this->fadeEase = fadeEase == EASE_NONE ?
+            ofxeasing::linear::easeNone :
+            ofxeasing::easing(static_cast<ofxeasing::Function>((fadeEase - 1) / 3), static_cast<ofxeasing::Type>((fadeEase - 1) % 3));
     }
     void setLeadTrail(uint16_t trail);
     void setLife(int16_t numFrames);
@@ -88,7 +100,7 @@ class LightList {
     void initPosition(uint16_t i, LPLight* light);
     void initBri(uint16_t i, LPLight* light);
     void initLife(uint16_t i, LPLight* light);
-    uint16_t body() {
+    inline uint16_t body() {
         return numLights - lead - trail;
     }
 
