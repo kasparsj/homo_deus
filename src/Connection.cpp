@@ -78,7 +78,7 @@ void Connection::updateLight(uint16_t i) {
     }
     else {
         // handle float inprecision
-        float pos = round(light->position * 10000) / 10000.0;
+        float pos = round(light->position * 1000) / 1000.0;
         if (pos < numLeds) {
           pos = ofxeasing::map(light->position, 0, numLeds, 0, numLeds, light->getEasing());
           uint16_t ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
@@ -97,9 +97,6 @@ void Connection::outgoing(LPLight* light, int16_t i) {
   light->position -= numLeds;
   light->setInPort(port);
   light->setOutPort(NULL);
-  //#ifdef LP_DEBUG
-  //Serial.printf("Conn %d - %d outgoing %d\n", fromPixel, toPixel, light->id);
-  //#endif
   if (i >= 0) {
     removeLight(i);    
   }
