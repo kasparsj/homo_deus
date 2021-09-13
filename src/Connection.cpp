@@ -3,7 +3,7 @@
 #include "Intersection.h"
 #include "LPObject.h"
 
-Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LPEmitter(1), LPBase(group) {
+Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LPOwner(group) {
   this->from = from;
   this->to = to;
   
@@ -41,17 +41,16 @@ Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LP
   }
   if (leds > 0) {
     numLeds = leds;
-    initLights(min(numLeds * CONNECTION_MAX_MULT, CONNECTION_MAX_LIGHTS));
   }
 }
 
 void Connection::addLight(LPLight *light) {
-  if (numLeds > 0) {
-    LPBase::addLight(light);
-  }
-  else {
-    outgoing(light);
-  }
+    if (numLeds > 0) {
+        LPOwner::addLight(light);
+    }
+    else {
+        outgoing(light);
+    }
 }
 
 void Connection::emitLight(LPLight* light) {
@@ -59,22 +58,12 @@ void Connection::emitLight(LPLight* light) {
     addLight(light);
 }
 
-void Connection::update() {
-  if (numLeds == 0) return;
-  updateLightLists();
-  for (uint16_t i=0; i<maxLights; i++) {
-    updateLight(i);
-  }
-}
-
-void Connection::updateLight(uint16_t i) {
-  LPLight *light = lights[i];
-  if (light != NULL) {
+void Connection::updateLight(LPLight *light) {
     light->resetPixels();
     Behaviour *behaviour = light->getBehaviour();
     if (light->shouldExpire() && (light->getSpeed() == 0 || (behaviour != NULL && behaviour->expireImmediately()))) {
       light->isExpired = true;
-      removeLight(i);
+      light->owner = NULL;
     }
     else {
         // handle float inprecision
@@ -85,22 +74,19 @@ void Connection::updateLight(uint16_t i) {
           light->pixel1 = getPixel(ledIdx);
         }
         else {
-          outgoing(light, i);
+          outgoing(light);
         }
     }
-  }
 }
 
-void Connection::outgoing(LPLight* light, int16_t i) {
+void Connection::outgoing(LPLight* light) {
   Intersection *neuron = light->outPort->direction ? from : to;
   Port *port = light->outPort->direction ? fromPort : toPort;
   light->position -= numLeds;
   light->setInPort(port);
   light->setOutPort(NULL);
-  if (i >= 0) {
-    removeLight(i);    
-  }
-  neuron->addLight(light);
+  light->owner = neuron;
+  light->update();
 }
 
 uint16_t Connection::getFromPixel() {

@@ -7,6 +7,7 @@
 class LightList;
 class Model;
 class Behaviour;
+class LPOwner;
 
 class LPLight
 {
@@ -26,6 +27,7 @@ class LPLight
     float position;
     float bri = 1.f;
     float brightness = 0;
+    LPOwner *owner = 0;
 
     LPLight(LightList *list, int16_t life, uint16_t idx = 0, float maxBri = 1.f) : list(list), life(life), idx(idx), maxBri(maxBri) {
         position = -1;
@@ -37,7 +39,8 @@ class LPLight
     Port* getOutPort(uint8_t intersectionId);
     void setOutPort(Port *port, int8_t intersectionId = -1);
     void resetPixels();
-    virtual void update();
+    void update();
+    virtual void nextFrame();
     virtual bool shouldExpire();
 
     LPLight* getPrev();

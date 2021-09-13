@@ -95,21 +95,6 @@ Connection* LPObject::addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t gr
     return addConnection(new Connection(from, to, group));
 }
 
-void LPObject::update() {
-  for (uint8_t k=0; k<UPDATES_PER_FRAME; k++) {
-    for (uint8_t i=0; i<MAX_GROUPS; i++) {
-        for (uint8_t j=0; j<connCount[i]; j++) {
-            conn[i][j]->update();
-        }
-    }
-    for (uint8_t i=0; i<MAX_GROUPS; i++) {
-        for (uint8_t j=0; j<interCount[i]; j++) {
-            inter[i][j]->update();
-        }
-    }
-  }
-}
-
 Intersection* LPObject::getIntersection(uint8_t i, uint8_t groups) {
     for (uint8_t j=0; j<MAX_GROUPS; j++) {
         if (groups & (uint8_t) pow(2, j)) {
@@ -117,21 +102,6 @@ Intersection* LPObject::getIntersection(uint8_t i, uint8_t groups) {
             return inter[0][i];
           }
           i -= interCount[i];
-        }
-    }
-    return NULL;
-}
-
-Intersection* LPObject::getFreeIntersection(uint8_t groups) {
-    for (uint8_t i=0; i<MAX_GROUPS; i++) {
-        if (groups & (uint8_t) pow(2, i)) {
-          uint8_t r = LP_RANDOM(interCount[i]);
-          for (uint8_t i=0; i<interCount[i]; i++) {
-            uint8_t j = (r + i) % interCount[i];
-            if (inter[i][j]->freeLight == 0) {
-              return inter[i][j];
-            }
-          }
         }
     }
     return NULL;

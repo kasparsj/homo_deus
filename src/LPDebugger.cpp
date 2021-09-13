@@ -75,7 +75,7 @@ void LPDebugger::dumpConnections() {
   LP_LOGLN("--- CONNECTIONS ---");
   for (uint8_t i=0; i<MAX_GROUPS; i++) {
       for (uint8_t j=0; j<object.connCount[i]; j++) {
-        LP_LOGF("Connection%d %d - %d: %d / %d\n", i, object.conn[i][j]->fromPixel, object.conn[i][j]->toPixel, object.conn[i][j]->freeLight, object.conn[i][j]->maxLights);
+        LP_LOGF("Connection%d %d - %d\n", i, object.conn[i][j]->fromPixel, object.conn[i][j]->toPixel);
       }
   }
 }
@@ -84,7 +84,7 @@ void LPDebugger::dumpIntersections() {
   LP_LOGLN("--- INTERSECTIONS ---");
   for (uint8_t i=0; i<MAX_GROUPS; i++) {
       for (uint8_t j=0; j<object.interCount[i]; i++) {
-        LP_LOGF("Intersection%d %d: %d\n", i, object.inter[i][j]->id, object.inter[i][j]->freeLight);
+        LP_LOGF("Intersection%d %d\n", i, object.inter[i][j]->id);
       }
   }
 }

@@ -5,7 +5,7 @@
 
 uint8_t Intersection::nextId = 0;
 
-Intersection::Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel, uint8_t group) : LPEmitter(EMITTER_MAX_LIGHT_LISTS), LPBase(group) {
+Intersection::Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel, uint8_t group) : LPOwner(group) {
   this->id = nextId++;
   this->numPorts = numPorts;
   this->topPixel = topPixel;
@@ -14,7 +14,6 @@ Intersection::Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPi
   for (uint8_t i=0; i<numPorts; i++) {
     ports[i] = NULL;
   }
-  initLights(EMITTER_MAX_LIGHTS);
 }
 
 void Intersection::addPort(Port *p) {
@@ -41,64 +40,30 @@ void Intersection::emitLight(LPLight* light) {
     addLight(light);
 }
 
-void Intersection::update() {
-  updateLightLists();
-  for (uint8_t i=0; i<EMITTER_MAX_LIGHTS; i++) {
-    updateLight(i);
-  }
-  for (uint8_t i=0; i<freeOutgoing; i++) {
-    if (outgoingLights[i] >= 0) {
-      sendOut(i); 
-    }
-  }
-  freeOutgoing = 0;
-}
-
-void Intersection::updateLight(uint8_t i) {
-  LPLight *light = lights[i];
-  if (light != NULL && !light->isExpired) {
+void Intersection::updateLight(LPLight *light) {
+  if (!light->isExpired) {
     light->resetPixels();
     if (light->shouldExpire()) {
       if (light->getSpeed() == 0 || light->position >= 1.f) {
         light->isExpired = true;
-        removeLight(i);
+        light->owner = NULL;
       }
     }
     else if (light->position >= 1.f) {
       // neurons are updated after connections
-      queueOutgoing(i);
+      sendOut(light);
     }       
-    if (light->position >= 0.f) {
+    else if (light->position >= 0.f) {
       light->pixel1 = topPixel;
     }
   }
 }
 
-void Intersection::queueOutgoing(uint8_t i) {
-  if (freeOutgoing < EMITTER_MAX_LIGHTS) {
-    outgoingLights[freeOutgoing] = i;
-    freeOutgoing++;  
-  }
-  else {
-    LP_LOGLN("Intersection queueOutgoing no free slot");
-  }
-}
-
-Port* Intersection::sendOut(uint8_t i) {
-  LPLight *light = lights[outgoingLights[i]];
+Port* Intersection::sendOut(LPLight *light) {
   Port *port = NULL;
   LPLight* linkedPrev = light->getPrev();
   if (linkedPrev != NULL) {
-    uint8_t maxOutgoing = freeOutgoing;
-    for (uint8_t k=0; k<maxOutgoing; k++) {
-      if (outgoingLights[k] >= 0 && lights[outgoingLights[k]] == linkedPrev) {
-        port = sendOut(k);
-        break;
-      }
-    }
-    if (port == NULL) {    
-      port = linkedPrev->getOutPort(id);
-    }
+    port = linkedPrev->getOutPort(id);
   }
   Model *model = light->getModel();
   Behaviour *behaviour = light->getBehaviour();
@@ -108,8 +73,7 @@ Port* Intersection::sendOut(uint8_t i) {
   light->setOutPort(port, id);
   light->setInPort(NULL);
   light->position -= 1.f;
-  removeLight(outgoingLights[i]);
-  outgoingLights[i] = -1;
+  light->owner = NULL;
   if (port != NULL) { 
     if (behaviour->colorChangeGroups & port->group) {
       (light)->setColor(behaviour->getColor(light, port->group));

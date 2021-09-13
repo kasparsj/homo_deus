@@ -26,17 +26,26 @@ class LPObject {
     Intersection* addIntersection(Intersection *intersection);
     Connection* addConnection(Connection *connection);
     Connection* addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group);
-    void update();
     Model* getModel(int i) {
       return models[i];
     }
     Intersection* getIntersection(uint8_t i, uint8_t groups);
-    Intersection* getFreeIntersection(uint8_t groups);
-    Connection* getConnection(uint8_t i, uint8_t groups);
-    uint8_t countConnections() {
+    uint8_t countIntersections(uint8_t groups) {
         uint8_t count = 0;
         for (uint8_t i=0; i<MAX_GROUPS; i++) {
-            count += connCount[i];
+            if (groups == 0 || groups & (uint8_t) pow(2, i)) {
+                count += interCount[i];
+            }
+        }
+        return count;
+    }
+    Connection* getConnection(uint8_t i, uint8_t groups);
+    uint8_t countConnections(uint8_t groups) {
+        uint8_t count = 0;
+        for (uint8_t i=0; i<MAX_GROUPS; i++) {
+            if (groups == 0 || groups & (uint8_t) pow(2, i)) {
+                count += connCount[i];
+            }
         }
         return count;
     }

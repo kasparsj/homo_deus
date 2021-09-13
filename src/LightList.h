@@ -7,6 +7,7 @@
 class Model;
 class Light;
 class LPLight;
+class LPOwner;
 
 class LightList {
 
@@ -33,6 +34,7 @@ class LightList {
     uint16_t trail = 0;
     ColorRGB color;
     LPLight **lights;
+    LPOwner *emitter;
     uint16_t age = 0;
     uint16_t numEmitted = 0;
     uint8_t numSplits = 0;
@@ -87,9 +89,8 @@ class LightList {
     void setLife(int16_t numFrames);
     void setColor(ColorRGB color);
     void initEmit(uint8_t posOffset = 0);
-    void update() {
-        age++;
-    }
+    void update();
+    void nextFrame();
     void split();
     float getPosition(LPLight *light);
     float getBri(LPLight *light);

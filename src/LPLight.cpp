@@ -31,6 +31,13 @@ void LPLight::setOutPort(Port *port, int8_t intersectionId) {
   }
 }
 
+void LPLight::update() {
+    if (owner) {
+        owner->updateLight(this);
+    }
+    brightness = getBrightness();
+}
+
 float LPLight::getBrightness() {
     float value = fmod(bri, 2.f);
     value = (value > 1.f ? 2.f - value : value);
@@ -71,9 +78,8 @@ uint16_t* LPLight::getPixels() {
   return NULL;
 }
 
-void LPLight::update() {
+void LPLight::nextFrame() {
   bri = list->getBri(this);
-  brightness = getBrightness();
   position = list->getPosition(this);
 }
 

@@ -118,9 +118,28 @@ void LightList::initLife(uint16_t i, LPLight* light) {
   light->life = life;
 }
 
+void LightList::update() {
+    if (numEmitted < numLights) {
+        uint8_t batchSize = numLights - numEmitted;
+        uint8_t j = numEmitted;
+        for (uint8_t i=0; i<batchSize; i++) {
+            LPLight *light = (*this)[i+j];
+            if (light->position < 0) {
+                break;
+            }
+            numEmitted++;
+            emitter->emitLight(light);
+        }
+    }
+}
+
+void LightList::nextFrame() {
+    age++;
+}
+
 void LightList::split() {
-  numSplits++;
-  if (numSplits < numLights) {
+    numSplits++;
+    if (numSplits < numLights) {
     for (uint8_t i=0; i<numSplits; i++) {
       uint16_t split = (i+1)*(numLights/(numSplits+1));
       if ((*this)[split] == 0) continue;

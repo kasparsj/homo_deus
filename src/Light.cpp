@@ -22,7 +22,7 @@ ColorRGB Light::getPixelColor() {
     return color.Dim(255 * brightness);
 }
 
-void Light::update() {
+void Light::nextFrame() {
   bri = list->getBri(this);
   brightness = max(0.f, getBrightness());
   if (list == NULL) {

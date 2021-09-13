@@ -32,7 +32,7 @@ class Light : public LPLight {
 
     float getBrightness();
     ColorRGB getPixelColor();
-    void update();
+    void nextFrame();
     bool shouldExpire();
     
     Model* getModel();

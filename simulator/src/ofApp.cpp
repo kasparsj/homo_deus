@@ -14,7 +14,6 @@ void ofApp::update(){
     updateOsc();
 
     state->autoEmit(ofGetElapsedTimeMillis());
-    heptagon->update();
     state->update();
 }
 

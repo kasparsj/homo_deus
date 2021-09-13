@@ -1,12 +1,11 @@
 #pragma once
 
 #include "Config.h"
-#include "LPEmitter.h"
-#include "LPBase.h"
+#include "LPOwner.h"
 #include "Port.h"
 #include "Behaviour.h"
 
-class Intersection : public LPEmitter, public LPBase<uint8_t> {
+class Intersection : public LPOwner {
 
   public:
 
@@ -17,8 +16,6 @@ class Intersection : public LPEmitter, public LPBase<uint8_t> {
     Port **ports; // 2 or 4 ports
     uint16_t topPixel;
     int16_t bottomPixel;
-    int8_t outgoingLights[EMITTER_MAX_LIGHTS] = {-1};
-    uint8_t freeOutgoing = 0;
 
     Intersection(uint8_t numPorts, uint16_t topPixel, int16_t bottomPixel, uint8_t group);
     Intersection(uint16_t topPixel, int16_t bottomPixel, uint8_t group) : Intersection(4, topPixel, bottomPixel, group) {
@@ -32,14 +29,12 @@ class Intersection : public LPEmitter, public LPBase<uint8_t> {
     }
     
     void addPort(Port *p);
-    void emitLightList(LightList* lightList) {
-        LPBase::emitLightList(lightList);
-    }
     void emitLight(LPLight* light);
-    void queueOutgoing(uint8_t i);
-    Port* sendOut(uint8_t i);
-    void update();
-    void updateLight(uint8_t i);
+    void updateLight(LPLight *light);
+
+  private:
+
+    Port* sendOut(LPLight *light);
     float sumW(Model *model, Port *incoming);
     Port *randomPort(Port *incoming, Behaviour *behaviour);
     Port *choosePort(Model *model, LPLight* light);

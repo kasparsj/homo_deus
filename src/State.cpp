@@ -65,7 +65,7 @@ int8_t State::emit(EmitParams &params) {
   uint8_t which = params.model >= 0 ? params.model : randomModel();  
   Model *model = object.getModel(which);
   Behaviour *behaviour = new Behaviour(params);
-  LPEmitter *emitter = getEmitter(model, behaviour, params);
+  LPOwner *emitter = getEmitter(model, behaviour, params);
   if (emitter == NULL) {
     LP_LOGF("emit failed, no free emitter.");
     return -1;
@@ -109,26 +109,22 @@ int8_t State::emit(EmitParams &params) {
   return -1;
 }
 
-LPEmitter* State::getEmitter(Model* model, Behaviour* behaviour, EmitParams& params) {
+LPOwner* State::getEmitter(Model* model, Behaviour* behaviour, EmitParams& params) {
     int8_t from = params.from >= 0 ? params.from : -1;
     if (behaviour->emitFromConnection()) {
-        from = from >= 0 ? from : LP_RANDOM(object.countConnections());
+        from = from >= 0 ? from : LP_RANDOM(object.countConnections(params.emitGroups));
         return object.getConnection(from, params.emitGroups);
     }
     else {
         uint8_t emitGroups = params.emitGroups > 0 ? params.emitGroups : model->emitGroups;
-        if (from >= 0) {
-          return object.getIntersection(from, emitGroups);
-        }
-        else {
-          return object.getFreeIntersection(emitGroups);
-        }
+        from = from >= 0 ? from : LP_RANDOM(object.countIntersections(emitGroups));
+        return object.getIntersection(from, emitGroups);
     }
 }
 
-void State::doEmit(LPEmitter* from, LightList *lightList, EmitParams& params) {
+void State::doEmit(LPOwner* from, LightList *lightList, EmitParams& params) {
   lightList->initEmit(params.emitOffset);
-  from->add(lightList);
+  lightList->emitter = from;
   totalLights += lightList->numLights;
   totalLightLists++;
 }
@@ -141,6 +137,7 @@ void State::update() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     LightList* lightList = lightLists[i];
     if (lightList == NULL) continue;
+    lightList->update();
     bool allExpired = true;
     for (uint16_t j=0; j<lightList->numLights; j++) {
       if (lightList->lights[j] == NULL) {
@@ -155,6 +152,7 @@ void State::update() {
         continue;
       }
       LPLight* light = lightList->lights[j];
+      light->update();
       ColorRGB color = light->getPixelColor();
       allExpired = false;
       // todo: perhaps it's OK to always retrieve pixels
@@ -171,17 +169,14 @@ void State::update() {
       else if (light->pixel1 >= 0) {
         setPixel(light->pixel1, color);
       }
-      light->update();
+      light->nextFrame();
     }
-    lightList->update();
+    lightList->nextFrame();
     if (allExpired) {
       totalLights -= lightList->numLights;
       totalLightLists--;
       delete lightLists[i];
       lightLists[i] = NULL;
-      //#ifdef LP_DEBUG
-      //Serial.printf("Deleted lightList %d\n", i);
-      //#endif
     }
   }
 }
