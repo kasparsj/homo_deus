@@ -8,18 +8,18 @@ class Weight {
 
   public:
     
-    Weight(float w) : w(w) {
-        conditional = new HashMap<uint8_t, float>(MAX_CONDITIONAL_WEIGHTS);
+    Weight(uint8_t w) : w(w) {
+        conditional = new HashMap<uint8_t, uint8_t>(MAX_CONDITIONAL_WEIGHTS);
     }
     ~Weight() {
         delete conditional;
     }
     
-    void add(Port *incoming, float w);
-    float get(Port *incoming);
+    void add(Port *incoming, uint8_t w);
+    uint8_t get(Port *incoming);
     
   private:
-    float w;
-    HashMap<uint8_t, float> *conditional;
+    uint8_t w;
+    HashMap<uint8_t, uint8_t> *conditional;
   
 };

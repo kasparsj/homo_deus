@@ -25,7 +25,7 @@ class LPLight
     int16_t life = INFINITE_LIFE;
     bool isExpired = false;
     float position;
-    float bri = 1.f;
+    uint16_t bri = 255;
     uint8_t brightness = 0;
     LPOwner *owner = 0;
 

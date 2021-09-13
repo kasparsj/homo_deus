@@ -55,8 +55,8 @@ class State {
     int8_t emitRandom() {
       EmitParams params;
       params.speed = 0;
-      params.fadeSpeed = 0.01f;
-      params.fadeThresh = 0.5f;
+      params.fadeSpeed = 1;
+      params.fadeThresh = 127;
       params.order = LIST_ORDER_RANDOM;
       params.behaviourFlags |= B_POS_CHANGE_FADE;
       return emit(params);

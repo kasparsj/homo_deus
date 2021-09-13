@@ -39,13 +39,11 @@ void LPLight::update() {
 }
 
 uint8_t LPLight::getBrightness() {
-    float value = fmod(bri, 2.f);
-    value = (value > 1.f ? 2.f - value : value);
-    value = max(0.f, min(1.f, (value - list->fadeThresh) / (1.f - list->fadeThresh)));
-    // handle float inprecision
-    value = round(value * 10000) / 10000.f;
+    uint16_t value = bri % 511;
+    value = (value > 255 ? 511 - value : value);
+    value = (value - list->fadeThresh) / (255 - list->fadeThresh) * 511;
     if (value > 0) {
-        return ofxeasing::map(value, 0.f, 1.f, list->minBri, maxBri, list->fadeEase);
+        return ofxeasing::map(value, 0, 511, list->minBri, maxBri, list->fadeEase);
     }
     return 0;
 }

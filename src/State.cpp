@@ -75,7 +75,7 @@ int8_t State::emit(EmitParams &params) {
       float speed = params.speed >= 0 ? params.speed : randomSpeed();
       uint16_t life = params.life >= 0 ? params.life : randomLife();
       ColorRGB color = params.color >= 0 ? paletteColor(params.color) : randomColor();
-      uint8_t maxBri = params.maxBri >= 0 ? params.maxBri : randomBrightness();
+      uint8_t maxBri = params.maxBri > 0 ? params.maxBri : randomBrightness();
       uint16_t numTrail = params.speed == 0 ? params.trail : params.getSpeedTrail(speed, length);
       lightLists[i] = new LightList();
       lightLists[i]->model = model;
@@ -92,7 +92,7 @@ int8_t State::emit(EmitParams &params) {
       lightLists[i]->noteId = params.noteId;
       uint16_t numFull = max(1, length - numTrail);
       #ifdef LP_DEBUG
-      LP_LOGF("emitting %d %s lights (%d/%.1f/%d/%d/%d/%.3f), total: %d (%d)\n",
+      LP_LOGF("emitting %d %s lights (%d/%.1f/%d/%d/%d/%d), total: %d (%d)\n",
         numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, maxBri, params.fadeSpeed, totalLights + numFull + numTrail, totalLightLists + 1);
       #endif
       lightLists[i]->setup(numFull, maxBri);

@@ -42,12 +42,11 @@ class EmitParams {
     int8_t model = DEFAULT_MODEL;
     float speed = DEFAULT_SPEED;
     uint8_t ease = 0;
-    float fadeSpeed = 0;
-    float fadeThresh = 0;
+    uint8_t fadeSpeed = 0;
+    uint8_t fadeThresh = 0;
     uint8_t fadeEase = 0;
     uint16_t length = 0;
     uint16_t trail = 0;
-    float lengthChange = 0;
     ListOrder order = LIST_ORDER_SEQUENTIAL;
     ListHead head = LIST_HEAD_FRONT;
     bool linked = true;

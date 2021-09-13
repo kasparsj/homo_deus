@@ -96,10 +96,10 @@ void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
                 p.trail = m.getArgAsInt(j);
                 break;
             case P_FADE:
-                p.fadeSpeed = m.getArgAsFloat(j);
+                p.fadeSpeed = m.getArgAsInt(j);
                 break;
             case P_FADE_THRESH:
-                p.fadeThresh = m.getArgAsFloat(j);
+                p.fadeThresh = m.getArgAsInt(j);
                 break;
             case P_FADE_EASE:
                 p.fadeEase = m.getArgAsInt(j);

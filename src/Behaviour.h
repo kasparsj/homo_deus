@@ -16,7 +16,7 @@ class Behaviour {
       colorChangeGroups = params.colorChangeGroups;
     }
 
-    float getBri(LPLight *light);
+    uint16_t getBri(LPLight *light);
     float getPosition(LPLight *light);
     ColorRGB getColor(LPLight *light, uint8_t group);
 

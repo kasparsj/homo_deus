@@ -83,8 +83,8 @@ Port* Intersection::sendOut(LPLight *light) {
   return port;
 }
 
-float Intersection::sumW(Model *model, Port *incoming) {
-  float sum = 0;
+uint16_t Intersection::sumW(Model *model, Port *incoming) {
+  uint16_t sum = 0;
   for (uint8_t i=0; i<numPorts; i++) {
     Port *port = ports[i];
     #ifdef LP_DEBUG
@@ -107,11 +107,11 @@ Port *Intersection::randomPort(Port *incoming, Behaviour *behaviour) {
 
 Port *Intersection::choosePort(Model *model, LPLight *light) {
     Port *incoming = light->inPort;
-    float sum = sumW(model, incoming);
-    if (sum <= 0.f) {
+    uint16_t sum = sumW(model, incoming);
+    if (sum == 0) {
       return randomPort(incoming, light->getBehaviour());
     }
-    float rnd = LP_RANDOM(sum * 1000) / 1000.f;
+    uint16_t rnd = LP_RANDOM(sum);
     for (uint8_t i=0; i<numPorts; i++) {
        Port *port = ports[i];
        #ifdef LP_DEBUG
@@ -119,7 +119,7 @@ Port *Intersection::choosePort(Model *model, LPLight *light) {
         LP_LOGF("Intersection %d choosePort port is NULL %d", topPixel, i);
        }
        #endif
-       float w = model->get(port, incoming);
+       uint8_t w = model->get(port, incoming);
        if (port == incoming || w == 0) continue;
        if (rnd < w) {
          return port;

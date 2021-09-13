@@ -19,8 +19,8 @@ class LightList {
     uint16_t noteId;
     float speed = DEFAULT_SPEED;
     ofxeasing::function ease = ofxeasing::linear::easeNone;
-    float fadeSpeed = 0;
-    float fadeThresh = 0;
+    uint8_t fadeSpeed = 0;
+    uint8_t fadeThresh = 0;
     uint8_t minBri = 0;
     ofxeasing::function fadeEase = ofxeasing::linear::easeNone;
     int16_t life = INFINITE_LIFE;
@@ -78,7 +78,7 @@ class LightList {
             ofxeasing::linear::easeNone :
             ofxeasing::easing(static_cast<ofxeasing::Function>((ease - 1) / 3), static_cast<ofxeasing::Type>((ease - 1) % 3));
     }
-    void setFade(float fadeSpeed, float fadeThresh = 0, uint8_t fadeEase = 0) {
+    void setFade(uint8_t fadeSpeed, uint8_t fadeThresh = 0, uint8_t fadeEase = 0) {
         this->fadeSpeed = fadeSpeed;
         this->fadeThresh = fadeThresh;
         this->fadeEase = fadeEase == EASE_NONE ?
@@ -93,7 +93,7 @@ class LightList {
     void nextFrame();
     void split();
     float getPosition(LPLight *light);
-    float getBri(LPLight *light);
+    uint16_t getBri(LPLight *light);
 
   private:
 

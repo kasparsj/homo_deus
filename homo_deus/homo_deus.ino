@@ -299,7 +299,10 @@ void parseParams(EmitParams &p, const OscMessage &m) {
         p.trail = m.arg<uint16_t>(j);
         break;
       case P_FADE:
-        p.fadeSpeed = m.arg<float>(j);
+        p.fadeSpeed = m.arg<uint8_t>(j);
+        break;
+      case P_FADE_THRESH:
+        p.fadeThresh = m.arg<uint8_t>(j);
         break;
       case P_ORDER:
         p.order = static_cast<ListOrder>(m.arg<uint8_t>(j));

@@ -94,7 +94,7 @@ void LightList::initBri(uint16_t i, LPLight* light) {
   switch (order) {
     case LIST_ORDER_RANDOM:
       if (fadeThresh > 0) {
-        light->bri = (LP_RANDOM(fadeThresh * 3000.f) - (fadeThresh * 2000.f)) / 1000.f;
+        light->bri = (LP_RANDOM(fadeThresh * 30) - (fadeThresh * 20)) / 10;
       }
       break;
     case LIST_ORDER_NOISE:
@@ -103,7 +103,7 @@ void LightList::initBri(uint16_t i, LPLight* light) {
   }
 }
 
-float LightList::getBri(LPLight *light) {
+uint16_t LightList::getBri(LPLight *light) {
   if (behaviour != NULL) {
     return behaviour->getBri(light);
   }

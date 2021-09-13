@@ -8,10 +8,9 @@ Light::Light(LightList *list, float speed, int16_t life, uint16_t idx, uint8_t m
 }
 
 uint8_t Light::getBrightness() {
-  float value = fmod(bri, 2.f);
-  value = (value > 1.f ? 2.f - value : value);
-  value = (value - list->fadeThresh) / (1.f - list->fadeThresh);
-  return round(value * maxBri);
+  uint16_t value = bri % 511;
+  value = (value > 255 ? 511 - value : value);
+  return (value - list->fadeThresh) / (255 - list->fadeThresh) * maxBri;
 }
 
 ColorRGB Light::getPixelColor() {
