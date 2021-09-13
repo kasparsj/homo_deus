@@ -320,10 +320,10 @@ void parseParams(EmitParams &p, const OscMessage &m) {
         p.noteId = m.arg<uint16_t>(j);
         break;
       case P_MIN_BRI:
-        p.minBri = m.arg<float>(j);
+        p.minBri = m.arg<uint8_t>(j);
         break;
       case P_MAX_BRI:
-        p.maxBri = m.arg<float>(j);
+        p.maxBri = m.arg<uint8_t>(j);
         break;
       case P_BEHAVIOUR:
         p.behaviourFlags = m.arg<uint8_t>(j);

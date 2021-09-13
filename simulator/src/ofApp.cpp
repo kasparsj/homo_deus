@@ -126,10 +126,10 @@ void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
                 p.noteId = m.getArgAsInt(j);
                 break;
             case P_MIN_BRI:
-                p.minBri = m.getArgAsFloat(j);
+                p.minBri = m.getArgAsInt(j);
                 break;
             case P_MAX_BRI:
-                p.maxBri = m.getArgAsFloat(j);
+                p.maxBri = m.getArgAsInt(j);
                 break;
             case P_BEHAVIOUR:
                 p.behaviourFlags = m.getArgAsInt(j);

@@ -10,14 +10,14 @@ void LightList::init(uint16_t numLights) {
   lights = new LPLight*[numLights]();
 }
 
-void LightList::setup(uint16_t numLights, float brightness) {
+void LightList::setup(uint16_t numLights, uint8_t brightness) {
     init(lead + numLights + trail);
     for (uint16_t i=0; i<this->numLights; i++) {
         createLight(i, brightness);
     }
 }
 
-LPLight* LightList::createLight(uint16_t i, float brightness) {
+LPLight* LightList::createLight(uint16_t i, uint8_t brightness) {
     float mult = getBriMult(i);
     LPLight *light;
     if (behaviour != NULL && behaviour->colorChangeGroups > 0) {

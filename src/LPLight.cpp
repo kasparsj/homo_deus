@@ -38,23 +38,23 @@ void LPLight::update() {
     brightness = getBrightness();
 }
 
-float LPLight::getBrightness() {
+uint8_t LPLight::getBrightness() {
     float value = fmod(bri, 2.f);
     value = (value > 1.f ? 2.f - value : value);
     value = max(0.f, min(1.f, (value - list->fadeThresh) / (1.f - list->fadeThresh)));
     // handle float inprecision
     value = round(value * 10000) / 10000.f;
     if (value > 0) {
-        value = ofxeasing::map(value, 0.f, 1.f, list->minBri, maxBri, list->fadeEase);
+        return ofxeasing::map(value, 0.f, 1.f, list->minBri, maxBri, list->fadeEase);
     }
-    return value;
+    return 0;
 }
 
 ColorRGB LPLight::getPixelColor() {
-    if (brightness == 1.f) {
+    if (brightness == 255) {
         return list->color;
     }
-    return list->color.Dim(255 * brightness);
+    return list->color.Dim(brightness);
 }
 
 uint16_t* LPLight::getPixels() {

@@ -6,15 +6,15 @@ class Light : public LPLight {
 
   public:
 
-    Light(LightList *parent, float speed, int16_t life, uint16_t idx = 0, float maxBri = 1.f);
+    Light(LightList *parent, float speed, int16_t life, uint16_t idx = 0, uint8_t maxBri = 255);
     
-    Light(float maxBri, float speed, int16_t life) : Light(0, maxBri, speed, life, 0) {
+    Light(uint8_t maxBri, float speed, int16_t life) : Light(0, maxBri, speed, life, 0) {
     }
     
-    Light(float maxBri) : Light(maxBri, DEFAULT_SPEED, INFINITE_LIFE) {
+    Light(uint8_t maxBri) : Light(maxBri, DEFAULT_SPEED, INFINITE_LIFE) {
     }
     
-    Light() : Light(1.0) {
+    Light() : Light(255) {
     }
 
     float getSpeed() {
@@ -30,7 +30,7 @@ class Light : public LPLight {
       this->color = color;
     }
 
-    float getBrightness();
+    uint8_t getBrightness();
     ColorRGB getPixelColor();
     void nextFrame();
     bool shouldExpire();

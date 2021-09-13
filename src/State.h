@@ -37,7 +37,7 @@ class State {
     uint16_t randomLife();
     uint8_t randomModel();
     uint16_t randomLength();
-    float randomBrightness();
+    uint8_t randomBrightness();
     uint16_t randomNextEmit();
     ColorRGB randomColor();
     ColorRGB paletteColor(uint8_t color);

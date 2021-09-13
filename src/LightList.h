@@ -21,7 +21,7 @@ class LightList {
     ofxeasing::function ease = ofxeasing::linear::easeNone;
     float fadeSpeed = 0;
     float fadeThresh = 0;
-    float minBri = 0;
+    uint8_t minBri = 0;
     ofxeasing::function fadeEase = ofxeasing::linear::easeNone;
     int16_t life = INFINITE_LIFE;
     ListOrder order = LIST_ORDER_SEQUENTIAL;
@@ -51,7 +51,7 @@ class LightList {
     }
 
     void init(uint16_t numLights);
-    void setup(uint16_t numLights, float brightness = 1);
+    void setup(uint16_t numLights, uint8_t brightness = 255);
     float getBriMult(uint16_t i) {
         float mult = 1.f;
         if (i < lead) {
@@ -97,7 +97,7 @@ class LightList {
 
   private:
 
-    LPLight* createLight(uint16_t i, float brightness);
+    LPLight* createLight(uint16_t i, uint8_t brightness);
     void initPosition(uint16_t i, LPLight* light);
     void initBri(uint16_t i, LPLight* light);
     void initLife(uint16_t i, LPLight* light);

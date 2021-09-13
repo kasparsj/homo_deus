@@ -37,7 +37,7 @@ class EmitParams {
 
     static int8_t DEFAULT_LIFE;
     static int8_t DEFAULT_MODEL;
-    static float DEFAULT_BRIGHTNESS;
+    static uint8_t DEFAULT_BRIGHTNESS;
 
     int8_t model = DEFAULT_MODEL;
     float speed = DEFAULT_SPEED;
@@ -55,8 +55,8 @@ class EmitParams {
     int16_t life = DEFAULT_LIFE;
     int8_t color = -1;
     uint16_t noteId = 0;
-    float minBri = 0.f;
-    float maxBri = DEFAULT_BRIGHTNESS;
+    uint8_t minBri = 0;
+    uint8_t maxBri = DEFAULT_BRIGHTNESS;
     uint8_t behaviourFlags = 0;
     uint8_t emitGroups = 0;
     uint8_t emitOffset = 0;

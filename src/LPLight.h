@@ -15,7 +15,7 @@ class LPLight
   public:
 
     uint16_t idx;
-    float maxBri;
+    uint8_t maxBri;
     LightList *list;
     Port *inPort = 0;
     Port *outPort = 0;
@@ -26,10 +26,10 @@ class LPLight
     bool isExpired = false;
     float position;
     float bri = 1.f;
-    float brightness = 0;
+    uint8_t brightness = 0;
     LPOwner *owner = 0;
 
-    LPLight(LightList *list, int16_t life, uint16_t idx = 0, float maxBri = 1.f) : list(list), life(life), idx(idx), maxBri(maxBri) {
+    LPLight(LightList *list, int16_t life, uint16_t idx = 0, uint8_t maxBri = 255) : list(list), life(life), idx(idx), maxBri(maxBri) {
         position = -1;
     }
 
@@ -51,7 +51,7 @@ class LPLight
     virtual ofxeasing::function getEasing();
     virtual ColorRGB getColor();
     virtual void setColor(ColorRGB color) {}
-    virtual float getBrightness();
+    virtual uint8_t getBrightness();
     virtual ColorRGB getPixelColor();
     uint16_t* getPixels();
 
