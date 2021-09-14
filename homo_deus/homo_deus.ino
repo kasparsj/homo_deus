@@ -2,8 +2,10 @@
 #define PIXEL_PIN2 26
 #define BUTTON_PIN 25
 #define WIFI_HOSTNAME "homo-deus"
-#define WIFI_SSID "Redmi"
-#define WIFI_PASS "kaspars123"
+#define WIFI_SSID "k"
+#define WIFI_PASS "letmeinplease"
+//#define WIFI_SSID "Redmi"
+//#define WIFI_PASS "kaspars123"
 //#define WIFI_SSID "VA37-3"
 //#define WIFI_PASS "fdsa4321");
 #define HD_OSC
@@ -79,18 +81,18 @@ void setupComms() {
 
   #ifdef WIFI_SSID
 
-  // #ifdef ESP_PLATFORM
-  // WiFi.disconnect(true, true);  // disable wifi, erase ap info
-  // delay(1000);
-  // WiFi.mode(WIFI_STA);
-  // #endif
+  #ifdef ESP_PLATFORM
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect(false, true);  // disable wifi, erase ap info
+  delay(3000);
+  #endif
 
   uint8_t numTries = 0;
   #ifdef WIFI_HOSTNAME
   WiFi.setHostname(WIFI_HOSTNAME);
   #endif
   WiFi.begin(WIFI_SSID, WIFI_PASS);
-    while (numTries < 10 && WiFi.status() != WL_CONNECTED) {
+  while (numTries < 10 && WiFi.status() != WL_CONNECTED) {
       numTries++;
       Serial.print(".");
       delay(500);
@@ -99,9 +101,12 @@ void setupComms() {
     wifiConnected = true;
     Serial.print("WiFi connected, IP = ");
     Serial.println(WiFi.localIP());
+    WiFi.setAutoReconnect(true);
+    WiFi.persistent(true);
   }
   else {
-    WiFi.disconnect();
+    WiFi.disconnect(true, true);
+    ESP.restart();
     Serial.println("WiFi failed to connect");
   }
 
