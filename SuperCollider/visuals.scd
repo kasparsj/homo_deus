@@ -44,10 +44,10 @@ Pbind(
 
 (
 OSCFunc({ |msg|
-	~hd.emit(
+	/*~hd.emit(
 		\behaviour, \RENDER_SEGMENT,
 		\life, 2,
-	);
+	);*/
 }, '/cricket');
 a = {
 	var modulator, mod1, mod2, mod3;
@@ -156,3 +156,4 @@ SynthDef(\houseflyWing, { |out=0|
 x = Synth(\houseflyWing);
 )
 
+x.free

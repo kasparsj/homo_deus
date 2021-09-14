@@ -229,11 +229,11 @@ s.sync;
 	var dict = args.asDict;
 	var which = (0..2).choose;
 	var instruments = [\SineDrone, \SineDrone, \SawDrone, \PulseDrone];
-	var dur = rrand(5, 20).asInteger;
+	var dur = rrand(5, 30).asInteger;
 	var freq = (51..(51+rrand(0, 3))).scramble;
 	var modFreq = dict[\speed] ? Pwhite(0.5, 10.0);
 	var pan = [-1, 1].scramble;
-	var pbind = Pbind(
+	Pbind(
 		\type, \hd_note,
 		\instrument, Pfunc{ instruments[(0..3).choose] },
 		\freq, freq,
@@ -250,16 +250,14 @@ s.sync;
 		//\color, which * 85
 		*args
 	);
-	pbind;
 };
 
 ~hd.createSpawn = { |self, func, delta|
-	var pspawn = Pspawn(Pbind(
+	Pspawn(Pbind(
 		\pattern, Pfunc(func),
 		\delta, delta,
 		\method, \par
 	));
-	pspawn;
 };
 
 ~hd.setPalette = { |self, palette|

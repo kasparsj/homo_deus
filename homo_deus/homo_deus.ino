@@ -82,6 +82,7 @@ void setupComms() {
   #endif
 
   uint8_t numTries = 0;
+  WiFi.setHostname("homo-deus");
   //WiFi.begin("VA37-3", "fdsa4321");
   WiFi.begin("Redmi", "marlena123");
   //WiFi.config(ip, gateway, subnet);
