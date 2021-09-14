@@ -1,12 +1,15 @@
 #define PIXEL_PIN1 14
 #define PIXEL_PIN2 26
 #define BUTTON_PIN 25
-#define HD_WIFI
+#define WIFI_SSID "Redmi"
+#define WIFI_PASS "kaspars123"
+//#define WIFI_SSID "VA37-3"
+//#define WIFI_PASS "fdsa4321");
 #define HD_OSC
 #define HD_SERIAL
 #define HD_DEBUGGER
-#define SC_HOST "192.168.43.101"
-#define SC_PORT 57120
+//#define SC_HOST "192.168.43.101"
+//#define SC_PORT 57120
 //#define LP_OSC_REPLY(I) OscWiFi.publish(SC_HOST, SC_PORT, "/emit", (I));
 #define PIXEL_COUNT1 524
 #define PIXEL_COUNT2 395
@@ -19,7 +22,7 @@
 #include <NeoPixelBus.h>
 #include "src/HeptagonStar.h"
 
-#ifdef HD_WIFI
+#ifdef WIFI_SSID
 #include <WiFi.h>
 #endif
 #ifdef HD_OSC
@@ -43,7 +46,7 @@ unsigned long gPrevMillis = 0;
 #ifdef HD_DEBUGGER
 LPDebugger *debugger;
 #endif
-#ifdef HD_WIFI
+#ifdef WIFI_SSID
 bool wifiConnected = false;
 #endif
 
@@ -73,7 +76,7 @@ void setupComms() {
 
   esp_bt_controller_mem_release(ESP_BT_MODE_BTDM);
 
-  #ifdef HD_WIFI
+  #ifdef WIFI_SSID
 
   #ifdef ESP_PLATFORM
   WiFi.disconnect(true, true);  // disable wifi, erase ap info
@@ -83,8 +86,7 @@ void setupComms() {
 
   uint8_t numTries = 0;
   WiFi.setHostname("homo-deus");
-  //WiFi.begin("VA37-3", "fdsa4321");
-  WiFi.begin("Redmi", "marlena123");
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
   //WiFi.config(ip, gateway, subnet);
   while (numTries < 10 && WiFi.status() != WL_CONNECTED) {
       numTries++;
