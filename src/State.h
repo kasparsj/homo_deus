@@ -33,7 +33,6 @@ class State {
       delete[] pixelDiv;
     }
     
-    float randomSpeed();
     uint8_t randomModel();
     uint16_t randomLength();
     uint8_t randomBrightness();
@@ -42,43 +41,14 @@ class State {
     ColorRGB paletteColor(uint8_t color);
     void autoEmit(unsigned long millis);
     int8_t emit(EmitParams &params);
-    int8_t emit(uint8_t model) {
-      EmitParams params;
-      params.model = model;
-      params.speed = randomSpeed();
-      return emit(params);
-    }
-    int8_t emit() {
-      return emit(randomModel());
-    }
-    int8_t emitRandom() {
-      EmitParams params;
-      params.speed = 0;
-      params.fadeSpeed = 1;
-      params.fadeThresh = 127;
-      params.order = LIST_ORDER_RANDOM;
-      params.behaviourFlags |= B_POS_CHANGE_FADE;
-      return emit(params);
-    }
-    int8_t emitSplatter(uint8_t model) {
-      EmitParams params;
-      params.model = model;
-      params.speed = randomSpeed();
-      params.linked = false;
-      params.duration = max(1, (int) (1.f/params.speed) + 1) * (1000 / EmitParams::DURATION_FPS);
-      return emit(params);
-    }
     LPOwner* getEmitter(Model* model, Behaviour* behaviour, EmitParams& params);
     void update();
     void colorAll();
     void splitAll();
     void stopAll();
     void stopNote(uint8_t i);
-    ColorRGB getPixel(uint16_t i, uint8_t maxBrightness = FULL_BRI);
-
-    #ifdef LP_DEBUG
+    ColorRGB getPixel(uint16_t i, uint8_t maxBrightness = FULL_BRIGHTNESS);
     void debug();
-    #endif
     
   private:
     void doEmit(LPOwner* from, LightList *lightList, EmitParams& params);

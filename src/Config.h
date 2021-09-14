@@ -100,9 +100,6 @@ enum Ease {
     EASE_EXPONENTIAL_INOUT = 24,
 };
 
-#define LP_DEBUG
-#define EMITTER_MIN_SPEED 0.5f
-#define EMITTER_MAX_SPEED 10.f
 #define EMITTER_MIN_LENGTH 1
 #define EMITTER_MAX_LENGTH 100
 #define EMITTER_MIN_BRI 0.75f
@@ -118,7 +115,8 @@ enum Ease {
 #define CONNECTION_MAX_LEDS 48
 #define OUT_PORTS_MEMORY 3
 //#define LP_OSC_REPLY(I) OscWiFi.publish(SC_HOST, SC_PORT, "/emit", (I));
+#define RANDOM_MODEL -1
 #define RANDOM_DURATION 0
 #define INFINITE_DURATION 4294967295 // UINT32_MAX
 #define DEFAULT_SPEED 1.0
-#define FULL_BRI 255
+#define FULL_BRIGHTNESS 255

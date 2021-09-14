@@ -62,6 +62,20 @@ class EmitParams {
     uint8_t emitOffset = 0;
     uint8_t colorChangeGroups = 0;
 
+    static uint16_t frameMs() {
+        return (1000.f / EmitParams::DURATION_FPS);
+    }
+
+    EmitParams(int8_t model, float speed) : model(model), speed(speed) {
+
+    }
+    EmitParams(int8_t model) : EmitParams(model, DEFAULT_SPEED) {
+
+    }
+    EmitParams() : EmitParams(DEFAULT_MODEL, DEFAULT_SPEED) {
+
+    }
+
     uint16_t getSpeedTrail(float speed, uint16_t length) {
       uint16_t trail = 0;
       if (order == LIST_ORDER_SEQUENTIAL && linked && !(behaviourFlags & B_RENDER_SEGMENT)) {

@@ -1,11 +1,9 @@
 #include "Weight.h"
 
 void Weight::add(Port *incoming, uint8_t w) {
-    #if defined(ARDUINO) && defined(LP_DEBUG)
     if (conditional->willOverflow()) {
         LP_LOGLN("HashMap overflow");
     }
-    #endif
     conditional->set(incoming->id, w);
 }
 

@@ -46,6 +46,7 @@ public:
     void doCommand(char command);
     glm::vec2 intersectionPos(Intersection* intersection, int8_t j = -1);
     ofColor getColor(uint16_t i);
+    void doEmit(EmitParams &params);
 
     ofxOscReceiver receiver;
     bool showIntersections = false;
@@ -55,5 +56,6 @@ public:
     bool showFps = false;
     bool showHeap = false;
     bool showPixels = false;
+    int8_t lastList = -1;
 
 };

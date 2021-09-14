@@ -2,5 +2,5 @@
 
 #include "FastNoise.h"
 
-static FastNoise gPerlinNoise;
-static unsigned long gMillis;
+extern FastNoise gPerlinNoise;
+extern unsigned long gMillis;

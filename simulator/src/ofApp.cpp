@@ -1,5 +1,6 @@
 #include "ofApp.h"
 #include "Globals.h"
+#include "LPRandom.h"
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -122,7 +123,7 @@ void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
                 p.duration = m.getArgAsInt(j);
                 break;
             case P_DURATION_FRAMES:
-                p.duration = m.getArgAsInt(j) * (1000 / EmitParams::DURATION_FPS);
+                p.duration = m.getArgAsInt(j) * EmitParams::frameMs();
                 break;
             case P_COLOR:
                 p.color = m.getArgAsInt(j);
@@ -217,22 +218,34 @@ void ofApp::doCommand(char command) {
     case '3':
     case '4':
     case '5':
-    case '6':
-      state->emit(command - '1');
-      break;
-    case '7': {
-      EmitParams p;
-      p.model = M_STAR;
-      p.colorChangeGroups |= GROUP1;
-      state->emit(p);
+    case '6': {
+      EmitParams params(command - '1', LPRandom::randomSpeed());
+      doEmit(params);
       break;
     }
-    case '+':
-      state->emitSplatter(M_SPLATTER);
+    case '7': {
+      EmitParams params(M_STAR);
+      params.colorChangeGroups |= GROUP1;
+      doEmit(params);
       break;
-    case '*':
-      state->emitRandom();
+    }
+    case '+': {
+      EmitParams params(M_SPLATTER, LPRandom::randomSpeed());
+      params.linked = false;
+      params.duration = max(1, (int) (1.f/params.speed) + 1) * EmitParams::frameMs();
+      doEmit(params);
       break;
+    }
+    case '*': {
+      EmitParams params;
+      params.speed = 0;
+      params.fadeSpeed = 1;
+      params.fadeThresh = 127;
+      params.order = LIST_ORDER_RANDOM;
+      params.behaviourFlags |= B_POS_CHANGE_FADE;
+      doEmit(params);
+      break;
+    }
     case '/': { // emitSegment
       EmitParams params;
       params.behaviourFlags |= B_RENDER_SEGMENT;
@@ -241,8 +254,7 @@ void ofApp::doCommand(char command) {
       break;
     }
     case '-': { // emitBounce
-      EmitParams params;
-      params.model = M_STAR;
+      EmitParams params(M_STAR);
       params.behaviourFlags |= B_FORCE_BOUNCE;
       state->emit(params);
       break;
@@ -299,6 +311,21 @@ void ofApp::draw(){
         ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, 20);
     }
 
+    if (lastList >= 0 && state->lightLists[lastList] != NULL) {
+        ofSetColor(255);
+        uint32_t life = gMillis < state->lightLists[lastList]->lifeMillis ? state->lightLists[lastList]->lifeMillis - gMillis : 0;
+        ofDrawBitmapString("numLights: " + ofToString(state->lightLists[lastList]->numLights), ofGetWidth() - 200, 35);
+        //ofDrawBitmapString("linked: " + (state->lightLists[lastList]->linked ? "linked" : "random"), ofGetWidth() - 200, 50);
+        ofDrawBitmapString("model: " + ofToString((uint16_t) state->lightLists[lastList]->model->id), ofGetWidth() - 200, 65);
+        ofDrawBitmapString("speed: " + ofToString(state->lightLists[lastList]->speed), ofGetWidth() - 200, 80);
+        ofDrawBitmapString("length: " + ofToString(state->lightLists[lastList]->numLights), ofGetWidth() - 200, 95);
+        ofDrawBitmapString("life: " + ofToString(life), ofGetWidth() - 200, 110);
+        //ofDrawBitmapString("maxBri: " + ofToString(state->lightLists[lastList]->maxBri), ofGetWidth() - 200, 125);
+        ofDrawBitmapString("fadeSpeed: " + ofToString(state->lightLists[lastList]->fadeSpeed), ofGetWidth() - 200, 140);
+        ofDrawBitmapString("totalLights: " + ofToString(state->totalLights + state->lightLists[lastList]->numLights), ofGetWidth() - 200, 155);
+        ofDrawBitmapString("totalLightLists: " + ofToString((uint16_t) state->totalLightLists), ofGetWidth() - 200, 170);
+    }
+
 }
 
 glm::vec2 ofApp::intersectionPos(Intersection* intersection, int8_t j) {
@@ -351,6 +378,10 @@ ofColor ofApp::getColor(uint16_t i) {
 //  }
   return color;
   //return colorGamma.Correct(color);
+}
+
+void ofApp::doEmit(EmitParams &params) {
+    lastList = state->emit(params);
 }
 
 //--------------------------------------------------------------

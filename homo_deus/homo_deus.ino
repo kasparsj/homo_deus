@@ -24,6 +24,8 @@
 #include "esp_bt.h"
 #include <NeoPixelBus.h>
 #include "src/HeptagonStar.h"
+#include "src/Globals.h"
+#include "src/LPRandom.h"
 
 #ifdef WIFI_SSID
 #include <WiFi.h>
@@ -44,8 +46,6 @@ bool showIntersections = false;
 bool showConnections = false;
 bool showPalette = false;
 bool showAll = false;
-unsigned long gMillis;
-unsigned long gPrevMillis = 0;
 #ifdef HD_DEBUGGER
 LPDebugger *debugger;
 #endif
@@ -247,44 +247,71 @@ void doCommand(char command) {
     case '3':
     case '4':
     case '5':
-    case '6':
-      state->emit(command - '1');
-      break;
-    case '7': {
-      EmitParams p;
-      p.model = M_STAR;
-      p.colorChangeGroups |= GROUP1;
-      state->emit(p);
+    case '6': {
+      EmitParams params(command - '1', LPRandom::randomSpeed());
+      doEmit(params); 
       break;
     }
-    case '+':
-      state->emitSplatter(M_SPLATTER);
+    case '7': {
+      EmitParams params(M_STAR);
+      params.colorChangeGroups |= GROUP1;
+      doEmit(params);
       break;
-    case '*':
-      state->emitRandom();
+    }
+    case '+': {
+      EmitParams params(M_SPLATTER, LPRandom::randomSpeed());
+      params.linked = false;
+      params.duration = max(1, (int) (1.f/params.speed) + 1) * EmitParams::frameMs();
+      doEmit(params);
+      break;
+    }
+    case '*': {
+      EmitParams params(EmitParams::DEFAULT_MODEL, 0);
+      params.fadeSpeed = 1;
+      params.fadeThresh = 127;
+      params.order = LIST_ORDER_RANDOM;
+      params.behaviourFlags |= B_POS_CHANGE_FADE;
+      doEmit(params);
       break;        
-    case '/': { // emitSegment
+    }
+    case '/': {
       EmitParams params;
       params.behaviourFlags |= B_RENDER_SEGMENT;
       params.length = 1;
-      state->emit(params);
+      doEmit(params);
       break;
     }
     case '-': { // emitBounce
-      EmitParams params;
-      params.model = M_STAR;
+      EmitParams params(M_STAR);
       params.behaviourFlags |= B_FORCE_BOUNCE;
-      state->emit(params);
+      doEmit(params);
       break;
     }
     case '?': { // emitNoise
       EmitParams params;
       //params.order = LIST_NOISE;
       params.behaviourFlags |= B_BRI_CONST_NOISE;
-      state->emit(params);
+      doEmit(params);
       break;
     }
   }
+}
+
+void doEmit(EmitParams &params) {
+  int8_t i = state->emit(params);
+  #ifdef HD_DEBUG
+  LP_LOGF("emitting %d %s lights (%d/%.1f/%d/%d/%d/%d), total: %d (%d)\n",
+    state->lightLists[i]->numLights, 
+    (params.linked ? "linked" : "random"), 
+    params.model, 
+    params.speed, 
+    state->lightLists[i]->length, 
+    state->lightLists[i]->lifeMillis, 
+    state->lightLists[i]->maxBri, 
+    params.fadeSpeed, 
+    state->totalLights + state->lightLists[i]->numLights, 
+    state->totalLightLists + 1);
+  #endif  
 }
 
 #ifdef HD_OSC
@@ -323,8 +350,11 @@ void parseParams(EmitParams &p, const OscMessage &m) {
       case P_FROM:
         p.from = m.arg<int8_t>(j);
         break;
-      case P_LIFE:
-        p.life = m.arg<int16_t>(j);
+      case P_DURATION_MS:
+        p.duration = m.arg<uint32_t>(j);
+        break;
+      case P_DURATION_FRAMES:
+        p.duration = m.arg<uint32_t>(j);
         break;
       case P_COLOR:
         p.color = m.arg<int8_t>(j);        
@@ -361,14 +391,14 @@ void onCommand(const OscMessage& m) {
 void onEmit(const OscMessage& m) {
   EmitParams params;
   parseParams(params, m);
-  state->emit(params);
+  doEmit(params);
 }
 
 void onNoteOn(const OscMessage& m) {
   EmitParams params;
-  params.life = INFINITE_LIFE;
+  params.duration = INFINITE_DURATION;
   parseParams(params, m);
-  state->emit(params);
+  doEmit(params);
 }
 
 void onNoteOff(const OscMessage& m) {

@@ -112,8 +112,8 @@ uint16_t LightList::getBri(LPLight *light) {
 
 void LightList::initLife(uint16_t i, LPLight* light) {
   uint32_t lifeMillis = light->lifeMillis;
-  if (lifeMillis > 0 && order == LIST_ORDER_SEQUENTIAL) {
-    lifeMillis += ceil(1.0 / light->getSpeed() * i) * (1000 / EmitParams::DURATION_FPS);
+  if (order == LIST_ORDER_SEQUENTIAL) {
+    lifeMillis += ceil(1.f / light->getSpeed() * i) * EmitParams::frameMs();
   }
   light->lifeMillis = lifeMillis;
 }

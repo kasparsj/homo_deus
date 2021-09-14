@@ -87,11 +87,6 @@ uint16_t Intersection::sumW(Model *model, Port *incoming) {
   uint16_t sum = 0;
   for (uint8_t i=0; i<numPorts; i++) {
     Port *port = ports[i];
-    #ifdef LP_DEBUG
-    if (port == NULL) {
-      LP_LOGF("Intersection %d port %d is NULL", topPixel, i);
-    }
-    #endif
     sum += model->get(port, incoming);
   }
   return sum;
@@ -114,11 +109,6 @@ Port *Intersection::choosePort(Model *model, LPLight *light) {
     uint16_t rnd = LP_RANDOM(sum);
     for (uint8_t i=0; i<numPorts; i++) {
        Port *port = ports[i];
-       #ifdef LP_DEBUG
-       if (port == NULL) {
-        LP_LOGF("Intersection %d choosePort port is NULL %d", topPixel, i);
-       }
-       #endif
        uint8_t w = model->get(port, incoming);
        if (port == incoming || w == 0) continue;
        if (rnd < w) {

@@ -6,6 +6,9 @@ s.sync;
 ~hd = (
 	fps: 62.5,
 	noteId: 1,
+	fullBrightness: 255,
+	infDur: 4294967295,
+	useEmit: true,
 );
 
 ~hd[\CMD] = (
@@ -115,19 +118,27 @@ s.sync;
 			self[\PARAM][\LINKED], ~linked.value ? 1,
 			self[\PARAM][\FROM], ~from.value ? -1,
 			self[\PARAM][\MIN_BRI], ~minBri.value ? 0,
-			self[\PARAM][\BRIGHTNESS], ~brightness.value ? 1.0,
+			self[\PARAM][\BRIGHTNESS], ~brightness.value ? self.fullBrightness,
 			self[\PARAM][\BEHAVIOUR], if (~behaviour.value.isNil, { 0 }, { self.getBehaviour(~behaviour.value) }),
 			self[\PARAM][\EMIT_GROUPS], if (~emit.value.isNil, { 0 }, { self.getGroups(~emit.value) }),
 			self[\PARAM][\EMIT_OFFSET], ~offset.value ? 0,
 			self[\PARAM][\COLOR_CHANGE_GROUPS], if (~colorChange.value.isNil, { 0 }, { self.getGroups(~colorChange.value) }),
 		];
-		//args = args.add((life*self.fps).ceil.asInteger);
-		var argsOff = [life, "/note_off", noteId];
+		var argsOff;
 		if (~color.value != nil) {
 			args = args.addAll([self[\PARAM][\COLOR], ~color.value]);
 		};
-		self.sendMsgIn(*args);
-		self.sendMsgIn(*argsOff);
+		if (self.useEmit) {
+			// emit (with duration)
+			args[1] = "/emit";
+			args = args.addAll([self[\PARAM][\DURATION], (life*1000).asInteger]);
+			self.sendMsgIn(*args);
+		} {
+			// note_on + note_off
+			self.sendMsgIn(*args);
+			argsOff = [life, "/note_off", noteId];
+			self.sendMsgIn(*argsOff);
+		};
 	}, (legato: 1.0));
 	Event.addEventType(\hd_note, { |server|
 		~eventTypes[\hd].value(server);

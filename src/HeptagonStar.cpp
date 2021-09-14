@@ -85,8 +85,4 @@ void HeptagonStar::setup() {
   models[M_HALO]->put(conn[3][3], 10);
   models[M_HALO]->put(conn[2][6], 10);
   models[M_HALO]->put(conn[2][9], 10);
-
-  #ifdef LP_DEBUG
-  LP_LOGF("HeptagonStar setup complete");
-  #endif
 }

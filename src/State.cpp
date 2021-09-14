@@ -12,10 +12,6 @@
 #include <ArduinoOSC.h>
 #endif
 
-float State::randomSpeed() {
-  return EMITTER_MIN_SPEED + LP_RANDOM(max(EMITTER_MAX_SPEED - EMITTER_MIN_SPEED, 0.f));
-}
-
 uint8_t State::randomModel() {
   return floor(LP_RANDOM(object.modelCount));
 }
@@ -47,10 +43,11 @@ ColorRGB State::paletteColor(uint8_t color) {
 }
 
 void State::autoEmit(unsigned long ms) {
-  if (autoEnabled && nextEmit <= ms) {
-    emit();
-    nextEmit = ms + randomNextEmit();
-  }
+    if (autoEnabled && nextEmit <= ms) {
+        EmitParams params(EmitParams::DEFAULT_MODEL, LPRandom::randomSpeed());
+        emit(params);
+        nextEmit = ms + randomNextEmit();
+    }
 }
 
 int8_t State::emit(EmitParams &params) {
@@ -69,7 +66,7 @@ int8_t State::emit(EmitParams &params) {
   }
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) {
-      float speed = params.speed >= 0 ? params.speed : randomSpeed();
+      float speed = params.speed >= 0 ? params.speed : LPRandom::randomSpeed();
       uint32_t duration = params.duration > 0 ? params.duration : LPRandom::randomDuration();
       ColorRGB color = params.color >= 0 ? paletteColor(params.color) : randomColor();
       uint8_t maxBri = params.maxBri > 0 ? params.maxBri : randomBrightness();
@@ -88,10 +85,6 @@ int8_t State::emit(EmitParams &params) {
       lightLists[i]->setLeadTrail(numTrail);
       lightLists[i]->noteId = params.noteId;
       uint16_t numFull = max(1, length - numTrail);
-      #ifdef LP_DEBUG
-      LP_LOGF("emitting %d %s lights (%d/%.1f/%d/%d/%d/%d), total: %d (%d)\n",
-        numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, duration, maxBri, params.fadeSpeed, totalLights + numFull + numTrail, totalLightLists + 1);
-      #endif
       lightLists[i]->setup(numFull, maxBri);
       doEmit(emitter, lightLists[i], params);
       #ifdef LP_OSC_REPLY
@@ -100,9 +93,7 @@ int8_t State::emit(EmitParams &params) {
       return i;
     }
   }
-  #ifdef LP_DEBUG
   LP_LOGF("emit failed: no free light lists");
-  #endif
   return -1;
 }
 
@@ -213,7 +204,6 @@ void State::stopNote(uint8_t noteId) {
   }
 }
 
-#ifdef LP_DEBUG
 void State::debug() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
@@ -235,4 +225,3 @@ void State::debug() {
     LP_LOGLN("");
   }
 }
-#endif
