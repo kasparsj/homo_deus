@@ -37,7 +37,7 @@ void Intersection::emit(LPLight* light) {
         }
       }
     }
-    add(light);
+    light->owner = this;
 }
 
 void Intersection::update(LPLight *light) {
