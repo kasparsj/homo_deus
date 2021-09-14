@@ -53,38 +53,40 @@ logmap2 = {|previous=60|
 	500.do{
 		value = logmap.(value);
 		Synth(\sin,[
-			//\freq, (60+((value*12).round(0.5))).midicps
-			\freq, 60,
+			\freq, (36+((value*12).round(0.5))).midicps,
+			//\freq, 60,
 			\lw, 0,
 			\index, 10,
 			\pDown, 0.75,
 			\lpF, 20000,
 			\hpF, 40,
-			\dur, 1,
+			\dur, value/2,
 			\amp, 0.25,
 		]);
 		value.wait;
 	};
 }.fork;
 {
-	500.do{
+	1500.do{
 		value1 = logmap1.(value1);
-		Synth(\ping,[\freq, (48+((value1*12).round(0.5))).midicps]);
+		Synth(\ping,[\freq, (48+((value1*12).round(0.5))).midicps, \dur, value1/2]);
 		value1.wait;
 	};
 }.fork;
 {
-	500.do{
+	1500.do{
 		value2 = logmap2.(value2);
-		Synth(\sin,[\freq, (60+((value2*12).round(0.5))).midicps]);
+		Synth(\sin,[\freq, (60+((value2*12).round(0.5))).midicps, \dur, value2/2]);
 		value2.wait;
 	};
 }.fork;
 {
-	100.do {
-		~r = 1.5 + 2.0.rand;
+	~r = 4;
+	200.do {
+		//~r = 1.5 + 2.0.rand;
+		~r = ~r + 0.01;
 		~r.postln;
-		5.wait;
+		3.wait;
 	}
 }.fork;
 )
