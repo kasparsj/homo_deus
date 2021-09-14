@@ -4,8 +4,17 @@ s.latency = 0.1;
 s.waitForBoot {
 	"hd.scd".loadRelative;
 
-	~hd.net = NetAddr("homo-deus", 54321); // esp32 via Redmi
+	//~hd.net = NetAddr("homo-deus", 54321);
+	//~hd.net = NetAddr("192.168.209.181", 54321);
+	~hd.net = NetAddr("192.168.1.105", 54321);
 	//~hd.net = NetAddr("127.0.0.1", 54321);
+
+	~hd.createSpawn({
+		~hd.createDrone(
+			\amp, 0.05,
+			\dur, Pwhite(15, 60),
+		);
+	}, Pwhite(5, 45)).play;
 };
 
 )
@@ -24,17 +33,6 @@ s.waitForBoot {
 // 	// ~hd.createDrone(\model, 1, \from, 0, \fade, 0.05, \speed, 1.0),
 // ], 1).play;
 // )
-
-//~hd.createSpawn(~hd.createDrone, Pwhite(2, 20)).play;
-(
-~hd.createSpawn({
-	~hd.createDrone(
-		\amp, 0.05.rand,
-		\dur, Pwhite(15, 60),
-	);
-}, Pwhite(5, 45)).play;
-)
-//~spawn.stop
 
 /*(
 Ppar([
