@@ -1,10 +1,12 @@
 #include <math.h>
 #include "Light.h"
 #include "LightList.h"
+#include "Globals.h"
 
-Light::Light(LightList *list, float speed, int16_t life, uint16_t idx, uint8_t maxBri) : LPLight(list, life, idx, maxBri) {
-  this->speed = speed;
-  this->color = ColorRGB(255, 255, 255);
+Light::Light(LightList *list, float speed, uint32_t lifeMillis, uint16_t idx, uint8_t maxBri) : LPLight(list, idx, maxBri) {
+    this->speed = speed;
+    this->lifeMillis = lifeMillis;
+    this->color = ColorRGB(255, 255, 255);
 }
 
 uint8_t Light::getBrightness() {
@@ -29,14 +31,13 @@ void Light::nextFrame() {
   else {
     position = list->getPosition(this);
   }
-  age++;
 }
 
 bool Light::shouldExpire() {
-  if (life == 0) {
+  if (lifeMillis == INFINITE_DURATION) {
     return false;
   }
-  return age >= life && (list->fadeSpeed == 0 || brightness == 0);
+  return gMillis >= lifeMillis && (list->fadeSpeed == 0 || brightness == 0);
 }
 
 Model* Light::getModel() {

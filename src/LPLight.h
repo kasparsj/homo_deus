@@ -22,14 +22,14 @@ class LPLight
     Port *outPorts[OUT_PORTS_MEMORY] = {0}; // 4 bytes * 7
     int8_t outPortsInt[OUT_PORTS_MEMORY] = {-1};
     int16_t pixel1 = -1;
-    int16_t life = INFINITE_LIFE;
     bool isExpired = false;
     float position;
     uint16_t bri = 255;
     uint8_t brightness = 0;
     LPOwner *owner = 0;
+    uint32_t lifeMillis = 0; // for LPLight this is offsetMillis
 
-    LPLight(LightList *list, int16_t life, uint16_t idx = 0, uint8_t maxBri = 255) : list(list), life(life), idx(idx), maxBri(maxBri) {
+    LPLight(LightList *list, uint16_t idx = 0, uint8_t maxBri = 255) : list(list), idx(idx), maxBri(maxBri) {
         position = -1;
     }
 
@@ -49,6 +49,8 @@ class LPLight
     virtual Behaviour* getBehaviour();
     virtual float getSpeed();
     virtual ofxeasing::function getEasing();
+    virtual uint32_t getLife();
+    virtual void setDuration(uint32_t durMillis) {}
     virtual ColorRGB getColor();
     virtual void setColor(ColorRGB color) {}
     virtual uint8_t getBrightness();

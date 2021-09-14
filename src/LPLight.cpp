@@ -2,6 +2,7 @@
 #include "LightList.h"
 #include "Connection.h"
 #include "ofxEasing.h"
+#include "Globals.h"
 
 uint16_t LPLight::pixels[CONNECTION_MAX_LEDS] = {0};
 
@@ -112,10 +113,10 @@ void LPLight::nextFrame() {
 }
 
 bool LPLight::shouldExpire() {
-  if (life == 0) {
+  if (list->lifeMillis == INFINITE_DURATION) {
     return false;
   }
-  return list->age >= life && (list->fadeSpeed == 0 || brightness == 0);
+  return gMillis >= (list->lifeMillis + lifeMillis) && (list->fadeSpeed == 0 || brightness == 0);
 }
 
 LPLight* LPLight::getPrev() {
@@ -132,6 +133,10 @@ float LPLight::getSpeed() {
 
 ofxeasing::function LPLight::getEasing() {
     return list->ease;
+}
+
+uint32_t LPLight::getLife() {
+    return list->lifeMillis;
 }
 
 ColorRGB LPLight::getColor() {

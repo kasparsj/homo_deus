@@ -1,17 +1,18 @@
 #pragma once
 
 #include "LPLight.h"
+#include "Globals.h"
 
 class Light : public LPLight {
 
   public:
 
-    Light(LightList *parent, float speed, int16_t life, uint16_t idx = 0, uint8_t maxBri = 255);
+    Light(LightList *parent, float speed, uint32_t lifeMillis, uint16_t idx = 0, uint8_t maxBri = 255);
     
-    Light(uint8_t maxBri, float speed, int16_t life) : Light(0, maxBri, speed, life, 0) {
+    Light(uint8_t maxBri, float speed, uint32_t lifeMillis) : Light(0, maxBri, speed, lifeMillis, 0) {
     }
     
-    Light(uint8_t maxBri) : Light(maxBri, DEFAULT_SPEED, INFINITE_LIFE) {
+    Light(uint8_t maxBri) : Light(maxBri, DEFAULT_SPEED, INFINITE_DURATION) {
     }
     
     Light() : Light(255) {
@@ -22,6 +23,12 @@ class Light : public LPLight {
     }
     void setSpeed(float speed) {
         this->speed = speed;
+    }
+    uint32_t getLife() {
+        return lifeMillis;
+    }
+    void setDuration(uint32_t durMillis) {
+        lifeMillis = gMillis + durMillis;
     }
     ColorRGB getColor() {
         return color;
@@ -42,7 +49,6 @@ class Light : public LPLight {
 
     float speed = DEFAULT_SPEED;
     ColorRGB color; // 3 bytes
-    uint16_t age = 0;
     // int16_t pixel2 = -1; // 4 bytes
   
 };

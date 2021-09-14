@@ -29,17 +29,20 @@ s.sync;
 	HEAD: 9,
 	LINKED: 10,
 	FROM: 11,
-	LIFE: 12,
-	COLOR: 13,
-	NOTE_ID: 14,
-	MIN_BRI: 15,
-	MAX_BRI: 16,
-	BRIGHTNESS: 16, // alias
-	BEHAVIOUR: 17,
-	EMIT_GROUPS: 18,
-	EMIT_OFFSET: 19,
-	OFFSET: 19, // alias
-	COLOR_CHANGE_GROUPS: 20,
+	DURATION: 12,
+	DURATION_MS: 12,
+	DURATION_FRAMES: 13,
+	LIFE: 13,
+	COLOR: 14,
+	NOTE_ID: 15,
+	MIN_BRI: 16,
+	MAX_BRI: 17,
+	BRIGHTNESS: 17, // alias
+	BEHAVIOUR: 18,
+	EMIT_GROUPS: 19,
+	EMIT_OFFSET: 20,
+	OFFSET: 20, // alias
+	COLOR_CHANGE_GROUPS: 21,
 );
 
 ~hd[\BEHAVIOUR] = (
@@ -235,15 +238,15 @@ s.sync;
 	var pan = [-1, 1].scramble;
 	Pbind(
 		\type, \hd_note,
-		\instrument, Pfunc{ instruments[(0..3).choose] },
+		\instrument, instruments[(0..3).choose],
 		\freq, freq,
 		\modFreq, modFreq,
 		\dur, dur,
 		\pan, pan,
-		\phase, Pwhite(0, 2pi, 1),
+		\phase, 2pi.rand,
 		\out, 0,
 		\amp, 0.1,
-		\model, Pwhite(0, 4, 1),
+		\model, 4.rand,
 		\from, -1,
 		\speed, modFreq,
 		\length, freq.size*25,

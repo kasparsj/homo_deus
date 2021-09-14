@@ -23,7 +23,7 @@ class LightList {
     uint8_t fadeThresh = 0;
     uint8_t minBri = 0;
     ofxeasing::function fadeEase = ofxeasing::linear::easeNone;
-    int16_t life = INFINITE_LIFE;
+    uint32_t lifeMillis = 0;
     ListOrder order = LIST_ORDER_SEQUENTIAL;
     ListHead head = LIST_HEAD_FRONT;
     bool linked = true;
@@ -35,7 +35,6 @@ class LightList {
     ColorRGB color;
     LPLight **lights;
     LPOwner *emitter = 0;
-    uint16_t age = 0;
     uint16_t numEmitted = 0;
     uint8_t numSplits = 0;
     
@@ -86,11 +85,10 @@ class LightList {
             ofxeasing::easing(static_cast<ofxeasing::Function>((fadeEase - 1) / 3), static_cast<ofxeasing::Type>((fadeEase - 1) % 3));
     }
     void setLeadTrail(uint16_t trail);
-    void setLife(int16_t numFrames);
+    void setDuration(uint32_t durMillis);
     void setColor(ColorRGB color);
     void initEmit(uint8_t posOffset = 0);
     bool update();
-    void nextFrame();
     void split();
     float getPosition(LPLight *light);
     uint16_t getBri(LPLight *light);

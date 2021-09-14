@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "Behaviour.h"
 #include "HeptagonStar.h"
+#include "LPRandom.h"
 
 #ifdef ARDUINO
 #include "Palettes.h"
@@ -13,10 +14,6 @@
 
 float State::randomSpeed() {
   return EMITTER_MIN_SPEED + LP_RANDOM(max(EMITTER_MAX_SPEED - EMITTER_MIN_SPEED, 0.f));
-}
-
-uint16_t State::randomLife() {
-  return EMITTER_MIN_LIFE + LP_RANDOM(max(EMITTER_MAX_LIFE - EMITTER_MIN_LIFE, 0));
 }
 
 uint8_t State::randomModel() {
@@ -73,7 +70,7 @@ int8_t State::emit(EmitParams &params) {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) {
       float speed = params.speed >= 0 ? params.speed : randomSpeed();
-      uint16_t life = params.life >= 0 ? params.life : randomLife();
+      uint32_t duration = params.duration > 0 ? params.duration : LPRandom::randomDuration();
       ColorRGB color = params.color >= 0 ? paletteColor(params.color) : randomColor();
       uint8_t maxBri = params.maxBri > 0 ? params.maxBri : randomBrightness();
       uint16_t numTrail = params.speed == 0 ? params.trail : params.getSpeedTrail(speed, length);
@@ -86,14 +83,14 @@ int8_t State::emit(EmitParams &params) {
       lightLists[i]->linked = params.linked;
       lightLists[i]->minBri = params.minBri;
       lightLists[i]->setSpeed(speed, params.ease);
-      lightLists[i]->setLife(life); 
+      lightLists[i]->setDuration(duration);
       lightLists[i]->setFade(params.fadeSpeed, params.fadeThresh, params.fadeEase);
       lightLists[i]->setLeadTrail(numTrail);
       lightLists[i]->noteId = params.noteId;
       uint16_t numFull = max(1, length - numTrail);
       #ifdef LP_DEBUG
       LP_LOGF("emitting %d %s lights (%d/%.1f/%d/%d/%d/%d), total: %d (%d)\n",
-        numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, life, maxBri, params.fadeSpeed, totalLights + numFull + numTrail, totalLightLists + 1);
+        numFull + numTrail, (params.linked ? "linked" : "random"), which, speed, length, duration, maxBri, params.fadeSpeed, totalLights + numFull + numTrail, totalLightLists + 1);
       #endif
       lightLists[i]->setup(numFull, maxBri);
       doEmit(emitter, lightLists[i], params);
@@ -165,7 +162,6 @@ void State::update() {
             }
             light->nextFrame();
         }
-        lightList->nextFrame();
     }
   }
 }
@@ -204,7 +200,7 @@ void State::splitAll() {
 void State::stopAll() {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
-    lightLists[i]->setLife(-1);
+    lightLists[i]->setDuration(0);
   }
 }
 
@@ -212,7 +208,7 @@ void State::stopNote(uint8_t noteId) {
   for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
     if (lightLists[i] == NULL) continue;
     if (lightLists[i]->noteId == noteId) {
-      lightLists[i]->setLife(-1);
+      lightLists[i]->setDuration(0);
     }
   }
 }

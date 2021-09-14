@@ -21,21 +21,21 @@ LPLight* LightList::createLight(uint16_t i, uint8_t brightness) {
     float mult = getBriMult(i);
     LPLight *light;
     if (behaviour != NULL && behaviour->colorChangeGroups > 0) {
-        light = new Light(this, speed, life, linked ? i : 0, brightness * mult);
+        light = new Light(this, speed, lifeMillis, linked ? i : 0, brightness * mult);
     }
     else {
-        light = new LPLight(this, life, linked ? i : 0, brightness * mult);
+        light = new LPLight(this, linked ? i : 0, brightness * mult);
     }
     (*this)[i] = light;
     return light;
 }
 
-void LightList::setLife(int16_t numFrames) {
-  this->life = numFrames;
-  for (uint16_t i=0; i<numLights; i++) {
-    if ((*this)[i] == 0) continue;
-    (*this)[i]->life = numFrames;
-  }
+void LightList::setDuration(uint32_t durMillis) {
+    this->lifeMillis = gMillis + durMillis;
+    for (uint16_t i=0; i<numLights; i++) {
+        if ((*this)[i] == 0) continue;
+        ((*this)[i])->setDuration(durMillis);
+    }
 }
 
 void LightList::setColor(ColorRGB color) {
@@ -111,11 +111,11 @@ uint16_t LightList::getBri(LPLight *light) {
 }
 
 void LightList::initLife(uint16_t i, LPLight* light) {
-  int16_t life = light->life;    
-  if (life > 0 && order == LIST_ORDER_SEQUENTIAL) {
-    life += ceil(1.0 / light->getSpeed() * i);
+  uint32_t lifeMillis = light->lifeMillis;
+  if (lifeMillis > 0 && order == LIST_ORDER_SEQUENTIAL) {
+    lifeMillis += ceil(1.0 / light->getSpeed() * i) * (1000 / EmitParams::DURATION_FPS);
   }
-  light->life = life;
+  light->lifeMillis = lifeMillis;
 }
 
 bool LightList::update() {
@@ -148,10 +148,6 @@ bool LightList::update() {
         light->update();
     }
     return allExpired;
-}
-
-void LightList::nextFrame() {
-    age++;
 }
 
 void LightList::split() {

@@ -34,7 +34,6 @@ class State {
     }
     
     float randomSpeed();
-    uint16_t randomLife();
     uint8_t randomModel();
     uint16_t randomLength();
     uint8_t randomBrightness();
@@ -66,7 +65,7 @@ class State {
       params.model = model;
       params.speed = randomSpeed();
       params.linked = false;
-      params.life = max(1, (int) (1.f/params.speed) + 1);
+      params.duration = max(1, (int) (1.f/params.speed) + 1) * (1000 / EmitParams::DURATION_FPS);
       return emit(params);
     }
     LPOwner* getEmitter(Model* model, Behaviour* behaviour, EmitParams& params);
@@ -75,7 +74,7 @@ class State {
     void splitAll();
     void stopAll();
     void stopNote(uint8_t i);
-    ColorRGB getPixel(uint16_t i, uint8_t maxBrightness = 255);
+    ColorRGB getPixel(uint16_t i, uint8_t maxBrightness = FULL_BRI);
 
     #ifdef LP_DEBUG
     void debug();

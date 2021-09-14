@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include "Globals.h"
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -14,6 +15,7 @@ void ofApp::update(){
     updateOsc();
 
     state->autoEmit(ofGetElapsedTimeMillis());
+    gMillis = ofGetElapsedTimeMillis();
     state->update();
 }
 
@@ -56,7 +58,7 @@ void ofApp::onEmit(const ofxOscMessage& m) {
 
 void ofApp::onNoteOn(const ofxOscMessage& m) {
   EmitParams params;
-  params.life = INFINITE_LIFE;
+  params.duration = INFINITE_DURATION;
   parseParams(params, m);
   state->emit(params);
 }
@@ -116,8 +118,11 @@ void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
             case P_FROM:
                 p.from = m.getArgAsInt(j);
                 break;
-            case P_LIFE:
-                p.life = m.getArgAsInt(j);
+            case P_DURATION_MS:
+                p.duration = m.getArgAsInt(j);
+                break;
+            case P_DURATION_FRAMES:
+                p.duration = m.getArgAsInt(j) * (1000 / EmitParams::DURATION_FPS);
                 break;
             case P_COLOR:
                 p.color = m.getArgAsInt(j);
