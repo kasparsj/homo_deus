@@ -357,8 +357,18 @@ void parseParams(EmitParams &p, const OscMessage &m) {
         p.duration = m.arg<uint32_t>(j);
         break;
       case P_COLOR:
-        p.color = m.arg<int8_t>(j);        
+        p.color = ColorRGB(m.arg<uint32_t>(j));        
         break;
+      case P_COLOR_INDEX: {
+        int16_t index = m.arg<int16_t>(j);
+        if (index == RANDOM_COLOR) {
+          p.color.setRandom();
+        }
+        else {
+          p.color = state->paletteColor(index);        
+        }
+        break;
+      }
       case P_NOTE_ID:
         p.noteId = m.arg<uint16_t>(j);
         break;

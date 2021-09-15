@@ -128,9 +128,16 @@ void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
             case P_COLOR:
                 p.color = ColorRGB(m.getArgAsInt(j));
                 break;
-            case P_COLOR_INDEX:
-                p.color = state->paletteColor(m.getArgAsInt(j));
+            case P_COLOR_INDEX: {
+                int16_t index = m.getArgAsInt(j);
+                if (index == RANDOM_COLOR) {
+                  p.color.setRandom();
+                }
+                else {
+                  p.color = state->paletteColor(index);
+                }
                 break;
+            }
             case P_NOTE_ID:
                 p.noteId = m.getArgAsInt(j);
                 break;
