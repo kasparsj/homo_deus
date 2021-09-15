@@ -6,19 +6,6 @@
 
 ~hd.stopAll();
 
-// every second new from outside
-(
-Pbind(
-	\type, \hd,
-	\model, 0,
-	\ease, \EXPONENTIAL_INOUT,
-	\behaviour, \FILL_EASE,
-	\brightness, Pwhite(127, 255),
-).play;
-~c31 = Synth(\cricket3, [\out,0,\trigFreq, 2]);
-~c32 = Synth(\cricket3, [\out,1,\trigFreq, 0.5]);
-)
-
 //
 (
 Pbind(

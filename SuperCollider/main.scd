@@ -13,11 +13,22 @@ s.waitForBoot {
 		~hd.createDrone(
 			\amp, 0.05,
 			\dur, Pwhite(10, 30, 1),
-			\color, [255,255,255],
+			\color, [255,0,0],
 			//\behaviour, \FILL_EASE,
 			//\ease, \EXPONENTIAL_INOUT,
 		);
 	}, Pwhite(5, 60)).play;
+
+	~c31 = Synth(\cricket3, [\out,0,\trigFreq, 2]);
+	~c32 = Synth(\cricket3, [\out,1,\trigFreq, 0.5]);
+	Pbind(
+		\type, \hd,
+		\model, 0,
+		\ease, \EXPONENTIAL_INOUT,
+		\behaviour, \FILL_EASE,
+		\brightness, Pwhite(127, 255),
+		\color, Pfunc{ [0, 256.rand, 256.rand] },
+	).play;
 };
 
 )

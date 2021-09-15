@@ -116,7 +116,6 @@ s.sync;
 			self[\PARAM][\HEAD], ~head.value ? 0,
 			self[\PARAM][\LINKED], ~linked.value ? 1,
 			self[\PARAM][\FROM], ~from.value ? -1,
-			self[\PARAM][\COLOR], self.getColor(~color.value),
 			self[\PARAM][\MIN_BRI], ~minBri.value ? 0,
 			self[\PARAM][\BRIGHTNESS], ~brightness.value ? self.fullBrightness,
 			self[\PARAM][\BEHAVIOUR], if (~behaviour.value.isNil, { 0 }, { self.getBehaviour(~behaviour.value) }),
@@ -126,7 +125,7 @@ s.sync;
 		];
 		var argsOff;
 		if (~color.value != nil) {
-			args = args.addAll([self[\PARAM][\COLOR], ~color.value]);
+			args = args.addAll([self[\PARAM][\COLOR], self.getColor(~color.value)]);
 		};
 		if (self.useEmit) {
 			// emit (with duration)
