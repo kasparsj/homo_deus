@@ -42,7 +42,7 @@ void LPLight::update() {
 uint8_t LPLight::getBrightness() {
     uint16_t value = bri % 511;
     value = (value > 255 ? 511 - value : value);
-    value = (value - list->fadeThresh) / (255 - list->fadeThresh) * 511;
+    value = (float) (value - list->fadeThresh) / (255 - list->fadeThresh) * 511.f;
     if (value > 0) {
         return ofxeasing::map(value, 0, 511, list->minBri, maxBri, list->fadeEase);
     }

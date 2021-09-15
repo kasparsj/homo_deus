@@ -54,14 +54,14 @@ void ofApp::onCommand(const ofxOscMessage& m) {
 void ofApp::onEmit(const ofxOscMessage& m) {
   EmitParams params;
   parseParams(params, m);
-  state->emit(params);
+  doEmit(params);
 }
 
 void ofApp::onNoteOn(const ofxOscMessage& m) {
   EmitParams params;
   params.duration = INFINITE_DURATION;
   parseParams(params, m);
-  state->emit(params);
+  doEmit(params);
 }
 
 void ofApp::onNoteOff(const ofxOscMessage& m) {

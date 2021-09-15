@@ -94,11 +94,11 @@ void LightList::initBri(uint16_t i, LPLight* light) {
   switch (order) {
     case LIST_ORDER_RANDOM:
       if (fadeThresh > 0) {
-        light->bri = (LP_RANDOM(fadeThresh * 30) - (fadeThresh * 20)) / 10;
+        light->bri = LP_RANDOM(fadeThresh * 3);
       }
       break;
     case LIST_ORDER_NOISE:
-      light->bri = gPerlinNoise.GetValue(id * 10, i * 100);
+      light->bri = gPerlinNoise.GetValue(id * 10, i * 100) * FULL_BRIGHTNESS;
       break;
   }
 }
