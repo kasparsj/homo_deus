@@ -430,13 +430,14 @@ void onPalette(const OscMessage& m) {
 void onColor(const OscMessage &m) {
   if (m.size() > 0) {
     uint8_t i = m.arg<uint8_t>(0);
+    ColorRGB color;
     if (m.size() > 1) {
-      uint8_t color = m.arg<uint8_t>(1);
-      state->lightLists[i]->setColor(state->paletteColor(color));
+      color.set(m.arg<uint32_t>(1));
     }
     else {
-      state->lightLists[i]->setColor(state->randomColor());
+      color.setRandom();
     }
+    state->lightLists[i]->setColor(color);
   }
   else {
     state->colorAll();
