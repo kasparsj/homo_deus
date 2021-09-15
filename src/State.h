@@ -37,7 +37,6 @@ class State {
     uint16_t randomLength();
     uint8_t randomBrightness();
     uint16_t randomNextEmit();
-    ColorRGB randomColor();
     ColorRGB paletteColor(uint8_t color);
     void autoEmit(unsigned long millis);
     int8_t emit(EmitParams &params);

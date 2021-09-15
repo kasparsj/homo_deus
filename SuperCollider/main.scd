@@ -12,9 +12,12 @@ s.waitForBoot {
 	~hd.createSpawn({
 		~hd.createDrone(
 			\amp, 0.05,
-			\dur, Pwhite(15, 60),
+			\dur, Pwhite(10, 30, 1),
+			\color, [255,255,255],
+			//\behaviour, \FILL_EASE,
+			//\ease, \EXPONENTIAL_INOUT,
 		);
-	}, Pwhite(5, 45)).play;
+	}, Pwhite(5, 60)).play;
 };
 
 )

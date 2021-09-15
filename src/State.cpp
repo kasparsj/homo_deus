@@ -28,17 +28,13 @@ uint16_t State::randomNextEmit() {
   return EMITTER_MIN_NEXT + LP_RANDOM(max(EMITTER_MAX_NEXT - EMITTER_MIN_NEXT, 0));
 }
 
-ColorRGB State::randomColor() {
-  return ColorRGB(LP_RANDOM(255), LP_RANDOM(255), LP_RANDOM(255));
-}
-
 ColorRGB State::paletteColor(uint8_t color) {
   #ifdef ARDUINO
   const CRGBPalette16& palette = gGradientPalettes[currentPalette];
   CRGB crgb = ColorFromPalette(palette, color);
   return ColorRGB(crgb.r, crgb.g, crgb.b);  
   #else
-  return randomColor();
+  return ColorRGB();
   #endif
 }
 
@@ -68,7 +64,6 @@ int8_t State::emit(EmitParams &params) {
     if (lightLists[i] == NULL) {
       float speed = params.speed >= 0 ? params.speed : LPRandom::randomSpeed();
       uint32_t duration = params.duration > 0 ? params.duration : LPRandom::randomDuration();
-      ColorRGB color = params.color >= 0 ? paletteColor(params.color) : randomColor();
       uint8_t maxBri = params.maxBri > 0 ? params.maxBri : randomBrightness();
       uint16_t numTrail = params.speed == 0 ? params.trail : params.getSpeedTrail(speed, length);
       lightLists[i] = new LightList();
@@ -76,7 +71,7 @@ int8_t State::emit(EmitParams &params) {
       lightLists[i]->behaviour = behaviour;
       lightLists[i]->order = params.order;
       lightLists[i]->head = params.head;
-      lightLists[i]->color = color;
+      lightLists[i]->color = params.color;
       lightLists[i]->linked = params.linked;
       lightLists[i]->minBri = params.minBri;
       lightLists[i]->setSpeed(speed, params.ease);
@@ -168,17 +163,19 @@ ColorRGB State::getPixel(uint16_t i, uint8_t maxBrightness) {
 }
 
 void State::setPixel(uint16_t pixel, ColorRGB &color) {
-  pixelValuesR[pixel] += color.R;
-  pixelValuesG[pixel] += color.G;
-  pixelValuesB[pixel] += color.B;
-  pixelDiv[pixel]++;
+    pixelValuesR[pixel] += color.R;
+    pixelValuesG[pixel] += color.G;
+    pixelValuesB[pixel] += color.B;
+    pixelDiv[pixel]++;
 }
 
 void State::colorAll() {
-  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
-    if (lightLists[i] == NULL) continue;
-    lightLists[i]->setColor(randomColor());
-  }
+    ColorRGB color;
+    color.setRandom();
+    for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
+        if (lightLists[i] == NULL) continue;
+        lightLists[i]->setColor(color);
+    }
 }
 
 void State::splitAll() {

@@ -24,17 +24,31 @@
 #endif
 
 struct ColorRGB {
-  uint8_t R;
-  uint8_t G;
-  uint8_t B;
-  ColorRGB(uint8_t r = 0, uint8_t g = 0, uint8_t b = 0) : R(r), G(g), B(b) {}
-  ColorRGB Dim(uint8_t ratio) const {
-    // specifically avoids float math
-    return ColorRGB(_elementDim(R, ratio), _elementDim(G, ratio), _elementDim(B, ratio));
-  }
-  inline static uint8_t _elementDim(uint8_t value, uint8_t ratio) {
-    return (static_cast<uint16_t>(value) * (static_cast<uint16_t>(ratio) + 1)) >> 8;
-  }
+    uint8_t R;
+    uint8_t G;
+    uint8_t B;
+    ColorRGB(uint8_t r, uint8_t g, uint8_t b) : R(r), G(g), B(b) {}
+    ColorRGB(uint32_t rgb) {
+        set(rgb);
+    }
+    ColorRGB() : ColorRGB(0) {}
+    ColorRGB Dim(uint8_t ratio) const {
+        // specifically avoids float math
+        return ColorRGB(_elementDim(R, ratio), _elementDim(G, ratio), _elementDim(B, ratio));
+    }
+    void set(uint32_t rgb) {
+        R = (rgb >> 16) & 0xFF;
+        G = (rgb >> 8) & 0xFF;
+        B = rgb & 0xFF;
+    }
+    void setRandom() {
+        R = LP_RANDOM(255);
+        G = LP_RANDOM(255);
+        B = LP_RANDOM(255);
+    }
+    inline static uint8_t _elementDim(uint8_t value, uint8_t ratio) {
+        return (static_cast<uint16_t>(value) * (static_cast<uint16_t>(ratio) + 1)) >> 8;
+    }
 };
 
 enum Groups {
@@ -117,6 +131,7 @@ enum Ease {
 //#define LP_OSC_REPLY(I) OscWiFi.publish(SC_HOST, SC_PORT, "/emit", (I));
 #define RANDOM_MODEL -1
 #define RANDOM_DURATION 0
+#define RANDOM_COLOR -1
 #define INFINITE_DURATION 4294967295 // UINT32_MAX
 #define DEFAULT_SPEED 1.0
 #define FULL_BRIGHTNESS 255

@@ -126,7 +126,10 @@ void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
                 p.duration = m.getArgAsInt(j) * EmitParams::frameMs();
                 break;
             case P_COLOR:
-                p.color = m.getArgAsInt(j);
+                p.color = ColorRGB(m.getArgAsInt(j));
+                break;
+            case P_COLOR_INDEX:
+                p.color = state->paletteColor(m.getArgAsInt(j));
                 break;
             case P_NOTE_ID:
                 p.noteId = m.getArgAsInt(j);
@@ -373,7 +376,7 @@ ofColor ofApp::getColor(uint16_t i) {
     color.g = (debugger->isModelWeight(showModel - 1, i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
   }
 //  if (showPalette && i < 256) {
-//    pixel = emitter->paletteColor(i);
+//    pixel = state->paletteColor(i);
 //    color = ofColor(pixel.R, pixel.G, pixel.B);
 //  }
   return color;

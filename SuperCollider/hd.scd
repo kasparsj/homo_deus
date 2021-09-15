@@ -37,15 +37,16 @@ s.sync;
 	DURATION_FRAMES: 13,
 	LIFE: 13,
 	COLOR: 14,
-	NOTE_ID: 15,
-	MIN_BRI: 16,
-	MAX_BRI: 17,
-	BRIGHTNESS: 17, // alias
-	BEHAVIOUR: 18,
-	EMIT_GROUPS: 19,
-	EMIT_OFFSET: 20,
-	OFFSET: 20, // alias
-	COLOR_CHANGE_GROUPS: 21,
+	COLOR_INDEX: 15,
+	NOTE_ID: 16,
+	MIN_BRI: 17,
+	MAX_BRI: 18,
+	BRIGHTNESS: 18, // alias
+	BEHAVIOUR: 19,
+	EMIT_GROUPS: 20,
+	EMIT_OFFSET: 21,
+	OFFSET: 21, // alias
+	COLOR_CHANGE_GROUPS: 22,
 );
 
 ~hd[\BEHAVIOUR] = (
@@ -102,9 +103,7 @@ s.sync;
 		var serverLatency = ~latency.value ? (server.latency ? 0);
 		var emitLatency = (thisThread.clock.tempo.reciprocal*timingOffset)+lag+serverLatency;
 		var life = (thisThread.clock.tempo.reciprocal*(sustain+timingOffset))+lag+serverLatency;
-		var noteId = self.getNoteId();
-		var args = [emitLatency, "/note_on",
-			self[\PARAM][\NOTE_ID], noteId,
+		var args = [emitLatency, "/emit",
 			self[\PARAM][\MODEL], ~model.value,
 			self[\PARAM][\SPEED], ~speed.value ? -1.0,
 			self[\PARAM][\EASE], if (~ease.value.isNil, { 0 }, { self.getEase(~ease.value) }),
@@ -117,6 +116,7 @@ s.sync;
 			self[\PARAM][\HEAD], ~head.value ? 0,
 			self[\PARAM][\LINKED], ~linked.value ? 1,
 			self[\PARAM][\FROM], ~from.value ? -1,
+			self[\PARAM][\COLOR], self.getColor(~color.value),
 			self[\PARAM][\MIN_BRI], ~minBri.value ? 0,
 			self[\PARAM][\BRIGHTNESS], ~brightness.value ? self.fullBrightness,
 			self[\PARAM][\BEHAVIOUR], if (~behaviour.value.isNil, { 0 }, { self.getBehaviour(~behaviour.value) }),
@@ -135,6 +135,9 @@ s.sync;
 			self.sendMsgIn(*args);
 		} {
 			// note_on + note_off
+			var noteId = self.getNoteId();
+			args = args.addAll([self[\PARAM][\NOTE_ID], noteId]);
+			args[1] = "/note_on";
 			self.sendMsgIn(*args);
 			argsOff = [life, "/note_off", noteId];
 			self.sendMsgIn(*argsOff);
@@ -177,6 +180,13 @@ s.sync;
 		ease = self[\EASE][ease.asString.toUpper.asSymbol];
 	};
 	ease;
+};
+
+~hd.getColor = { |self, color|
+	if (color.isArray) {
+		color = ((color[0] & 0x0ff) << 16) | ((color[1] & 0x0ff) << 8) | (color[2] & 0x0ff);
+	};
+	color ? 0;
 };
 
 ~hd.getCommand = { |self, cmd|
@@ -245,7 +255,7 @@ s.sync;
 	var instruments = [\SineDrone, \SineDrone, \SawDrone, \PulseDrone];
 	var dur = rrand(5, 30).asInteger;
 	var freq = (51..(51+rrand(0, 3))).scramble;
-	var modFreq = dict[\speed] ? Pwhite(0.5, 10.0);
+	var modFreq = dict[\speed] ? rrand(0.09, 0.5);
 	var pan = [-1, 1].scramble;
 	Pbind(
 		\type, \hd_note,
@@ -259,8 +269,8 @@ s.sync;
 		\amp, 0.1,
 		\model, 4.rand,
 		\from, -1,
-		\speed, modFreq,
-		\length, freq.size*25,
+		\speed, modFreq * 10,
+		\length, freq.size * 25,
 		//\color, which * 85
 		*args
 	);

@@ -22,13 +22,14 @@ enum EmitParam {
     P_DURATION_MS = 12,
     P_DURATION_FRAMES = 13,
     P_COLOR = 14,
-    P_NOTE_ID = 15,
-    P_MIN_BRI = 16,
-    P_MAX_BRI = 17,
-    P_BEHAVIOUR = 18,
-    P_EMIT_GROUPS = 19,
-    P_EMIT_OFFSET = 20,
-    P_COLOR_CHANGE_GROUPS = 21,
+    P_COLOR_INDEX = 15,
+    P_NOTE_ID = 16,
+    P_MIN_BRI = 17,
+    P_MAX_BRI = 18,
+    P_BEHAVIOUR = 19,
+    P_EMIT_GROUPS = 20,
+    P_EMIT_OFFSET = 21,
+    P_COLOR_CHANGE_GROUPS = 22,
 };
 
 class EmitParams {
@@ -38,6 +39,7 @@ class EmitParams {
     static int8_t DEFAULT_MODEL;
     static uint32_t DEFAULT_DURATION;
     static uint8_t DEFAULT_BRIGHTNESS;
+    static int64_t DEFAULT_COLOR;
     static float DURATION_FPS;
 
     int8_t model = DEFAULT_MODEL;
@@ -53,7 +55,7 @@ class EmitParams {
     bool linked = true;
     int8_t from = -1;
     uint32_t duration = DEFAULT_DURATION;
-    int8_t color = -1;
+    ColorRGB color = DEFAULT_COLOR;
     uint16_t noteId = 0;
     uint8_t minBri = 0;
     uint8_t maxBri = DEFAULT_BRIGHTNESS;
@@ -67,7 +69,12 @@ class EmitParams {
     }
 
     EmitParams(int8_t model, float speed) : model(model), speed(speed) {
-
+        if (DEFAULT_COLOR == RANDOM_COLOR) {
+            color.setRandom();
+        }
+        else {
+            color.set(DEFAULT_COLOR);
+        }
     }
     EmitParams(int8_t model) : EmitParams(model, DEFAULT_SPEED) {
 
