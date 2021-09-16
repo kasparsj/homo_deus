@@ -166,7 +166,7 @@ s.sync;
 		idxs = [idxs];
 	});
 	idxs.do { |idx|
-		groups = groups | (2.pow(idx).asInteger);
+		groups = groups | (2.pow(idx.asInteger).asInteger);
 	};
 	groups;
 };

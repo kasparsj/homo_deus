@@ -9,8 +9,10 @@ void HeptagonStar::setup() {
 
     addModel(new Model(M_DEFAULT, 10, GROUP1));
     addModel(new Model(M_STAR, 0, GROUP1));
+    // todo: add litle star
     addModel(new Model(M_OUTER_STAR, 10, GROUP1));
     addModel(new Model(M_INNER_CIRCLE, 0, GROUP2));
+    // todo: add inner star
     addModel(new Model(M_HORNS, 0, GROUP1));
     addModel(new Model(M_HALO, 0, GROUP2));
     addModel(new Model(M_SPLATTER, 10, GROUP2 | GROUP3));
