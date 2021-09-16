@@ -93,6 +93,15 @@ s.sync;
     EXPONENTIAL_IN: 22,
     EXPONENTIAL_OUT: 23,
     EXPONENTIAL_INOUT: 24,
+	BACK_IN: 25,
+    BACK_OUT: 26,
+    BACK_INOUT: 27,
+	BOUNCE_IN: 28,
+    BOUNCE_OUT: 29,
+    BOUNCE_INOUT: 30,
+	ELASTIC_IN: 31,
+    ELASTIC_OUT: 32,
+    ELASTIC_INOUT: 33,
 );
 
 ~hd.init = { |self|
