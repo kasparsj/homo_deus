@@ -11,23 +11,33 @@ s.waitForBoot {
 
 	~hd.createSpawn({
 		~hd.createDrone(
-			\amp, 0.05,
-			\dur, Pwhite(10, 30, 1),
-			\color, [255,0,0],
+			\model, Pfunc{ [1,2,3].choose },
+			\amp, Pwhite(0.04, 0.07),
+			\dur, Pwhite(10, 45, 1),
+			\color, Pfunc{
+				var i = 3.rand;
+				var col = [0, 0, 0];
+				col[i] = 255;
+				col;
+			},
 			//\behaviour, \FILL_EASE,
 			//\ease, \EXPONENTIAL_INOUT,
 		);
-	}, Pwhite(5, 60)).play;
+	}, Pwhite(30, 90)).play;
 
-	~c31 = Synth(\cricket3, [\out,0,\trigFreq, 2]);
-	~c32 = Synth(\cricket3, [\out,1,\trigFreq, 0.5]);
+	~c1 = Synth(\cricket1, [\out, 0, \amp, 1.5]);
+	~c2 = Synth(\cricket2, [\out, 1, \amp, 1.5]);
+	~c31 = Synth(\cricket3, [\out, 0, \amp, 1.5, \trigFreq, 2]);
+	~c32 = Synth(\cricket3, [\out, 1, \amp, 1.5, \trigFreq, 0.5]);
 	Pbind(
-		\type, \hd,
+		\type, Pfunc{ [\hd, \pause].wchoose([0.9, 0.1]); },
 		\model, 0,
-		\ease, \EXPONENTIAL_INOUT,
+		\ease, Pfunc{ [\EXPONENTIAL_INOUT, \SINE_INOUT].choose; },
 		\behaviour, \FILL_EASE,
 		\brightness, Pwhite(127, 255),
 		\color, Pfunc{ [0, 256.rand, 256.rand] },
+		\dur, Pfunc{ |event|
+			if (event[\type] == \hd, {1+4.rand; }, { 5 + 20.rand }); },
 	).play;
 };
 
