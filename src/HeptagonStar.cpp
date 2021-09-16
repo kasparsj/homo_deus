@@ -9,12 +9,10 @@ void HeptagonStar::setup() {
 
     addModel(new Model(M_DEFAULT, 10, GROUP1));
     addModel(new Model(M_STAR, 0, GROUP1));
-    // todo: add litle star
-    addModel(new Model(M_OUTER_STAR, 10, GROUP1));
-    addModel(new Model(M_INNER_CIRCLE, 0, GROUP2));
-    // todo: add inner star
-    addModel(new Model(M_HORNS, 0, GROUP1));
-    addModel(new Model(M_HALO, 0, GROUP2));
+    addModel(new Model(M_OUTER_SUN, 10, GROUP1));
+    addModel(new Model(M_INNER_TRIS, 0, GROUP2));
+    addModel(new Model(M_SMALL_STAR, 0, GROUP2));
+    addModel(new Model(M_INNER_SUN, 0, GROUP2));
     addModel(new Model(M_SPLATTER, 10, GROUP2 | GROUP3));
 
     // outer (inter[0])
@@ -43,9 +41,9 @@ void HeptagonStar::setup() {
     }
 
     // inner (inter[2)
-    addIntersection(new Intersection(4, 597, 320, GROUP3));
-    addIntersection(new Intersection(4, 55, 334, GROUP3));
-    addIntersection(new Intersection(4, 708, 69, GROUP3));
+    addIntersection(new Intersection(4, 597, 320, GROUP3)); //bottom
+    addIntersection(new Intersection(4, 55, 334, GROUP3)); // bottom left
+    addIntersection(new Intersection(4, 708, 69, GROUP3)); // left
     addIntersection(new Intersection(4, 722, 448, GROUP3)); // top left
     addIntersection(new Intersection(4, 462, 191, GROUP3)); // top right
     addIntersection(new Intersection(4, 848, 206, GROUP3)); // right
@@ -57,11 +55,17 @@ void HeptagonStar::setup() {
     Connection *middleConnection1 = addConnection(new Connection(middleNeuron1, inter[2][i], GROUP3));
     Connection *middleConnection2 = addConnection(new Connection(middleNeuron2, inter[2][i], GROUP3));
     models[M_STAR]->put(middleConnection1->fromPort, middleNeuron1->ports[1], 10);
-    models[M_OUTER_STAR]->put(middleConnection1, 0);
     models[M_STAR]->put(middleConnection2->fromPort, middleNeuron2->ports[0], 10);
-    models[M_OUTER_STAR]->put(middleConnection2, 0);
-    models[M_INNER_CIRCLE]->put(middleConnection1, 10);
-    models[M_INNER_CIRCLE]->put(middleConnection2, 10);
+    models[M_OUTER_SUN]->put(middleConnection1, 0);
+    models[M_OUTER_SUN]->put(middleConnection2, 0);
+    models[M_INNER_TRIS]->put(middleConnection1, 10);
+    models[M_INNER_TRIS]->put(middleConnection2, 10);
+    models[M_SMALL_STAR]->put(middleConnection1->fromPort, 10);
+    models[M_SMALL_STAR]->put(middleConnection2->fromPort, 10);
+    models[M_INNER_SUN]->put(middleConnection1->fromPort, 10);
+    models[M_INNER_SUN]->put(middleConnection2->fromPort, 10);
+    models[M_INNER_SUN]->put(middleConnection1->toPort, 10);
+    models[M_INNER_SUN]->put(middleConnection2->toPort, 10);
   }
   
   for (uint8_t i=0; i<7; i++) {
@@ -70,21 +74,9 @@ void HeptagonStar::setup() {
     Connection *innerConnection = addConnection(new Connection(innerNeuron1, innerNeuron2, GROUP4));
     models[M_STAR]->put(innerConnection->fromPort, innerNeuron1->ports[1], 10);
     models[M_STAR]->put(innerConnection->toPort, innerNeuron2->ports[0], 10);
-    models[M_OUTER_STAR]->put(innerConnection, 0);
-    models[M_INNER_CIRCLE]->put(innerConnection, 10);
+    models[M_SMALL_STAR]->put(innerConnection->fromPort, innerNeuron1->ports[1], 10);
+    models[M_SMALL_STAR]->put(innerConnection->toPort, innerNeuron2->ports[0], 10);
+    models[M_OUTER_SUN]->put(innerConnection, 0);
+    models[M_INNER_TRIS]->put(innerConnection, 10);
   }
-
-  models[M_HORNS]->put(conn[1][5], 10);
-  models[M_HORNS]->put(conn[1][6], 10);
-  models[M_HORNS]->put(conn[1][7], 10);
-  models[M_HORNS]->put(conn[1][8], 10);
-  models[M_HORNS]->put(conn[2][6], 10);
-  models[M_HORNS]->put(conn[2][7], 10);
-  models[M_HORNS]->put(conn[2][8], 10);
-  models[M_HORNS]->put(conn[2][9], 10);
-  //models[M_HORNS]->put(conn[3][3], 10);
-
-  models[M_HALO]->put(conn[3][3], 10);
-  models[M_HALO]->put(conn[2][6], 10);
-  models[M_HALO]->put(conn[2][9], 10);
 }

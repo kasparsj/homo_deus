@@ -7,10 +7,10 @@
 enum HeptagonStarModel {
     M_DEFAULT = 0,
     M_STAR = 1,
-    M_OUTER_STAR = 2,
-    M_INNER_CIRCLE = 3,
-    M_HORNS = 4,
-    M_HALO = 5,
+    M_OUTER_SUN = 2,
+    M_INNER_TRIS = 3,
+    M_SMALL_STAR = 4,
+    M_INNER_SUN = 5,
     M_SPLATTER = 6,
 };
 
