@@ -1,13 +1,6 @@
 (
-// OSCFunc({ |msg|
-// 	/*~hd.emit(
-// 	\behaviour, \RENDER_SEGMENT,
-// 	\life, 2,
-// 	);*/
-// }, '/cricket');
-
 SynthDef(\cricket1, { |out=0, amp = 1.0|
-	var modulator, mod1, mod2, mod3;
+	var modulator, mod1, mod2, mod3, sig;
 
 	// repeat time is 0.7s: equates to 1.43 Hz.
 	modulator = LFSaw.ar(1.43, 1, 0.5, 0.5);
@@ -16,11 +9,13 @@ SynthDef(\cricket1, { |out=0, amp = 1.0|
 	mod3 = modulator * 3147;
 	mod3 = (mod3 * 2pi).cos + ((mod3 * 2 * 2pi).cos * 0.3);
 	mod1 = ((Wrap.ar(modulator.min(0.1714) * 5.84) - 0.5).squared * (-4) + 1) * (mod2 * mod3);
-	Out.ar(out, mod1 * 0.1 * amp);
+	sig = mod1 * 0.1;
+	sig = LinPan2.ar(sig, FSinOsc.kr(1/5)) * amp * SinOsc.ar(1/5, 0);
+	Out.ar(out, sig);
 }).add;
 
-SynthDef(\cricket2, { |out=0, trigFreq=58.82, trigPhase=0, amp=1.0|
-	var trig, seq, demand, cricket;
+SynthDef(\cricket2, { |out=0, amp=1.0, trigFreq=58.82, trigPhase=0|
+	var trig, seq, demand, cricket, sig;
 
 	// instead of [metro], Impulse.kr is used here. Delta t = 17 ms equates to 58.82 Hz.
 	trig = Impulse.kr(trigFreq, trigPhase);
@@ -45,10 +40,12 @@ SynthDef(\cricket2, { |out=0, trigFreq=58.82, trigPhase=0, amp=1.0|
 			+ BPF.ar(cricket, 9000, 500.reciprocal, 42
 	);
 	cricket = (cricket - OnePole.ar(cricket, exp(-2pi * (4000 * SampleDur.ir))));
-	Out.ar(out, cricket * 0.5 * amp);
+	sig = cricket * 0.5;
+	sig = LinPan2.ar(sig, FSinOsc.kr(1/7)) * amp * SinOsc.ar(1/7, 2pi*1/3);
+	Out.ar(out, sig);
 }).add;
 
-SynthDef(\cricket3, { |out=0, trigFreq=0.2, trigPhase=0,amp=1.0|
+SynthDef(\cricket3, { |out=0, amp=1.0, trigFreq=0.2, trigPhase=0|
 	var sig, trig, seq, freq, mul, vals;
 
 	trig = Impulse.kr(trigFreq, trigPhase);
@@ -74,34 +71,10 @@ SynthDef(\cricket3, { |out=0, trigFreq=0.2, trigPhase=0,amp=1.0|
 	sig = BPF.ar(sig, [7500, 5500], 40.reciprocal).sum * SinOsc.ar(500);
 	sig = sig * (1 / (SinOsc.ar( freq[0], 0, freq[1] ).squared + 1));
 	sig = (sig - OnePole.ar(sig, exp(-2pi * (4000 * SampleDur.ir))));
-	Out.ar(out, sig*4*amp);
-}).add;
-
-SynthDef(\houseflyWing, { |out=0|
-	var sig, downstroke, upstroke, wingFreq, wingRes;
-
-	// this is already a preparation for fig 50.14 and is not described
-	// in the pure data patch on fig 50.13
-	wingFreq = In.ar(10,2);
-	wingRes = In.ar(20,2);
-
-	// Also, it is prepared for some other input from a different source,
-	// to not only control the patch with the mouse movement.
-	// See also the following URL for more information about the next lines:
-	// http://supercollider.sourceforge.net/wiki/index.php/Boolean_logic_in_the_server
-	wingFreq = Select.ar(wingFreq > 0, [K2A.ar(MouseX.kr(0, 300)), wingFreq]);
-	wingRes = Select.ar(wingRes > 0, [K2A.ar(MouseY.kr(3,5)), wingRes]);
-
-	sig = LFSaw.ar(wingFreq, 1, 0.5, 0.5);
-	sig = ((sig * 0.2).min(sig * (-1) + 1)).min(sig.min(sig * (-1) + 1));
-	sig = (sig * 6 - 0.5) * 2;
-
-	downstroke = (wingRes) * sig.min(0);
-	downstroke = (Wrap.ar(downstroke) * 2pi).cos * sig.min(0) * 0.5 + sig.min(0);
-	upstroke = sig.max(0).cubed * 2;
-
-	sig = downstroke + upstroke;
-	sig = (sig - OnePole.ar(sig, exp(-2pi * (700 * SampleDur.ir)))).dup * 0.00001;
+	sig = sig * SinOsc.ar(1/11, 2pi*2/3);
+	sig = sig*4;
+	sig = LinPan2.ar(sig, FSinOsc.kr(1/11)) * amp * SinOsc.kr(1/11);
 	Out.ar(out, sig);
 }).add;
+
 )

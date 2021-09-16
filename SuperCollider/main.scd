@@ -12,10 +12,10 @@ s.waitForBoot {
 	~hd.createSpawn({
 		~hd.createDrone(
 			\model, Pfunc{ [1,2,3].choose },
-			\amp, Pwhite(0.04, 0.07),
+			\amp, Pwhite(0.05, 0.07),
 			\dur, Pwhite(10, 45, 1),
 			\color, Pfunc{
-				var i = 3.rand;
+				var i = [0, 2].choose;
 				var col = [0, 0, 0];
 				col[i] = 255;
 				col;
@@ -25,19 +25,30 @@ s.waitForBoot {
 		);
 	}, Pwhite(30, 90)).play;
 
-	~c1 = Synth(\cricket1, [\out, 0, \amp, 1.5]);
-	~c2 = Synth(\cricket2, [\out, 1, \amp, 1.5]);
-	~c31 = Synth(\cricket3, [\out, 0, \amp, 1.5, \trigFreq, 2]);
-	~c32 = Synth(\cricket3, [\out, 1, \amp, 1.5, \trigFreq, 0.5]);
+	~bus1 = Bus.control(s, 1);
+	~bus1.set(1.0);
+
+	~c1 = Synth(\cricket1, [\amp, ~bus1.asMap]);
+	~c2 = Synth(\cricket2, [\amp, ~bus1.asMap]);
+	~c31 = Synth(\cricket3, [\amp, ~bus1.asMap, \trigFreq, 2]);
+	~c32 = Synth(\cricket3, [\amp, ~bus1.asMap, \trigFreq, 0.5]);
+
 	Pbind(
 		\type, Pfunc{ [\hd, \pause].wchoose([0.9, 0.1]); },
 		\model, 0,
-		\ease, Pfunc{ [\EXPONENTIAL_INOUT, \SINE_INOUT].choose; },
+		\ease, \EXPONENTIAL_INOUT,
 		\behaviour, \FILL_EASE,
 		\brightness, Pwhite(127, 255),
-		\color, Pfunc{ [0, 256.rand, 256.rand] },
+		\color, Pfunc{ [256.rand, 256.rand, 256.rand] },
 		\dur, Pfunc{ |event|
-			if (event[\type] == \hd, {1+4.rand; }, { 5 + 20.rand }); },
+			if (event[\type] == \hd, {
+				~bus1.set(1.0);
+				1 + 4.rand;
+			}, {
+				~bus1.set(0);
+				5 + 20.rand;
+			});
+		},
 	).play;
 };
 
