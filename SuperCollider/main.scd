@@ -23,7 +23,7 @@ s.waitForBoot {
 			//\behaviour, \FILL_EASE,
 			//\ease, \EXPONENTIAL_INOUT,
 		);
-	}, Pwhite(40, 120)).play;
+	}, Pwhite(40, 90)).play;
 
 	~bus1 = Bus.control(s, 1);
 	~bus1.set(1.0);
@@ -34,7 +34,7 @@ s.waitForBoot {
 	~c32 = Synth(\cricket3, [\amp, ~bus1.asMap, \trigFreq, 0.5]);
 
 	Pbind(
-		\type, Pfunc{ [\hd, \pause].wchoose([0.9, 0.1]); },
+		\type, Pfunc{ [\hd, \pause].wchoose([0.93, 0.07]); },
 		\amp, 0,
 		\model, 0,
 		//\colorChange, Pfunc{ [nil, 0, 1].wchoose([0.5, 0.4, 0.1]) },
