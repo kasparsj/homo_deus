@@ -51,8 +51,8 @@ SynthDef(\cricket3, { |out=0, amp=1.0, trigFreq=0.2, trigPhase=0|
 	trig = Impulse.kr(trigFreq, trigPhase);
 	vals = [
 		[0.5, 128],
-		[8,6],
-		[30,3]
+		[8, 6],
+		[30, 3]
 	];
 	freq = TChoose.kr(trig, vals);
 
@@ -71,8 +71,10 @@ SynthDef(\cricket3, { |out=0, amp=1.0, trigFreq=0.2, trigPhase=0|
 	sig = BPF.ar(sig, [7500, 5500], 40.reciprocal).sum * SinOsc.ar(500);
 	sig = sig * (1 / (SinOsc.ar( freq[0], 0, freq[1] ).squared + 1));
 	sig = (sig - OnePole.ar(sig, exp(-2pi * (4000 * SampleDur.ir))));
-	sig = sig*4;
-	sig = LinPan2.ar(sig, FSinOsc.kr(1/11)) * amp * SinOsc.kr(1/11, 2pi*2/3);
+	//sig = sig*4;
+	//sig = LinPan2.ar(sig, FSinOsc.kr(1/11)) * amp * SinOsc.kr(1/11, 2pi*2/3);
+	sig = BPeakEQ.ar(sig*4, SinOsc.kr(1/22, 0, 2000, 2000), SinOsc.kr(1/22, 0, 2.0, 2.0), SinOsc.kr(1/22, 0, 24));
+	sig = LinPan2.ar(sig, FSinOsc.kr(1/22)) * amp * SinOsc.kr(1/22, 2pi*2/3);
 	Out.ar(out, sig);
 }).add;
 

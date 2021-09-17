@@ -96,14 +96,14 @@ s.waitForBoot {
 	~restart = false;
 
 	Pbind(
-		\type, Pfunc{ [\hd, \pause].wchoose([0.96, 0.04]); },
+		\type, Pfunc{ [\hd, \pause].wchoose([0.98, 0.02]); },
 		\amp, 0,
-		\model, Pfunc{ [0, 3].wchoose([0.85, 0.15]) },
-		//\colorChange, Pfunc{ [nil, 0, 1].wchoose([0.5, 0.4, 0.1]) },
+		\model, Pfunc{ [0, 2, 3].wchoose([0.75, 0.1, 0.15]) },
+		\speed, Pfunc{ 0.5.exprand(10.0) },
 		\ease, \EXPONENTIAL_INOUT,
 		\behaviour, Pfunc{
 			var be = [\FILL_EASE];
-			if (4.rand == 1, {
+			if (5.rand == 1, {
 				be = be.add(\RANDOM_COLOR);
 			});
 			be;
