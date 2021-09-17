@@ -51,9 +51,9 @@ uint8_t LPLight::getBrightness() {
 
 ColorRGB LPLight::getPixelColor() {
     if (brightness == 255) {
-        return list->color;
+        return list->getColor(pixel1);
     }
-    return list->color.Dim(brightness);
+    return list->getColor(pixel1).Dim(brightness);
 }
 
 uint16_t* LPLight::getPixels() {
@@ -140,7 +140,7 @@ uint32_t LPLight::getLife() {
 }
 
 ColorRGB LPLight::getColor() {
-    return list->color;
+    return list->getColor();
 }
 
 Model* LPLight::getModel() {

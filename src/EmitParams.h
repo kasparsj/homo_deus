@@ -59,7 +59,7 @@ class EmitParams {
     uint16_t noteId = 0;
     uint8_t minBri = 0;
     uint8_t maxBri = DEFAULT_BRIGHTNESS;
-    uint8_t behaviourFlags = 0;
+    uint16_t behaviourFlags = 0;
     uint8_t emitGroups = 0;
     uint8_t emitOffset = 0;
     uint8_t colorChangeGroups = 0;

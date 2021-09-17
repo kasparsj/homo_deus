@@ -58,6 +58,7 @@ s.sync;
 	EXPIRE_IMMEDIATE: 32,
 	EMIT_FROM_CONN: 64,
 	FILL_EASE: 128,
+	RANDOM_COLOR: 256,
 );
 
 ~hd[\LIST_ORDER] = (
@@ -257,14 +258,6 @@ s.sync;
 
 ~hd.stopAll = { |self|
 	self.sendMsg("/note_off");
-};
-
-~hd.createSpawn = { |self, func, delta|
-	Pspawn(Pbind(
-		\pattern, Pfunc(func),
-		\delta, delta,
-		\method, \par
-	));
 };
 
 ~hd.setPalette = { |self, palette|

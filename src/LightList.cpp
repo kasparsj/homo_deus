@@ -38,6 +38,13 @@ void LightList::setDuration(uint32_t durMillis) {
     }
 }
 
+ColorRGB LightList::getColor(int16_t pixel) {
+    if (pixel >= 0 && this->behaviour->randomColor()) {
+        color.setRandom();
+    }
+    return color;
+}
+
 void LightList::setColor(ColorRGB color) {
     this->color = color;
     if (numLights > 0) {

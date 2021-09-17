@@ -32,7 +32,6 @@ class LightList {
     uint16_t numLights = 0;
     uint16_t lead = 0;
     uint16_t trail = 0;
-    ColorRGB color;
     LPLight **lights;
     LPOwner *emitter = 0;
     uint16_t numEmitted = 0;
@@ -92,8 +91,11 @@ class LightList {
     void split();
     float getPosition(LPLight *light);
     uint16_t getBri(LPLight *light);
+    ColorRGB getColor(int16_t pixel = -1);
 
   private:
+    
+    ColorRGB color;
 
     LPLight* createLight(uint16_t i, uint8_t brightness);
     void initPosition(uint16_t i, LPLight* light);

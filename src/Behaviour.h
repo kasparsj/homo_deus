@@ -8,7 +8,7 @@ class LPLight;
 class Behaviour {
 
   public:
-    uint8_t flags = 0;
+    uint16_t flags = 0;
     uint8_t colorChangeGroups = 0;
 
     Behaviour(EmitParams &params) {
@@ -37,5 +37,8 @@ class Behaviour {
     }
     bool fillEase() {
         return flags & B_FILL_EASE;
+    }
+    bool randomColor() {
+        return flags & B_RANDOM_COLOR;
     }
 };

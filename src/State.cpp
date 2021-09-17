@@ -71,9 +71,9 @@ int8_t State::emit(EmitParams &params) {
       lightLists[i]->behaviour = behaviour;
       lightLists[i]->order = params.order;
       lightLists[i]->head = params.head;
-      lightLists[i]->color = params.color;
       lightLists[i]->linked = params.linked;
       lightLists[i]->minBri = params.minBri;
+      lightLists[i]->setColor(params.color);
       lightLists[i]->setSpeed(speed, params.ease);
       lightLists[i]->setDuration(duration);
       lightLists[i]->setFade(params.fadeSpeed, params.fadeThresh, params.fadeEase);
