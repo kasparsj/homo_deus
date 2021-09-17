@@ -11,9 +11,9 @@ s.waitForBoot {
 
 	~hd.createSpawn({
 		~hd.createDrone(
-			\model, Pfunc{ [1,2,3].choose },
+			\model, Pfunc{ [1,2,3, 4, 5].choose },
 			\amp, Pwhite(0.05, 0.07),
-			\dur, Pwhite(10, 45, 1),
+			\dur, Pwhite(15, 30, 1),
 			\color, Pfunc{
 				var i = [0, 2].choose;
 				var col = [0, 0, 0];
