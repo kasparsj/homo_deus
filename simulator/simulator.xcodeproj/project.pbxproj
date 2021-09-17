@@ -23,6 +23,8 @@
 		2B3E2E9426E964AF0020216C /* Connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B3E2E8726E964AE0020216C /* Connection.cpp */; };
 		2B3E2E9526E964AF0020216C /* Port.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B3E2E8826E964AE0020216C /* Port.cpp */; };
 		2B3E2E9626E964AF0020216C /* HeptagonStar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B3E2E8A26E964AE0020216C /* HeptagonStar.cpp */; };
+		2B7F8FBF26F4E06F0089F6F8 /* Globals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B7F8FBC26F4E06E0089F6F8 /* Globals.cpp */; };
+		2B7F8FC026F4E06F0089F6F8 /* LPRandom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B7F8FBD26F4E06E0089F6F8 /* LPRandom.cpp */; };
 		4AC9576E194B74311C013778 /* ofxOscBundle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC8D77051F82227E9975E852 /* ofxOscBundle.cpp */; };
 		56776ACD8DF840AFA79D5CC7 /* ofxOscParameterSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C961A505821148F7BCA13093 /* ofxOscParameterSync.cpp */; };
 		66DA64991E83C32DECA8346F /* UdpSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 966E8064783D44D67668D170 /* UdpSocket.cpp */; };
@@ -91,6 +93,9 @@
 		2B3E2E8826E964AE0020216C /* Port.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Port.cpp; sourceTree = "<group>"; };
 		2B3E2E8926E964AE0020216C /* State.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = State.h; sourceTree = "<group>"; };
 		2B3E2E8A26E964AE0020216C /* HeptagonStar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HeptagonStar.cpp; sourceTree = "<group>"; };
+		2B7F8FBC26F4E06E0089F6F8 /* Globals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Globals.cpp; sourceTree = "<group>"; };
+		2B7F8FBD26F4E06E0089F6F8 /* LPRandom.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LPRandom.cpp; sourceTree = "<group>"; };
+		2B7F8FBE26F4E06F0089F6F8 /* LPRandom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPRandom.h; sourceTree = "<group>"; };
 		32C9C3631853A2164CF5196A /* OscOutboundPacketStream.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = OscOutboundPacketStream.cpp; path = ../../of_v0.11.0/addons/ofxOsc/libs/oscpack/src/osc/OscOutboundPacketStream.cpp; sourceTree = SOURCE_ROOT; };
 		343CF9C92B61DA26F0D1F4D3 /* ofxOsc.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = ofxOsc.h; path = ../../of_v0.11.0/addons/ofxOsc/src/ofxOsc.h; sourceTree = SOURCE_ROOT; };
 		3F22D73D403734B978E0825D /* ofxOscMessage.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ofxOscMessage.cpp; path = ../../of_v0.11.0/addons/ofxOsc/src/ofxOscMessage.cpp; sourceTree = SOURCE_ROOT; };
@@ -316,6 +321,9 @@
 		2B3E2E6B26E964AE0020216C /* src */ = {
 			isa = PBXGroup;
 			children = (
+				2B7F8FBC26F4E06E0089F6F8 /* Globals.cpp */,
+				2B7F8FBD26F4E06E0089F6F8 /* LPRandom.cpp */,
+				2B7F8FBE26F4E06F0089F6F8 /* LPRandom.h */,
 				2B05CFE926EFA023009A0242 /* LPOwner.h */,
 				2B05CFE726EF82A3009A0242 /* ofxEasing.h */,
 				2B367AA826EBFCF5006FA9EC /* LPDebugger.cpp */,
@@ -889,12 +897,14 @@
 				B6B452B863ED92C82CA6B545 /* OscTypes.cpp in Sources */,
 				2B3E2E9526E964AF0020216C /* Port.cpp in Sources */,
 				4AC9576E194B74311C013778 /* ofxOscBundle.cpp in Sources */,
+				2B7F8FBF26F4E06F0089F6F8 /* Globals.cpp in Sources */,
 				2B3E2E9426E964AF0020216C /* Connection.cpp in Sources */,
 				2B05CFE826EF82A3009A0242 /* EmitParams.cpp in Sources */,
 				04B85B5F6452FA21E2D034A3 /* ofxOscMessage.cpp in Sources */,
 				56776ACD8DF840AFA79D5CC7 /* ofxOscParameterSync.cpp in Sources */,
 				2B3E2E9626E964AF0020216C /* HeptagonStar.cpp in Sources */,
 				2B3E2E8F26E964AF0020216C /* State.cpp in Sources */,
+				2B7F8FC026F4E06F0089F6F8 /* LPRandom.cpp in Sources */,
 				7EA8267BD7B6B7D7A721F077 /* ofxOscReceiver.cpp in Sources */,
 				2B3E2E8E26E964AF0020216C /* Weight.cpp in Sources */,
 				2B3E2E8D26E964AF0020216C /* Light.cpp in Sources */,

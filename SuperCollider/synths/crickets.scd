@@ -71,9 +71,8 @@ SynthDef(\cricket3, { |out=0, amp=1.0, trigFreq=0.2, trigPhase=0|
 	sig = BPF.ar(sig, [7500, 5500], 40.reciprocal).sum * SinOsc.ar(500);
 	sig = sig * (1 / (SinOsc.ar( freq[0], 0, freq[1] ).squared + 1));
 	sig = (sig - OnePole.ar(sig, exp(-2pi * (4000 * SampleDur.ir))));
-	sig = sig * SinOsc.ar(1/11, 2pi*2/3);
 	sig = sig*4;
-	sig = LinPan2.ar(sig, FSinOsc.kr(1/11)) * amp * SinOsc.kr(1/11);
+	sig = LinPan2.ar(sig, FSinOsc.kr(1/11)) * amp * SinOsc.kr(1/11, 2pi*2/3);
 	Out.ar(out, sig);
 }).add;
 

@@ -260,14 +260,14 @@ s.sync;
 ~hd.createDrone = { |self ... args|
 	var dict = args.asDict;
 	var which = (0..2).choose;
-	var instruments = [\SineDrone, \SineDrone, \SawDrone, \PulseDrone];
+	var instruments = dict[\instruments] ? [\SineDrone, \SawDrone, \PulseDrone];
 	var dur = rrand(5, 30).asInteger;
 	var freq = (51..(51+rrand(0, 3))).scramble;
 	var modFreq = dict[\speed] ? rrand(0.09, 0.5);
 	var pan = [-1, 1].scramble;
 	Pbind(
 		\type, \hd_note,
-		\instrument, instruments[(0..3).choose],
+		\instrument, instruments.choose,
 		\freq, freq,
 		\modFreq, modFreq,
 		\dur, dur,
