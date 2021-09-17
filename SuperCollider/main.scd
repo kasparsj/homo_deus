@@ -10,23 +10,32 @@ s.waitForBoot {
 	//~hd.net = NetAddr("127.0.0.1", 54321);
 
 	~hd.createSpawn({
-		~hd.createDrone(
-			\instruments, [\SineDrone, \SineDrone, \PulseDrone],
-			\model, Pfunc{ [1, 2, 4, 5].choose },
-			\amp, 0.05,
-			//\behaviour, \RENDER_SEGMENT,
-			\length, 100,
+		var instrument = [\SineDrone, \SineDrone, \PulseDrone].choose;
+		var freq = (51..53).scramble;
+		var modFreq = rrand(0.09, 0.5);
+		var pan = [-1, 1].scramble;
+		Pbind(
+			\type, \hd_note,
+			\instrument, instrument,
+			\freq, freq,
+			\modFreq, modFreq,
 			\dur, Pwhite(15, 30, 1),
+			\pan, pan,
+			\phase, [2pi.rand, 2pi.rand, 2pi.rand],
+			\amp, 0.1,
+			\model, Pfunc{ [1, 2, 4, 5].choose },
+			//\from, -1,
+			\speed, modFreq * 10,
+			\length, 100,
+			\amp, 0.05,
 			\color, Pfunc{
 				var i = [0, 2].choose;
 				var col = [0, 0, 0];
 				col[i] = 255;
 				col;
 			},
-			//\behaviour, \FILL_EASE,
-			//\ease, \EXPONENTIAL_INOUT,
 		);
-	}, Pwhite(40, 80)).play;
+	}, Pwhite(60, 120)).play;
 
 	~bus1 = Bus.control(s, 1);
 	~bus1.set(1.0);

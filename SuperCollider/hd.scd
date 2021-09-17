@@ -111,7 +111,7 @@ s.sync;
 		var sustain = ~sustain.value;
 		var serverLatency = ~latency.value ? (server.latency ? 0);
 		var emitLatency = (thisThread.clock.tempo.reciprocal*timingOffset)+lag+serverLatency;
-		var life = (thisThread.clock.tempo.reciprocal*(sustain+timingOffset))+lag+serverLatency;
+		var dur = (sustain+timingOffset);
 		var args = [emitLatency, "/emit",
 			self[\PARAM][\MODEL], ~model.value,
 			self[\PARAM][\SPEED], ~speed.value ? -1.0,
@@ -138,16 +138,18 @@ s.sync;
 		};
 		if (self.useEmit) {
 			// emit (with duration)
+			var duration = dur+lag+serverLatency;
 			args[1] = "/emit";
-			args = args.addAll([self[\PARAM][\DURATION], (life*1000).asInteger]);
+			args = args.addAll([self[\PARAM][\DURATION], (duration*1000).asInteger]);
 			self.sendMsgIn(*args);
 		} {
 			// note_on + note_off
 			var noteId = self.getNoteId();
+			var offTime = (thisThread.clock.tempo.reciprocal*dur)+lag+serverLatency;
 			args = args.addAll([self[\PARAM][\NOTE_ID], noteId]);
 			args[1] = "/note_on";
 			self.sendMsgIn(*args);
-			argsOff = [life, "/note_off", noteId];
+			argsOff = [offTime, "/note_off", noteId];
 			self.sendMsgIn(*argsOff);
 		};
 	}, (legato: 1.0));
@@ -257,33 +259,6 @@ s.sync;
 	self.sendMsg("/note_off");
 };
 
-~hd.createDrone = { |self ... args|
-	var dict = args.asDict;
-	var which = (0..2).choose;
-	var instruments = dict[\instruments] ? [\SineDrone, \SawDrone, \PulseDrone];
-	var dur = rrand(5, 30).asInteger;
-	var freq = (51..(51+rrand(0, 3))).scramble;
-	var modFreq = dict[\speed] ? rrand(0.09, 0.5);
-	var pan = [-1, 1].scramble;
-	Pbind(
-		\type, \hd_note,
-		\instrument, instruments.choose,
-		\freq, freq,
-		\modFreq, modFreq,
-		\dur, dur,
-		\pan, pan,
-		\phase, 2pi.rand,
-		\out, 0,
-		\amp, 0.1,
-		\model, 4.rand,
-		\from, -1,
-		\speed, modFreq * 10,
-		\length, freq.size * 25,
-		//\color, which * 85
-		*args
-	);
-};
-
 ~hd.createSpawn = { |self, func, delta|
 	Pspawn(Pbind(
 		\pattern, Pfunc(func),
@@ -300,8 +275,9 @@ s.sync;
 
 s.sync;
 
-"compositions/*.scd".loadRelative;
-"mapping/*.scd".loadRelative;
+//"compositions/*.scd".loadRelative;
+//"mapping/*.scd".loadRelative;
+"master.scd".loadRelative;
 
 "###     homo deus loaded     ####".postln;
 
