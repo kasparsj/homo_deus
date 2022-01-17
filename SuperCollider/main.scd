@@ -47,14 +47,6 @@ s.waitForBoot {
 						\behaviour, \RENDER_SEGMENT,
 						\instrument, \harpsi,
 						\root, ([-2, -1, 1] * 12).choose,
-						\color, Pfunc{ |event|
-							var col = switch (event[\root],
-								-24, { [127,255,0] },
-								-12, { [255,255,0] },
-								12, { [255,255,255] },
-							);
-							col;
-						},
 						\scale, Scale.at(Scale.names.choose),
 						//\scale, Scale.minor,
 						\ffreq, ((1..2) ++ (3..1)).choose,
@@ -66,6 +58,15 @@ s.waitForBoot {
 						\release, [5,6,7,8].choose,
 						\dur, ((1..8)/4).choose,
 						\amp, (((1..8)/8)+1).choose,
+						\color, Pfunc{ |event|
+							var col = switch (event[\root],
+								-24, { [127,255,0] },
+								-12, { [255,255,0] },
+								12, { [255,255,255] },
+							);
+							//event[\degree].value.postln;
+							col;
+						},
 						\brightness, Pfunc{ |event|
 							event[\amp]*127.0;
 						},
@@ -73,7 +74,7 @@ s.waitForBoot {
 							(event[\release] + event[\dur]) * 2;
 						},
 						\speed, Pfunc{ |event|
-							(event[\release] + event[\dur]) / 2.0;
+							(event[\release] + event[\dur]) / 5.0;
 						},
 						\emit, Pfunc{|event|
 							if (event[\model] == 2, {0}, {2});
@@ -151,7 +152,7 @@ s.waitForBoot {
 		sig = BPeakEQ.ar(sig, freq9, rq, SinOsc.kr(change, 2pi.rand, 48));
 		sig = BPeakEQ.ar(sig, freq10, rq, SinOsc.kr(change, 2pi.rand, 48));
 		sig = Limiter.ar(sig * 0.1, 1, 0.01);
-		sig = sig * 0.04;
+		sig = sig * 0.1;
 	}).play;
 };
 
