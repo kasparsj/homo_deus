@@ -2,12 +2,12 @@
 #define PIXEL_PIN2 26
 #define BUTTON_PIN 25
 #define WIFI_HOSTNAME "homo-deus"
-#define WIFI_SSID "k"
-#define WIFI_PASS "letmeinplease"
+// #define WIFI_SSID "k"
+// #define WIFI_PASS "letmeinplease"
 //#define WIFI_SSID "Redmi"
 //#define WIFI_PASS "kaspars123"
-//#define WIFI_SSID "VA37-3"
-//#define WIFI_PASS "fdsa4321");
+#define WIFI_SSID "VA37-3"
+#define WIFI_PASS "fdsa4321"
 #define HD_OSC
 #define HD_SERIAL
 #define HD_DEBUGGER
@@ -31,7 +31,7 @@
 #include <WiFi.h>
 #endif
 #ifdef HD_OSC
-#include <ArduinoOSC.h>
+#include <ArduinoOSCWiFi.h>
 #endif
 #ifdef HD_DEBUGGER
 #include "src/LPDebugger.h"
@@ -105,6 +105,7 @@ void setupComms() {
     WiFi.persistent(true);
   }
   else {
+    // todo: should boot even if WiFi connection fails
     WiFi.disconnect(true, true);
     ESP.restart();
     Serial.println("WiFi failed to connect");
@@ -185,6 +186,16 @@ void readSerial() {
 
 void doCommand(char command) {
   switch (command) {
+    case 'd': {
+      EmitParams params(M_STAR, 0.5);
+      params.length = 3;
+      params.from = 1;
+      // todo: fix, infinite duration does not work
+      // params.duration = INFINITE_DURATION;
+      params.duration = 100000;
+      doEmit(params); 
+      break;
+    }
     case 'r':
       ESP.restart();
       break;
@@ -247,15 +258,18 @@ void doCommand(char command) {
     case '3':
     case '4':
     case '5':
-    case '6': {
-      EmitParams params(command - '1', LPRandom::randomSpeed());
-      doEmit(params); 
-      break;
-    }
+    case '6':
     case '7': {
-      EmitParams params(M_STAR);
-      params.colorChangeGroups |= GROUP1;
-      doEmit(params);
+      int model = command - '1';
+      if (model <= HeptagonStarModel::LAST) {
+        EmitParams params(model, LPRandom::randomSpeed());
+        doEmit(params); 
+      }
+      else {
+        EmitParams params(M_STAR);
+        params.colorChangeGroups |= GROUP1;
+        doEmit(params);
+      }
       break;
     }
     case '+': {

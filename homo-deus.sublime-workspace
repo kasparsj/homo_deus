@@ -1,0 +1,395 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"num",
+				"numLights"
+			],
+			[
+				"randomLe",
+				"randomLength"
+			],
+			[
+				"HD_",
+				"HD_TEST"
+			],
+			[
+				"midi",
+				"midinote"
+			],
+			[
+				"dst",
+				"dstFile"
+			],
+			[
+				"patt",
+				"pattLabels"
+			],
+			[
+				"call",
+				"CallbackEvent"
+			],
+			[
+				"Call",
+				"CallbackListener"
+			],
+			[
+				"Cir",
+				"CirclePatt"
+			],
+			[
+				"Circl",
+				"CirclesController"
+			],
+			[
+				"_c",
+				"_circle"
+			],
+			[
+				"_",
+				"_cp5"
+			],
+			[
+				"Circle",
+				"CircleControls"
+			],
+			[
+				"frame",
+				"frameRate"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Processing/Build Systems/Processing.sublime-build",
+					""
+				],
+				[
+					"Packages/Processing/Build Systems/Processing.sublime-build",
+					"Re-run sketch"
+				],
+				[
+					"Packages/Processing/Build Systems/Processing.sublime-build",
+					"Run sketch (Processing 3 only)"
+				],
+				[
+					"Packages/Processing/Build Systems/Processing.sublime-build",
+					"Run sketch fullscreen"
+				],
+				[
+					"Packages/Processing/Build Systems/Processing.sublime-build",
+					"Export sketch as application"
+				],
+				[
+					"Packages/Processing/Build Systems/Processing.sublime-build",
+					"Kill running sketches"
+				]
+			],
+			[
+				"Packages/Processing/Build Systems/Processing.sublime-build",
+				"Run sketch (Processing 3 only)"
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"disable",
+				"Package Control: Disable Package"
+			],
+			[
+				"install pa",
+				"Package Control: Install Package"
+			],
+			[
+				"package",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 249.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/kasparsj/Work2/homo_deus/homo_deus"
+	],
+	"file_history":
+	[
+		"/Users/kasparsj/Work2/luisantunes/csound/wavefolding.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/wavefolder_simple.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/additive_synthesis3.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/Cabbage_vib_phasor_study.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/candle-sketch.csd",
+		"/Users/kasparsj/Music/Logic/ManWithCamera.mid",
+		"/Users/kasparsj/Work2/luisantunes/csound/homework2.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/kick.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/inv-amp.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/template.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/sample-and-hold.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/fof_chaos.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/flooper2.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/mpulse.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/npulse.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/turnoff.csd",
+		"/Users/kasparsj/Work2/luisantunes/candle-sketch.csd",
+		"/Users/kasparsj/Work2/luisantunes/_main.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/imv-amp.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/imv-amp",
+		"/Users/kasparsj/Work2/luisantunes/csound/flooper2-1.csd",
+		"/Users/kasparsj/Work2/luisantunes/csound/gen01.csd",
+		"/Users/kasparsj/Work2/luisantunes/sinus.csd",
+		"/Users/kasparsj/Nextcloud/SuperCollider/quarks/Blofeld/Classes/Blofeld.sc",
+		"/Users/kasparsj/Nextcloud/SuperCollider/quarks/Blofeld/Classes/BlofeldEditBuffer.sc",
+		"/Users/kasparsj/Nextcloud/SuperCollider/quarks/Blofeld/Classes/BlofeldSound.sc",
+		"/Users/kasparsj/Nextcloud/SuperCollider/quarks/Blofeld/Classes/BlofeldSoundset.sc",
+		"/Users/kasparsj/Work2/homo_deus/src/LPEmitter.h",
+		"/Users/kasparsj/Work2/homo_deus/src/LPBase.h",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/HeptagonStar.h",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/homo_deus.ino",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/Model.h",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/Connection.h",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/Intersection.cpp",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/LightList.h",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/Light.h",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/Emitter.cpp",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/Port.h",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/Port.cpp",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/LightList.cpp",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/Intersection.h",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/Light.cpp",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/HeptagonStar.cpp",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/Config.h",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/Connection.cpp",
+		"/Users/kasparsj/Nextcloud/Arduino/homo_deus/Emitter.h",
+		"/Users/kasparsj/Library/Arduino15/packages.stino-settings",
+		"/Users/kasparsj/Work2/alles/main/blemidi.h",
+		"/Users/kasparsj/Work2/alles/main/buttons.c",
+		"/Users/kasparsj/Work2/alles/main/master_i2c.h",
+		"/Users/kasparsj/Work2/alles/components/esp32-wifi-manager/src/wifi_manager.c",
+		"/Users/kasparsj/Work2/alles/components/esp32-wifi-manager/src/wifi_manager.h",
+		"/Users/kasparsj/Work2/alles/main/blemidi.c",
+		"/Users/kasparsj/Work2/alles/main/filters.c",
+		"/Users/kasparsj/Work2/alles/main/oscillators.cc",
+		"/Users/kasparsj/Work2/alles/sdkconfig",
+		"/Users/kasparsj/Work2/alles/main/multicast.c",
+		"/Users/kasparsj/Work2/alles/main/CMakeLists.txt",
+		"/Users/kasparsj/Work2/alles/CMakeLists.txt",
+		"/Users/kasparsj/Work2/alles/alles-flasher/build.bat",
+		"/Users/kasparsj/Work2/alles/alles-flasher/build.sh",
+		"/Users/kasparsj/Work2/alles/alles.py",
+		"/Users/kasparsj/Work2/emilrw/api/Util/AbsPath.php",
+		"/Users/kasparsj/Work2/emilrw/api/Jackdaw/Utils.php",
+		"/Users/kasparsj/Work2/emilrw/api/Jackdaw/Common.php",
+		"/Users/kasparsj/Work2/emilrw/api/metadata/thumbnails.php",
+		"/Users/kasparsj/Nextcloud/Processing/kvadrats/light/shader.vert",
+		"/Users/kasparsj/Nextcloud/Processing/kvadrats/light/shader.frag",
+		"/Users/kasparsj/Work2/phi8/autostart.sh",
+		"/Users/kasparsj/Work2/phi8/phi8/phi8.scd",
+		"/Users/kasparsj/Work2/phi8/phi8/compositions/stranger-things.scd",
+		"/Users/kasparsj/Work2/phi8/phi8/inputs.scd",
+		"/Users/kasparsj/Documents/Arduino/libraries/SparkFun_MPU-9250_Breakout_DMP/library.properties",
+		"/Users/kasparsj/Documents/Arduino/libraries/arduino-tm1637/library.properties",
+		"/Users/kasparsj/Documents/Arduino/libraries/i2c_master/library.properties",
+		"/Users/kasparsj/Documents/Arduino/phi8_sound_days/json/delay.json",
+		"/Users/kasparsj/Documents/Arduino/phi8_sound_days/json/random.json",
+		"/Users/kasparsj/Documents/Arduino/phi8_sound_days/json/speed.json",
+		"/Users/kasparsj/Documents/Arduino/phi8_sound_days/json/test.json",
+		"/Users/kasparsj/Documents/Arduino/phi8_sound_days/json/long.json",
+		"/Users/kasparsj/Library/Application Support/Sublime Text 3/Packages/serial_monitor/serial_monitor.sublime-settings",
+		"/Users/kasparsj/Library/Application Support/Sublime Text 3/Packages/User/serial_monitor.sublime-settings",
+		"/tmp/Deviot/1556643366/src/1556643366.ino",
+		"/Users/kasparsj/Documents/Processing/phi8/phi_8.pde",
+		"/usr/local/lib/haxe/lib/openfl/git/test/unit/run.bat",
+		"/Users/kasparsj/Work2/laimdotamalle/.htaccess",
+		"/private/var/folders/sw/36pn0vxj55l7r1xl1bk5c16m0000gp/T/fz3temp-2/composer.json",
+		"/private/var/folders/sw/36pn0vxj55l7r1xl1bk5c16m0000gp/T/fz3temp-2/composer 2.json"
+	],
+	"find":
+	{
+		"height": 24.0
+	},
+	"find_in_files":
+	{
+		"height": 101.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"dur",
+			"Sample",
+			"trill",
+			"Routine"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 24.0
+	},
+	"input":
+	{
+		"height": 36.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.deviot":
+	{
+		"height": 108.0
+	},
+	"output.exec":
+	{
+		"height": 118.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.stino_build_panel":
+	{
+		"height": 108.0
+	},
+	"output.stino_panel":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "homo-deus.sublime-project",
+	"replace":
+	{
+		"height": 44.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 306.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
