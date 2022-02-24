@@ -59,6 +59,7 @@
 	Pbind(*pArgs);
 };
 
+~hdP.p1 = nil;
 ~hdP.c1 = Pmono(\cricket1,
 	\amp, ~hdP.cricketsBus.asMap
 );
@@ -105,8 +106,8 @@
 					Ndef(\x).set(\change, rrand(0.001, 0.01), \rq, rrand(0.1, 1.5));
 					Ndef(\x).play(fadeTime: 10);
 				};
-				if (self.c1.isPlaying.not) {
-					self.c1.play;
+				if (self.p1.isNil or: { self.p1.isPlaying.not }) {
+					self.p1 = self.c1.play;
 					self.c2.play;
 					self.c31.play;
 					self.c32.play;
