@@ -59,6 +59,9 @@
 	Pbind(*pArgs);
 };
 
+~hdP.restartWind = false;
+~hdP.cricketsBus = Bus.control(s, 1);
+~hdP.cricketsBus.set(1.0);
 ~hdP.p1 = nil;
 ~hdP.c1 = Pmono(\cricket1,
 	\amp, ~hdP.cricketsBus.asMap
@@ -74,9 +77,6 @@
 	\amp, ~hdP.cricketsBus.asMap,
 	\trigFreq, 0.5
 );
-~hdP.cricketsBus = Bus.control(s, 1);
-~hdP.cricketsBus.set(1.0);
-~hdP.restartWind = false;
 
 ~hdP.crickets = { |self ... args|
 	var pArgs = [
@@ -100,7 +100,7 @@
 		\color, Pfunc{ [256.rand, 256.rand, 256.rand] },
 	].addAll(args).addAll([
 		\dur, Pfunc{ |event|
-			if (event[\type] == \hd, {
+			if (event[\type] == \hd) {
 				if (self.restartWind or: { Ndef(\x).isPlaying.not }) {
 					self.restartWind = false;
 					Ndef(\x).set(\change, rrand(0.001, 0.01), \rq, rrand(0.1, 1.5));
@@ -114,13 +114,13 @@
 				};
 				self.cricketsBus.set(1.0);
 				1 + 4.rand;
-			}, {
+			} {
 				var silence = 5 + 10.rand;
 				self.cricketsBus.set(0);
 				Ndef(\x).stop(silence-1, true);
 				self.restartWind = true;
 				silence;
-			});
+			};
 		},
 	]);
 	Pdef(\hd_crickets, Pbind(*pArgs));
