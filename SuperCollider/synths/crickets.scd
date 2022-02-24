@@ -1,5 +1,5 @@
 (
-SynthDef(\cricket1, { |out=0, amp = 1.0|
+SynthDef(\cricket1, { |out=0, pan = 0, amp = 1.0, mod = 1.0|
 	var modulator, mod1, mod2, mod3, sig;
 
 	// repeat time is 0.7s: equates to 1.43 Hz.
@@ -10,11 +10,11 @@ SynthDef(\cricket1, { |out=0, amp = 1.0|
 	mod3 = (mod3 * 2pi).cos + ((mod3 * 2 * 2pi).cos * 0.3);
 	mod1 = ((Wrap.ar(modulator.min(0.1714) * 5.84) - 0.5).squared * (-4) + 1) * (mod2 * mod3);
 	sig = mod1 * 0.1;
-	sig = LinPan2.ar(sig, FSinOsc.kr(1/5)) * amp * SinOsc.ar(1/5, 0);
+	sig = LinPan2.ar(sig, pan) * amp * mod;
 	Out.ar(out, sig);
 }).add;
 
-SynthDef(\cricket2, { |out=0, amp=1.0, trigFreq=58.82, trigPhase=0|
+SynthDef(\cricket2, { |out=0, pan = 0, amp=1.0, mod = 1.0, trigFreq=58.82, trigPhase=0|
 	var trig, seq, demand, cricket, sig;
 
 	// instead of [metro], Impulse.kr is used here. Delta t = 17 ms equates to 58.82 Hz.
@@ -41,11 +41,11 @@ SynthDef(\cricket2, { |out=0, amp=1.0, trigFreq=58.82, trigPhase=0|
 	);
 	cricket = (cricket - OnePole.ar(cricket, exp(-2pi * (4000 * SampleDur.ir))));
 	sig = cricket * 0.5;
-	sig = LinPan2.ar(sig, FSinOsc.kr(1/7)) * amp * SinOsc.ar(1/7, 2pi*1/3);
+	sig = LinPan2.ar(sig, pan) * amp * mod;
 	Out.ar(out, sig);
 }).add;
 
-SynthDef(\cricket3, { |out=0, amp=1.0, trigFreq=0.2, trigPhase=0|
+SynthDef(\cricket3, { |out=0, pan = 0, amp=1.0, mod = 1.0, trigFreq=0.2, trigPhase=0|
 	var sig, trig, seq, freq, mul, vals;
 
 	trig = Impulse.kr(trigFreq, trigPhase);
@@ -74,7 +74,7 @@ SynthDef(\cricket3, { |out=0, amp=1.0, trigFreq=0.2, trigPhase=0|
 	//sig = sig*4;
 	//sig = LinPan2.ar(sig, FSinOsc.kr(1/11)) * amp * SinOsc.kr(1/11, 2pi*2/3);
 	sig = BPeakEQ.ar(sig*4, SinOsc.kr(1/22, 0, 2000, 2000), SinOsc.kr(1/22, 0, 2.0, 2.0), SinOsc.kr(1/22, 0, 24));
-	sig = LinPan2.ar(sig, FSinOsc.kr(1/22)) * amp * SinOsc.kr(1/22, 2pi*2/3);
+	sig = LinPan2.ar(sig, pan) * amp * mod;
 	Out.ar(out, sig);
 }).add;
 
