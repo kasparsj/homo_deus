@@ -32,8 +32,7 @@ s.waitForBoot {
 							Pseries({ rrand(0, 7) }, { ([1,2]).choose }, 7),
 							Pseries({ rrand(7, 14) }, { ([1,2]).choose }, 7)
 						].choose,
-						//\scale, Scale.at(Scale.names.choose),
-						\scale, Scale.minor,
+						\scale, Pstutter(7, Scale.choose),
 						\dur, ((1..8)/4).choose,
 						\amp, (((1..8)/8)+1).choose,
 					);
@@ -43,11 +42,6 @@ s.waitForBoot {
 		\delta, Pwhite(45, 90),
 		\method, \par,
 	)).play;
-
-	~c1 = Synth(\cricket1, [\amp, ~hdP.cricketsBus.asMap]);
-	~c2 = Synth(\cricket2, [\amp, ~hdP.cricketsBus.asMap]);
-	~c31 = Synth(\cricket3, [\amp, ~hdP.cricketsBus.asMap, \trigFreq, 2]);
-	~c32 = Synth(\cricket3, [\amp, ~hdP.cricketsBus.asMap, \trigFreq, 0.5]);
 
 	Ndef(\x).clear;
 	Ndef(\x).fadeTime = 10;

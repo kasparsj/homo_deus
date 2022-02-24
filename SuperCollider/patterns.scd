@@ -1,4 +1,5 @@
-~hdP = ();
+(
+~hdP = ~hdP ? ();
 
 ~hdP.drone = {|self ... args|
 	var pArgs = [
@@ -30,13 +31,16 @@
 		\instrument, \harpsi,
 		\ffreq, ((1..2) ++ (3..1)).choose,
 		\release, [5,6,7,8].choose,
+	].addAll(args).addAll([
 		\color, Pfunc{ |event|
-			var col = switch (event[\root],
-				-24, { [127,255,0] },
-				-12, { [255,255,0] },
-				12, { [255,255,255] },
-			);
-			//event[\degree].value.postln;
+			var col = [127,255,0];
+			if (event[\root].isNil) {
+				if (event[\freq] > 250) { col = [255,255,0]; }; // ~C4
+				if (event[\freq] > 500) { col = [255,255,255]; }; // ~C5
+			} {
+				if (event[\root] == -12) { [255,255,0] };
+				if (event[\root] == 12) { [255,255,255] };
+			};
 			col;
 		},
 		\brightness, Pfunc{ |event|
@@ -51,10 +55,24 @@
 		\emit, Pfunc{|event|
 			if (event[\model] == 2, {0}, {2});
 		},
-	].addAll(args);
+	]);
 	Pbind(*pArgs);
 };
 
+~hdP.c1 = Pmono(\cricket1,
+	\amp, ~hdP.cricketsBus.asMap
+);
+~hdP.c2 = Pmono(\cricket2,
+	\amp, ~hdP.cricketsBus.asMap
+);
+~hdP.c31 = Pmono(\cricket3,
+	\amp, ~hdP.cricketsBus.asMap,
+	\trigFreq, 2
+);
+~hdP.c32 = Pmono(\cricket3,
+	\amp, ~hdP.cricketsBus.asMap,
+	\trigFreq, 0.5
+);
 ~hdP.cricketsBus = Bus.control(s, 1);
 ~hdP.cricketsBus.set(1.0);
 ~hdP.restartWind = false;
@@ -82,11 +100,17 @@
 	].addAll(args).addAll([
 		\dur, Pfunc{ |event|
 			if (event[\type] == \hd, {
-				if (self.restartWind, {
+				if (self.restartWind or: { Ndef(\x).isPlaying.not }) {
 					self.restartWind = false;
 					Ndef(\x).set(\change, rrand(0.001, 0.01), \rq, rrand(0.1, 1.5));
 					Ndef(\x).play(fadeTime: 10);
-				});
+				};
+				if (self.c1.isPlaying.not) {
+					self.c1.play;
+					self.c2.play;
+					self.c31.play;
+					self.c32.play;
+				};
 				self.cricketsBus.set(1.0);
 				1 + 4.rand;
 			}, {
@@ -98,5 +122,6 @@
 			});
 		},
 	]);
-	Pbind(*pArgs);
+	Pdef(\hd_crickets, Pbind(*pArgs));
 };
+)
