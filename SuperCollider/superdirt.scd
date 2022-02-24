@@ -1,5 +1,30 @@
 (
 var hdP = ~hdP;
+~dirt.addModule(\hd, { |dirtEvent|
+	(
+		type: \hd,
+		sustain: ~sustain,
+		model: ~hdmodel,
+		speed: ~hdspeed,
+		ease: ~hdease,
+		fade: ~hdfade,
+		thresh: ~hdthresh,
+		fadeEase: ~hdfadease,
+		length: ~hdlength,
+		trail: ~hdtrail,
+		order: ~hdorder,
+		head: ~hdhead,
+		linked: ~hdlinked,
+		from: ~hdfrom,
+		minBri: ~hdminbri,
+		brightness: ~hdbrightness,
+		behaviour: ~hdbehaviour,
+		emit: ~hdemit,
+		offset: ~hdoffset,
+		colorChange: ~hdcolorchange,
+		color: ~hdcolor,
+	).play;
+}, {~hdmodel.notNil or: { ~hdlength.notNil }});
 ~dirt.soundLibrary.addSynth(\hd_drone, (play: {
 	~freq = (~freq ? 51);
 	hdP.drone(
