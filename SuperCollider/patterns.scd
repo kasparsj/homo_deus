@@ -61,7 +61,7 @@
 
 ~hdP.cricketsBus = Bus.control(s, 1);
 ~hdP.cricketsBus.set(1.0);
-~hdP.p1 = nil;
+~hdP.c1p = ~hdP.c2p = ~hdP.c31p = ~hdP.c32p = nil;
 ~hdP.c1 = Pmono(\cricket1,
 	\amp, ~hdP.cricketsBus.asMap,
 	\pan, PSinOsc(1/5),
@@ -85,8 +85,9 @@
 	\mod, PSinOsc(1/22, 2pi*2/3),
 );
 
-~hdP.crickets = { |self ... args|
+~hdP.startCrickets = { |self ... args|
 	var pArgs = [
+		\type, \hd,
 		\amp, 0,
 		\model, Pfunc{ [0, 2, 3].wchoose([0.75, 0.1, 0.15]) },
 		\speed, Pfunc{ 0.5.exprand(10.0) },
@@ -108,21 +109,47 @@
 	].addAll(args).addAll([
 		\crickets, Pfunc{ |event|
 			if (event[\type] == \hd) {
-				if (self.p1.isNil or: { self.p1.isPlaying.not }) {
-					self.p1 = self.c1.play;
-					self.c2.play;
-					self.c31.play;
-					self.c32.play;
-				};
-				self.cricketsBus.set(1.0);
+				self.unmuteCrickets;
 			} {
-				self.cricketsBus.set(0);
+				self.muteCrickets;
 			};
 			true;
 		},
 
 	]);
-	Pdef(\hd_crickets, Pbind(*pArgs));
+	self.cricketsP = Pdef(\hd_crickets, Pbind(*pArgs)).play;
+};
+~hdP.muteCrickets = { |self|
+	self.cricketsBus.set(0);
+};
+~hdP.unmuteCrickets = { |self|
+	if (self.c1p.isNil or: { self.c1p.isPlaying.not }) {
+		self.c1p = self.c1.play;
+		self.c2p = self.c2.play;
+		self.c31p = self.c31.play;
+		self.c32p = self.c32.play;
+	};
+	self.cricketsBus.set(1.0);
+};
+~hdP.stopCrickets = { |self, fadeTime = 0|
+	if (fadeTime > 0 and: { self.cricketsP.respondsTo(\xstop) }) {
+		self.cricketsP.xstop(fadeTime);
+		self.p1.xstop(fadeTime);
+		self.p2.xstop(fadeTime);
+		self.p31.xstop(fadeTime);
+		self.p32.xstop(fadeTime);
+		AppClock.sched(fadeTime, {
+			self.muteCrickets;
+			nil;
+		});
+	} {
+		self.cricketsP.stop;
+		self.p1.stop;
+		self.p2.stop;
+		self.p31.stop;
+		self.p32.stop;
+		self.muteCrickets;
+	};
 };
 
 Ndef(\wind).clear;
@@ -154,9 +181,47 @@ Ndef(\wind, { |change=0.01, rq=0.8|
 		"wind started".postln;
 	};
 };
-~hdP.stopWind = { |self, secs = 0|
-	self.wind.stop(secs, true);
-	self.restartWind = true;
-	"wind stopped".postln;
+~hdP.stopWind = { |self, fadeTime = 0|
+	self.wind.stop(fadeTime, true);
+	AppClock.sched(fadeTime, {
+		self.restartWind = true;
+		nil;
+	});
+	"wind stopping in %".format(fadeTime).postln;
+};
+
+~hdP.spawn = nil;
+~hdP.startSpawn = { |self|
+	self.spawn = Pspawn(Pbind(
+		\pattern, Pfunc {
+			var which = 2.rand;
+			switch (which,
+				0, {
+					~hdP.drone(
+						\instrument, [\SineDrone, \SineDrone, \PulseDrone].choose,
+						\freq, (51..53).scramble,
+						\pan, [-1, 1].scramble,
+						\amp, 0.1,
+						\dur, Pwhite(15, 30, 1),
+					);
+				},
+				1, {
+					~hdP.harpsi(
+						\root, ([-2, -1, 1] * 12).choose,
+						\degree, [
+							Pseries({ rrand(0, 7) }, { ([1,2]).choose }, 7),
+							Pseries({ rrand(0, 7) }, { ([1,2]).choose }, 7),
+							Pseries({ rrand(7, 14) }, { ([1,2]).choose }, 7)
+						].choose,
+						\scale, Pstutter(7, Scale.choose),
+						\dur, ((1..8)/4).choose,
+						\amp, (((1..8)/8)+1).choose,
+					);
+				},
+			);
+		},
+		\delta, Pwhite(45, 90),
+		\method, \par,
+	)).play;
 };
 )

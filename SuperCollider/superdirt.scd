@@ -45,19 +45,23 @@ var hdP = ~hdP;
 	).play;
 }));
 ~dirt.soundLibrary.addSynth(\hd_crickets, (play: {
-	hdP.crickets(
-		\type, if (~gain > 0, { \hd }, { \pause }),
-		//\freq, ~freq,
-		//\pan, ~pan,
-		// \dur, Pseq([~sustain], 1),
-		\dur, Pwhite(1, 4, inf),
-	).play;
+	if (~gain > 0) {
+		hdP.startCrickets(
+			//\freq, ~freq,
+			//\pan, ~pan,
+			// \dur, Pseq([~sustain], 1),
+			\dur, Pwhite(1, 4, inf),
+		);
+	} {
+		hdP.stopCrickets(~fadeTime);
+	};
 }));
 ~dirt.soundLibrary.addSynth(\hd_wind, (play: {
 	if (~gain > 0) {
-		hdP.startWind();
+		hdP.startWind(~windchange, ~windrq);
 	} {
-		hdP.stopWind();
+		// todo: fadeTime is invalid
+		hdP.stopWind(~fadeTime);
 	}
 }));
 )
