@@ -49,7 +49,15 @@ var hdP = ~hdP;
 		\type, if (~gain > 0, { \hd }, { \pause }),
 		//\freq, ~freq,
 		//\pan, ~pan,
-		//\dur, Pseq([~sustain], 1),
+		// \dur, Pseq([~sustain], 1),
+		\dur, Pwhite(1, 4, inf),
 	).play;
+}));
+~dirt.soundLibrary.addSynth(\hd_wind, (play: {
+	if (~gain > 0) {
+		hdP.startWind();
+	} {
+		hdP.stopWind();
+	}
 }));
 )
