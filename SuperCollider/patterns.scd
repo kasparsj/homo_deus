@@ -162,7 +162,7 @@
 
 Ndef(\wind).clear;
 Ndef(\wind).fadeTime = 10;
-Ndef(\wind, { |change=0.01, rq=0.8|
+Ndef(\wind, { |change=0.01, rq=0.8, amp = 0.1|
 	var freq1=36, freq2=75, freq3=157, freq4=329, freq5=688, freq6=1440, freq7 = 3013,
 	freq8 = 6303, freq9=13184, freq10=18000;
 	var sig = [PinkNoise.ar(1), PinkNoise.ar(1)];
@@ -177,19 +177,25 @@ Ndef(\wind, { |change=0.01, rq=0.8|
 	sig = BPeakEQ.ar(sig, freq9, rq, SinOsc.kr(change, 2pi.rand, 48));
 	sig = BPeakEQ.ar(sig, freq10, rq, SinOsc.kr(change, 2pi.rand, 48));
 	sig = Limiter.ar(sig * 0.1, 1, 0.01);
-	sig = sig * 0.1;
+	sig = sig * amp;
 });
 ~hdP.wind = Ndef(\wind);
 ~hdP.restartWind = true;
-~hdP.startWind = { |self, change, rq|
+~hdP.startWind = { |self, change, rq, gain|
+	change = change ? change ? rrand(0.001, 0.01);
+	rq = rq ? rq ? rrand(0.1, 1.5);
+	gain = gain ? 1.0;
+	self.wind.xset(\change, change, \rq, rq, \amp, gain * 0.1);
 	if (self.restartWind or: { self.wind.isPlaying.not }) {
 		self.restartWind = false;
-		self.wind.set(\change, change ? rrand(0.001, 0.01), \rq, rq ? rrand(0.1, 1.5));
 		self.wind.play(fadeTime: 10);
-		"wind started".postln;
+		"wind started % % %".format(change, rq, gain).postln;
+	} {
+		"wind changed % % %".format(change, rq, gain).postln;
 	};
 };
-~hdP.stopWind = { |self, fadeTime = 0|
+~hdP.stopWind = { |self, fadeTime|
+	fadeTime = fadeTime ? 0;
 	self.wind.stop(fadeTime, true);
 	AppClock.sched(fadeTime, {
 		self.restartWind = true;

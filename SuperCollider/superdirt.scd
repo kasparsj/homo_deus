@@ -3,7 +3,7 @@ var hdP = ~hdP;
 ~dirt.addModule(\hd, { |dirtEvent|
 	(
 		type: \hd,
-		sustain: ~sustain,
+		sustain: ~hdsustain ? ~sustain,
 		model: ~hdmodel,
 		speed: ~hdspeed,
 		ease: ~hdease,
@@ -58,7 +58,7 @@ var hdP = ~hdP;
 }));
 ~dirt.soundLibrary.addSynth(\hd_wind, (play: {
 	if (~gain > 0) {
-		hdP.startWind(~windchange, ~windrq);
+		hdP.startWind(~windchange, ~windrq, ~gain);
 	} {
 		hdP.stopWind(~fade);
 	}
