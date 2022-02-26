@@ -131,25 +131,25 @@
 	};
 	self.cricketsBus.set(1.0);
 };
-~hdP.stopCrickets = { |self, fadeTime = 0|
-	if (fadeTime > 0 and: { self.cricketsP.respondsTo(\xstop) }) {
-		self.cricketsP.xstop(fadeTime);
-		self.p1.xstop(fadeTime);
-		self.p2.xstop(fadeTime);
-		self.p31.xstop(fadeTime);
-		self.p32.xstop(fadeTime);
+~hdP.stopCrickets = { |self, fadeTime|
+	fadeTime = fadeTime ? 0;
+	if (fadeTime > 0 and: { self.c1p.respondsTo(\xstop) }) {
+		self.c1p.xstop(fadeTime);
+		self.c2p.xstop(fadeTime);
+		self.c31p.xstop(fadeTime);
+		self.c32p.xstop(fadeTime);
 		AppClock.sched(fadeTime, {
 			self.muteCrickets;
 			nil;
 		});
 	} {
-		self.cricketsP.stop;
-		self.p1.stop;
-		self.p2.stop;
-		self.p31.stop;
-		self.p32.stop;
+		self.c1p.stop;
+		self.c2p.stop;
+		self.c31p.stop;
+		self.c32p.stop;
 		self.muteCrickets;
 	};
+	self.cricketsP.stop;
 };
 
 Ndef(\wind).clear;

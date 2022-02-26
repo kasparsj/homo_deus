@@ -53,15 +53,14 @@ var hdP = ~hdP;
 			\dur, Pwhite(1, 4, inf),
 		);
 	} {
-		hdP.stopCrickets(~fadeTime);
+		hdP.stopCrickets(~fade);
 	};
 }));
 ~dirt.soundLibrary.addSynth(\hd_wind, (play: {
 	if (~gain > 0) {
 		hdP.startWind(~windchange, ~windrq);
 	} {
-		// todo: fadeTime is invalid
-		hdP.stopWind(~fadeTime);
+		hdP.stopWind(~fade);
 	}
 }));
 )
