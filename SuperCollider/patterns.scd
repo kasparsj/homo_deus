@@ -132,24 +132,32 @@
 	self.cricketsBus.set(1.0);
 };
 ~hdP.stopCrickets = { |self, fadeTime|
-	fadeTime = fadeTime ? 0;
-	if (fadeTime > 0 and: { self.c1p.respondsTo(\xstop) }) {
-		self.c1p.xstop(fadeTime);
-		self.c2p.xstop(fadeTime);
-		self.c31p.xstop(fadeTime);
-		self.c32p.xstop(fadeTime);
-		AppClock.sched(fadeTime, {
-			self.muteCrickets;
-			nil;
-		});
-	} {
+	var stopAndMute = {
 		self.c1p.stop;
 		self.c2p.stop;
 		self.c31p.stop;
 		self.c32p.stop;
 		self.muteCrickets;
 	};
+	var currentValue = self.cricketsBus.getSynchronous;
+	var numSteps = 10;
+	var deltaValue = currentValue / 10;
+	fadeTime = fadeTime ? 0;
 	self.cricketsP.stop;
+	if (fadeTime > 0) {
+		AppClock.sched(fadeTime / numSteps, {
+			if (currentValue > 0) {
+				currentValue = currentValue - deltaValue;
+				self.cricketsBus.set(currentValue);
+				fadeTime / numSteps;
+			} {
+				stopAndMute.value;
+				nil;
+			}
+		});
+	} {
+		stopAndMute.value;
+	};
 };
 
 Ndef(\wind).clear;
