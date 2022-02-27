@@ -280,6 +280,7 @@ void doCommand(char command) {
       doEmit(params);
       break;
     }
+    // todo: LIST_ORDER_RANDOM is broken
     case '*': {
       EmitParams params(EmitParams::DEFAULT_MODEL, 0);
       params.fadeSpeed = 1;
