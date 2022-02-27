@@ -261,11 +261,11 @@ void doCommand(char command) {
     case '6':
     case '7': {
       int model = command - '1';
-      if (model <= HeptagonStarModel::LAST) {
+      if (model <= HeptagonStarModel::M_LAST) {
         EmitParams params(model, LPRandom::randomSpeed());
         doEmit(params); 
       }
-      else {
+      else { // 8 and up
         EmitParams params(M_STAR);
         params.colorChangeGroups |= GROUP1;
         doEmit(params);
@@ -336,7 +336,7 @@ void parseParams(EmitParams &p, const OscMessage &m) {
     switch (param) {
       case P_MODEL: {
         int8_t model = m.arg<int8_t>(j);
-        if (model >= HeptagonStarModel::FIRST && model <= HeptagonStarModel::LAST) {
+        if (model >= HeptagonStarModel::M_FIRST && model <= HeptagonStarModel::M_LAST) {
           p.model = model;
         }
         break;
@@ -361,7 +361,7 @@ void parseParams(EmitParams &p, const OscMessage &m) {
         break;
       case P_ORDER: {
         uint8_t order = m.arg<uint8_t>(j);
-        if (order >= ListOrder::FIRST && order <= ListOrder::LAST) {
+        if (order >= ListOrder::LO_FIRST && order <= ListOrder::LO_LAST) {
           p.order = static_cast<ListOrder>(order);
         }
         break;
