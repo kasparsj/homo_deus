@@ -401,7 +401,7 @@ void parseParams(EmitParams &p, const OscMessage &m) {
         p.maxBri = m.arg<uint8_t>(j);
         break;
       case P_BEHAVIOUR:
-        p.behaviourFlags = m.arg<uint8_t>(j);
+        p.behaviourFlags = m.arg<uint16_t>(j);
         break;
       case P_EMIT_GROUPS:
         p.emitGroups = m.arg<uint8_t>(j);
