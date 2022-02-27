@@ -38,17 +38,6 @@
 		\ffreq, ((1..2) ++ (3..1)).choose,
 		\release, [5,6,7,8].choose,
 	].addAll(args).addAll([
-		\color, Pfunc{ |event|
-			var col = [127,255,0];
-			if (event[\root].isNil) {
-				if (event[\freq] > 250) { col = [255,255,0]; }; // ~C4
-				if (event[\freq] > 500) { col = [255,255,255]; }; // ~C5
-			} {
-				if (event[\root] == -12) { [255,255,0] };
-				if (event[\root] == 12) { [255,255,255] };
-			};
-			col;
-		},
 		\brightness, Pfunc{ |event|
 			event[\amp] * 127.0;
 		},
@@ -225,6 +214,17 @@ Ndef(\wind, { |change=0.01, rq=0.8, amp = 0.1|
 						\scale, Pstutter(7, Scale.choose),
 						\dur, ((1..8)/4).choose,
 						\amp, (((1..8)/8)+1).choose,
+						\color, Pfunc{ |event|
+							var col = [127,255,0];
+							if (event[\root].isNil) {
+								if (event[\freq] > 250) { col = [255,255,0]; }; // ~C4
+								if (event[\freq] > 500) { col = [255,255,255]; }; // ~C5
+							} {
+								if (event[\root] == -12) { [255,255,0] };
+								if (event[\root] == 12) { [255,255,255] };
+							};
+							col;
+						},
 					);
 				},
 			);

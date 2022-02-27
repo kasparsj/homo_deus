@@ -40,9 +40,10 @@ var hdP = ~hdP;
 ~dirt.soundLibrary.addSynth(\hd_harpsi, (play: {
 	hdP.harpsi(
 		\freq, ~freq,
-		\pan, ~pan ? 0,
+		\pan, ~pan,
 		\dur, Pseq([~sustain], 1),
 		\amp, ~amp * ~gain,
+		\color, ~hdcolor ? -1,
 	).play;
 }));
 ~dirt.soundLibrary.addSynth(\hd_crickets, (play: {
@@ -53,8 +54,7 @@ var hdP = ~hdP;
 			// \dur, Pseq([~sustain], 1),
 			\dur, Pwhite(1, 4, inf),
 			\color, ~hdcolor,
-			//\behaviour, ~hdbehaviour ? 0,
-			\behaviour, Prand([[\FILL_EASE], [\FILL_EASE, \RANDOM_COLOR]], inf),
+			\behaviour, Prand([[\FILL_EASE], [\FILL_EASE, ~hdbehaviour ? 0]], inf),
 			\brightness, ~hdbrightness ? hd[\fullBrightness],
 		);
 	} {

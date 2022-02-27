@@ -1,12 +1,12 @@
 setcps(127/60)
 
+once $ s "hd_wind" # gain (rsawf 0 1 0.01) # windchange 0.001 # windrq 0.1 -- background
+
 once
   $ s "hd_crickets"
   # gain 1
   # hdcolor green
   -- # hdcolor (choose[ukr_yellow, ukr_blue])
-
-once $ s "hd_wind" # gain (rsawf 0 1 0.01) # windchange 0.001 # windrq 0.1 -- background
 
 once $ s "hd_wind" # gain 1 # windchange 0.1 # windrq 0.1 -- fast gusts
 
@@ -20,57 +20,71 @@ d1 $ slow 16 $ s "hd_drone" # freq 51 # gain 0.05
 
 d1 silence
 
+once
+  $ slow (8+(irand 8))
+  $ freq "[51|102]"
+  # s "hd_drone"
+  # gain 0.07
+
 once $ s "hd_wind" # gain 0 # fade 10
 
-xfadeIn 1 4 $ stack [
-  drumFrom "doepferms404" "bd"
+d2 $ stack [
+  $ hdfrom "0 1 2 3 4 5 6 7 8 9 10 11 12 13"
+  # drumFrom "doepferms404" "bd"
   # note "-12"
   # room 0.5
-  # size 0.5
-  # gain 1.0
+  -- # size 0.5
   # hdmodel 0
   # hdsustain 0.1
   # hdspeed 0
   # hdlength 10
   # hdcolor white
   # hdbehaviour b_render_segment
-  # hdfrom "0 1 2 3 4 5 6 7 8 9 10 11 12 13"
   , slow 8
-  $ stut 2 0.9 (1/16)
+  -- $ stut 2 0.9 (1/16)
   $ drumFrom "rolandtr808" "cp"
-  # note 12
-  # speed 0.5
-  # gain 0.9
-  , drumFrom "viscospacedrum" "hh*4"
-  -- # gain "0.3 0.5 0.9 0.3"
-  # gain 0.5
-  , drumFrom "viscospacedrum" "[~ oh]"
-  # gain 0.6
-]
+  # hdmodel m_splatter
+  # hdlinked 0
+  # hdsustain 0.1
+  # hdspeed 4
+  # hdlength (2+irand 20)
+  # hdcolor ukr_blue
+  -- # note 12
+  -- # speed 0.5
+  -- # gain 0.9
 
-d2 $ stack [
-  drumFrom "doepferms404" "bd"
-  # note "-12"
-  # room 0.5
-  # size 0.5
-  # gain 1.0
+  -- replace clap
+  -- , drumFrom "rolandtr808" "sh*4"
+  -- # gain "0.3 0.5 0.9 0.3"
+
   , drumFrom "viscospacedrum" "hh*4"
   -- # gain "0.3 0.5 0.9 0.3"
   # gain 0.5
-  , drumFrom "rolandtr808" "sh*4"
-  # gain "0.3 0.5 0.9 0.3"
-  -- # gain 0.5
-  , slow 4
-  $ drumFrom "viscospacedrum" "[[~ sd ~ ~] [~*4] [~*4] [~*3 sd]]" # n 1
-  # room 0.02
-  # size 0.7
-  # delay 0.7
-  # hpf 100
-  # gain 0.9
+  # hdlength 1
+  # hdspeed 0
+  # hdcolor ukr_yellow
+  # hdmodel 3
+  -- , drumFrom "viscospacedrum" "[~ oh]"
+  -- # gain 0.6
+
+  -- add snare
+  -- , slow 4
+  -- $ drumFrom "viscospacedrum" "[[~ sd ~ ~] [~*4] [~*4] [~*3 sd]]" # n 1
+  -- # room 0.02
+  -- # size 0.7
+  -- # delay 0.7
+  -- # hpf 100
+  -- # gain 0.9
   -- # shape 0.7
 ]
 
--- d2 $ slow 4 $ s "hd_harpsi" # note 0 # octave "<5 6>" # gain (3.0+rand*2)
+d2
+  $ slow 4
+  $ s "hd_harpsi"
+  # note 0
+  # octave "<5 6>"
+  # gain (3.0+rand*2)
+  # hdcolor white
 
 d1
   $ slow 14

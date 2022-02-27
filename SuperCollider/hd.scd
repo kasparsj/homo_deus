@@ -197,7 +197,12 @@ s.sync;
 	if (color.isArray) {
 		color = ((color[0] & 0x0ff) << 16) | ((color[1] & 0x0ff) << 8) | (color[2] & 0x0ff);
 	};
-	color ? 0;
+	color = color ? -1;
+	if (color < 0) {
+		nil
+	} {
+		color;
+	};
 };
 
 ~hd.getCommand = { |self, cmd|
