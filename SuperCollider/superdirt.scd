@@ -28,11 +28,11 @@ var hdP = ~hdP;
 ~dirt.soundLibrary.addSynth(\hd_drone, (play: {
 	~freq = (~freq ? 51);
 	hdP.drone(
-		\instrument, ~instrument ? [\SineDrone, \SineDrone, \PulseDrone].choose,
+		\instrument, ~instrument ? [\SineDrone, \SawDrone, \PulseDrone].choose,
 		\freq, (~freq..(~freq+2)).scramble,
 		\pan, ~pan ? [-1, 1].scramble,
 		\dur, Pseq([~sustain], 1),
-		\sustain, ~sustain,
+		\sustain, ~hdsustain ? ~sustain,
 		\amp, ~amp * ~gain,
 	).play;
 }));

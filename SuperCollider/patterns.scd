@@ -9,17 +9,23 @@
 		//\from, -1,
 		\length, 100,
 		\amp, 0.05,
-		\color, Pfunc{
-			var i = [0, 2].choose;
-			var col = [0, 0, 0];
-			col[i] = 255;
-			col;
-		},
 		\modFreq, rrand(0.09, 0.5),
 		\speed, Pfunc{ |event|
 			event[\modFreq] * 10;
 		},
-	].addAll(args);
+	].addAll(args).addAll([
+		\color, Pfunc{ |event|
+			// var i = [0, 2].choose;
+			// var col = [0, 0, 0];
+			// col[i] = 255;
+			// col;
+			switch (event[\instrument],
+				\SineDrone,   { [0, 0, 255] },
+				\PulseDrone, { [255, 0, 0] },
+				\SawDrone, { [255, 255, 255] },
+			);
+		},
+	]);
 	Pbind(*pArgs);
 };
 
@@ -65,24 +71,24 @@
 ~hdP.c1 = Pmono(\cricket1,
 	\amp, ~hdP.cricketsBus.asMap,
 	\pan, PSinOsc(1/5),
-	\mod, PSinOsc(1/5, 0),
+	\mod, PSinOsc(1/5, 0, mul: 0.75),
 );
 ~hdP.c2 = Pmono(\cricket2,
 	\amp, ~hdP.cricketsBus.asMap,
 	\pan, PSinOsc(1/7),
-	\mod, PSinOsc(1/7, 2pi*1/3),
+	\mod, PSinOsc(1/7, 2pi*1/3, mul: 0.75),
 );
 ~hdP.c31 = Pmono(\cricket3,
 	\amp, ~hdP.cricketsBus.asMap,
 	\trigFreq, 2,
 	\pan, PSinOsc(1/22),
-	\mod, PSinOsc(1/22, 2pi*2/3),
+	\mod, PSinOsc(1/22, 2pi*2/3, mul: 0.75),
 );
 ~hdP.c32 = Pmono(\cricket3,
 	\amp, ~hdP.cricketsBus.asMap,
 	\trigFreq, 0.5,
 	\pan, PSinOsc(1/22),
-	\mod, PSinOsc(1/22, 2pi*2/3),
+	\mod, PSinOsc(1/22, 2pi*2/3, mul: 0.75),
 );
 
 ~hdP.startCrickets = { |self ... args|
