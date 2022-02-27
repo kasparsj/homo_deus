@@ -23,6 +23,13 @@ s.waitForBoot {
 			},
 			\brightness, Pwhite(127, 255, inf),
 			\color, Pfunc{ [256.rand, 256.rand, 256.rand] },
+			\behaviour, Pfunc{
+				var be = [\FILL_EASE];
+				if (5.rand == 1, {
+					be = be.add(\RANDOM_COLOR);
+				});
+				be;
+			},
 			\dur, Pfunc{ |event|
 				if (event[\type] == \hd) {
 					// cricket animation length
