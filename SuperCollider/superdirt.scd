@@ -54,6 +54,7 @@ var hdP = ~hdP;
 			\dur, Pwhite(1, 4, inf),
 			\color, ~hdcolor,
 			//\behaviour, ~hdbehaviour ? 0,
+			\behaviour, Prand([[\FILL_EASE], [\FILL_EASE, \RANDOM_COLOR]], inf),
 			\brightness, ~hdbrightness ? hd[\fullBrightness],
 		);
 	} {

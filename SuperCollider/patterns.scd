@@ -98,13 +98,6 @@
 		\model, Pfunc{ [0, 2, 3].wchoose([0.75, 0.1, 0.15]) },
 		\speed, Pfunc{ 0.5.exprand(10.0) },
 		\ease, \EXPONENTIAL_INOUT,
-		\behaviour, Pfunc{
-			var be = [\FILL_EASE];
-			if (5.rand == 1, {
-				be = be.add(\RANDOM_COLOR);
-			});
-			be;
-		},
 	].addAll(args).addAll([
 		\crickets, Pfunc{ |event|
 			if (event[\type] == \hd) {
