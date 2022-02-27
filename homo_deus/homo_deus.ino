@@ -1,3 +1,4 @@
+// /private/var/folders/sw/36pn0vxj55l7r1xl1bk5c16m0000gp/T/arduino-sketch-8EA0552AA4E8E7F16E2C2E3D022AFCD8/homo_deus.ino.elf
 #define PIXEL_PIN1 14
 #define PIXEL_PIN2 26
 #define BUTTON_PIN 25
