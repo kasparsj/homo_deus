@@ -120,7 +120,7 @@ s.sync;
 			self[\PARAM][\FADE], ~fade.value ? 0.0,
 			self[\PARAM][\THRESH], ~thresh.value ? 0.0,
 			self[\PARAM][\FADE_EASE], if (~fadeEase.value.isNil, { 0 }, { self.getEase(~fadeEase.value) }),
-			self[\PARAM][\LENGTH], ~length.value,
+			self[\PARAM][\LENGTH], if (~length.value.isNil, { nil }, { ~length.value.asInteger }),
 			self[\PARAM][\TRAIL], ~trail.value ? 0,
 			self[\PARAM][\ORDER], ~order.value ? 0,
 			self[\PARAM][\HEAD], ~head.value ? 0,

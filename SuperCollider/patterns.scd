@@ -53,7 +53,7 @@
 			event[\amp] * 127.0;
 		},
 		\length, Pfunc{ |event|
-			(event[\release] + event[\dur]) * 2;
+			((event[\release] + event[\dur]) * 2).asInteger;
 		},
 		\speed, Pfunc{ |event|
 			(event[\release] + event[\dur]) / 5.0;
