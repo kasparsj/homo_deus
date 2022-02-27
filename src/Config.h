@@ -79,6 +79,8 @@ enum ListOrder {
     LIST_ORDER_RANDOM,
     LIST_ORDER_NOISE,
     LIST_ORDER_OFFSET,
+    LO_FIRST = LIST_ORDER_SEQUENTIAL,
+    LO_LAST = LIST_ORDER_OFFSET,
 };
 
 enum ListHead {

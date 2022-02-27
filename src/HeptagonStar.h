@@ -12,8 +12,8 @@ enum HeptagonStarModel {
     M_SMALL_STAR = 4,
     M_INNER_SUN = 5,
     M_SPLATTER = 6,
-    FIRST = M_DEFAULT,
-    LAST = M_SPLATTER,
+    M_FIRST = M_DEFAULT,
+    M_LAST = M_SPLATTER,
 };
 
 class HeptagonStar : public LPObject {

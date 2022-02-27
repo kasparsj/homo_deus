@@ -18,7 +18,7 @@
 #define PIXEL_COUNT2 395
 #define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2)
 #define OSC_PORT 54321
-#define MAX_BRIGHTNESS 255
+#define MAX_BRIGHTNESS 192
 
 #include "BluetoothSerial.h"
 #include "esp_bt.h"
@@ -261,11 +261,11 @@ void doCommand(char command) {
     case '6':
     case '7': {
       int model = command - '1';
-      if (model <= HeptagonStarModel::LAST) {
+      if (model <= HeptagonStarModel::M_LAST) {
         EmitParams params(model, LPRandom::randomSpeed());
         doEmit(params); 
       }
-      else {
+      else { // 8 and up
         EmitParams params(M_STAR);
         params.colorChangeGroups |= GROUP1;
         doEmit(params);
@@ -334,9 +334,13 @@ void parseParams(EmitParams &p, const OscMessage &m) {
     EmitParam param = static_cast<EmitParam>(m.arg<uint8_t>(i*2));
     uint8_t j = i*2+1;
     switch (param) {
-      case P_MODEL:
-        p.model = m.arg<int8_t>(j);
+      case P_MODEL: {
+        int8_t model = m.arg<int8_t>(j);
+        if (model >= HeptagonStarModel::M_FIRST && model <= HeptagonStarModel::M_LAST) {
+          p.model = model;
+        }
         break;
+      }
       case P_SPEED:
         p.speed = m.arg<float>(j);
         break;
@@ -355,9 +359,13 @@ void parseParams(EmitParams &p, const OscMessage &m) {
       case P_FADE_THRESH:
         p.fadeThresh = m.arg<uint8_t>(j);
         break;
-      case P_ORDER:
-        p.order = static_cast<ListOrder>(m.arg<uint8_t>(j));
+      case P_ORDER: {
+        uint8_t order = m.arg<uint8_t>(j);
+        if (order >= ListOrder::LO_FIRST && order <= ListOrder::LO_LAST) {
+          p.order = static_cast<ListOrder>(order);
+        }
         break;
+      }
       case P_LINKED:
         p.linked = m.arg<uint8_t>(j) > 0;
         break;

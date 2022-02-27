@@ -16,6 +16,13 @@ s.waitForBoot {
 		~hdP.startSpawn;
 		~hdP.startCrickets(
 			\type, Pfunc{ [\hd, \pause].wchoose([0.98, 0.02]); },
+			\colorChange, Pfunc{
+				if (3.rand == 1, {
+					0;
+				}, { {nil} });
+			},
+			\brightness, Pwhite(127, 255, inf),
+			\color, Pfunc{ [256.rand, 256.rand, 256.rand] },
 			\dur, Pfunc{ |event|
 				if (event[\type] == \hd) {
 					// cricket animation length

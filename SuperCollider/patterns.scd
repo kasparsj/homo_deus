@@ -105,13 +105,6 @@
 			});
 			be;
 		},
-		\colorChange, Pfunc{
-			if (3.rand == 1, {
-				0;
-			}, { {nil} });
-		},
-		\brightness, Pwhite(127, 255, inf),
-		\color, Pfunc{ [256.rand, 256.rand, 256.rand] },
 	].addAll(args).addAll([
 		\crickets, Pfunc{ |event|
 			if (event[\type] == \hd) {
@@ -123,6 +116,9 @@
 		},
 
 	]);
+	if (self.cricketsP != nil) {
+		self.cricketsP.stop;
+	};
 	self.cricketsP = Pdef(\hd_crickets, Pbind(*pArgs)).play;
 };
 ~hdP.muteCrickets = { |self|

@@ -30,10 +30,10 @@ class Behaviour {
         return flags & B_FORCE_BOUNCE;
     }
     bool expireImmediately() {
-        return flags && B_EXPIRE_IMMEDIATE;
+        return flags & B_EXPIRE_IMMEDIATE;
     }
     bool emitFromConnection() {
-        return flags && B_EMIT_FROM_CONN;
+        return flags & B_EMIT_FROM_CONN;
     }
     bool fillEase() {
         return flags & B_FILL_EASE;
