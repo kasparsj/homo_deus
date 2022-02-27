@@ -1,4 +1,5 @@
 (
+var hd = ~hd;
 var hdP = ~hdP;
 ~dirt.addModule(\hd, { |dirtEvent|
 	(
@@ -51,6 +52,9 @@ var hdP = ~hdP;
 			//\pan, ~pan,
 			// \dur, Pseq([~sustain], 1),
 			\dur, Pwhite(1, 4, inf),
+			\color, ~hdcolor,
+			//\behaviour, ~hdbehaviour ? 0,
+			\brightness, ~hdbrightness ? hd[\fullBrightness],
 		);
 	} {
 		hdP.stopCrickets(~fade);

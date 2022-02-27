@@ -18,7 +18,7 @@
 #define PIXEL_COUNT2 395
 #define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2)
 #define OSC_PORT 54321
-#define MAX_BRIGHTNESS 255
+#define MAX_BRIGHTNESS 192
 
 #include "BluetoothSerial.h"
 #include "esp_bt.h"
@@ -334,9 +334,13 @@ void parseParams(EmitParams &p, const OscMessage &m) {
     EmitParam param = static_cast<EmitParam>(m.arg<uint8_t>(i*2));
     uint8_t j = i*2+1;
     switch (param) {
-      case P_MODEL:
-        p.model = m.arg<int8_t>(j);
+      case P_MODEL: {
+        int8_t model = m.arg<int8_t>(j);
+        if (model >= HeptagonStarModel::FIRST && model <= HeptagonStarModel::LAST) {
+          p.model = model;
+        }
         break;
+      }
       case P_SPEED:
         p.speed = m.arg<float>(j);
         break;
