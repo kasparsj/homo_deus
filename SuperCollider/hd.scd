@@ -134,8 +134,9 @@ s.sync;
 			self[\PARAM][\COLOR_CHANGE_GROUPS], if (~colorChange.value.isNil, { 0 }, { self.getGroups(~colorChange.value) }),
 		];
 		var argsOff;
-		if (~color.value != nil) {
-			args = args.addAll([self[\PARAM][\COLOR], self.getColor(~color.value)]);
+		var color = self.getColor(~color.value);
+		if (color.notNil) {
+			args = args.addAll([self[\PARAM][\COLOR], color]);
 		};
 		if (self.useEmit) {
 			// emit (with duration)
