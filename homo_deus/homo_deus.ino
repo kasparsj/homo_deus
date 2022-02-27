@@ -359,9 +359,13 @@ void parseParams(EmitParams &p, const OscMessage &m) {
       case P_FADE_THRESH:
         p.fadeThresh = m.arg<uint8_t>(j);
         break;
-      case P_ORDER:
-        p.order = static_cast<ListOrder>(m.arg<uint8_t>(j));
+      case P_ORDER: {
+        uint8_t order = m.arg<uint8_t>(j);
+        if (order >= ListOrder::FIRST && order <= ListOrder::LAST) {
+          p.order = static_cast<ListOrder>(order);
+        }
         break;
+      }
       case P_LINKED:
         p.linked = m.arg<uint8_t>(j) > 0;
         break;

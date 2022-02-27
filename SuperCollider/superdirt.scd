@@ -25,7 +25,7 @@ var hdP = ~hdP;
 		colorChange: ~hdcolorchange,
 		color: ~hdcolor,
 	).play;
-}, {~hdmodel.notNil or: { ~hdlength.notNil }});
+}, {~hdmodel.notNil or: { ~hdlength.notNil } or: { ~hdspeed.notNil } or: { ~hdorder.notNil } or: { ~hdbehaviour.notNil }});
 ~dirt.soundLibrary.addSynth(\hd_drone, (play: {
 	~freq = (~freq ? 51);
 	hdP.drone(
