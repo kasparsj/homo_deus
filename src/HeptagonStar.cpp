@@ -7,9 +7,10 @@ void HeptagonStar::setup() {
     
     Model::maxWeights = 7 * 4 * 2;
 
+    // todo: set maxLength for all models
     addModel(new Model(M_DEFAULT, 10, GROUP1));
     addModel(new Model(M_STAR, 0, GROUP1));
-    addModel(new Model(M_OUTER_SUN, 10, GROUP1));
+    addModel(new Model(M_OUTER_SUN, 10, GROUP1, 602));
     addModel(new Model(M_INNER_TRIS, 0, GROUP2));
     addModel(new Model(M_SMALL_STAR, 0, GROUP2));
     addModel(new Model(M_INNER_SUN, 0, GROUP2));

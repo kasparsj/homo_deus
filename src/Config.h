@@ -126,7 +126,9 @@ enum Ease {
     EASE_ELASTIC_INOUT = 33,
 };
 
+#ifndef UINT32_MAX
 #define UINT32_MAX 4294967295
+#endif
 
 #define EMITTER_MIN_LENGTH 1
 #define EMITTER_MAX_LENGTH 100

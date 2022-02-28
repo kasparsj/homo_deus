@@ -5,6 +5,8 @@
 uint8_t Model::maxWeights = 1;
 
 uint16_t Model::getMaxLength() {
-    // todo: implement
+    if (maxLength > 0) {
+        return maxLength;
+    }
     return LPObject::instance->pixelCount;
 }

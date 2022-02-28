@@ -14,9 +14,11 @@ class Model {
     uint8_t id;
     uint8_t defaultW;
     uint8_t emitGroups;
+    uint16_t maxLength;
     HashMap<uint8_t, Weight*> *weights;
     
-    Model(uint8_t id, uint8_t defaultW, uint8_t emitGroups) : id(id), defaultW(defaultW), emitGroups(emitGroups) {
+    Model(uint8_t id, uint8_t defaultW, uint8_t emitGroups, uint16_t maxLength = 0)
+        : id(id), defaultW(defaultW), emitGroups(emitGroups), maxLength(maxLength) {
         weights = new HashMap<uint8_t, Weight*>(maxWeights);
         weights->setNullValue(NULL);
     }
