@@ -39,7 +39,7 @@ void LPLight::update() {
     brightness = getBrightness();
 }
 
-uint8_t LPLight::getBrightness() {
+uint8_t LPLight::getBrightness() const {
     uint16_t value = bri % 511;
     value = (value > 255 ? 511 - value : value);
     value = (float) (value - list->fadeThresh) / (255 - list->fadeThresh) * 511.f;
@@ -112,7 +112,7 @@ void LPLight::nextFrame() {
   position = list->getPosition(this);
 }
 
-bool LPLight::shouldExpire() {
+bool LPLight::shouldExpire() const {
   if (list->lifeMillis == INFINITE_DURATION) {
     return false;
   }
@@ -127,19 +127,19 @@ LPLight* LPLight::getNext() const {
     return ((idx+1) < list->numLights) ? (*list)[idx+1] : NULL;
 }
 
-float LPLight::getSpeed() {
+float LPLight::getSpeed() const {
     return list->speed;
 }
 
-ofxeasing::function LPLight::getEasing() {
+ofxeasing::function LPLight::getEasing() const {
     return list->ease;
 }
 
-uint32_t LPLight::getLife() {
+uint32_t LPLight::getLife() const {
     return list->lifeMillis;
 }
 
-ColorRGB LPLight::getColor() {
+ColorRGB LPLight::getColor() const {
     return list->getColor();
 }
 

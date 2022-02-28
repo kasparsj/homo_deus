@@ -29,11 +29,11 @@ class LPLight
     LPOwner *owner = 0;
     uint32_t lifeMillis = 0; // for LPLight this is offsetMillis
 
-    LPLight(LightList *list, uint16_t idx = 0, uint8_t maxBri = 255) : list(list), idx(idx), maxBri(maxBri) {
+    LPLight(LightList* const list, uint16_t idx = 0, uint8_t maxBri = 255) : list(list), idx(idx), maxBri(maxBri) {
         position = -1;
     }
 
-    void setInPort(Port *port) {
+    void setInPort(Port* const port) {
       inPort = port;
     }
     Port* getOutPort(uint8_t intersectionId) const;
@@ -41,19 +41,19 @@ class LPLight
     void resetPixels();
     void update();
     virtual void nextFrame();
-    virtual bool shouldExpire();
+    virtual bool shouldExpire() const;
 
     LPLight* getPrev() const;
     LPLight* getNext() const;
     virtual Model* getModel() const;
     virtual Behaviour* getBehaviour() const;
-    virtual float getSpeed();
-    virtual ofxeasing::function getEasing();
-    virtual uint32_t getLife();
+    virtual float getSpeed() const;
+    virtual ofxeasing::function getEasing() const;
+    virtual uint32_t getLife() const;
     virtual void setDuration(uint32_t durMillis) {}
-    virtual ColorRGB getColor();
+    virtual ColorRGB getColor() const;
     virtual void setColor(ColorRGB color) {}
-    virtual uint8_t getBrightness();
+    virtual uint8_t getBrightness() const;
     virtual ColorRGB getPixelColor();
     uint16_t* getPixels();
 

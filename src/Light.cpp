@@ -9,13 +9,13 @@ Light::Light(LightList *list, float speed, uint32_t lifeMillis, uint16_t idx, ui
     this->color = ColorRGB(255, 255, 255);
 }
 
-uint8_t Light::getBrightness() {
+uint8_t Light::getBrightness() const {
   uint16_t value = bri % 511;
   value = (value > 255 ? 511 - value : value);
   return (value - list->fadeThresh) / (255 - list->fadeThresh) * maxBri;
 }
 
-ColorRGB Light::getPixelColor() {
+ColorRGB Light::getPixelColor() const {
     if (brightness == 255) {
         return color;
     }
@@ -33,21 +33,21 @@ void Light::nextFrame() {
   }
 }
 
-bool Light::shouldExpire() {
+bool Light::shouldExpire() const {
   if (lifeMillis == INFINITE_DURATION) {
     return false;
   }
   return gMillis >= lifeMillis && (list->fadeSpeed == 0 || brightness == 0);
 }
 
-Model* Light::getModel() {
+Model* Light::getModel() const {
   if (list != NULL) {
     return list->model;
   }
   return NULL;
 }
 
-Behaviour* Light::getBehaviour() {
+Behaviour* Light::getBehaviour() const {
   if (list != NULL) {
     return list->behaviour;
   }

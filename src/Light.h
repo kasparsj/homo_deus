@@ -18,32 +18,32 @@ class Light : public LPLight {
     Light() : Light(255) {
     }
 
-    float getSpeed() {
+    float getSpeed() const {
         return speed;
     }
     void setSpeed(float speed) {
         this->speed = speed;
     }
-    uint32_t getLife() {
+    uint32_t getLife() const {
         return lifeMillis;
     }
     void setDuration(uint32_t durMillis) {
         lifeMillis = gMillis + durMillis;
     }
-    ColorRGB getColor() {
+    ColorRGB getColor() const {
         return color;
     }
     void setColor(ColorRGB color) {
       this->color = color;
     }
 
-    uint8_t getBrightness();
-    ColorRGB getPixelColor();
+    uint8_t getBrightness() const;
+    ColorRGB getPixelColor() const;
     void nextFrame();
-    bool shouldExpire();
+    bool shouldExpire() const;
     
-    Model* getModel();
-    Behaviour* getBehaviour();
+    Model* getModel() const;
+    Behaviour* getBehaviour() const;
 
   private:
 
