@@ -16,9 +16,9 @@ class Behaviour {
       colorChangeGroups = params.colorChangeGroups;
     }
 
-    uint16_t getBri(LPLight *light);
-    float getPosition(LPLight *light);
-    ColorRGB getColor(LPLight *light, uint8_t group);
+    uint16_t getBri(const LPLight *light) const;
+    float getPosition(LPLight *light) const;
+    ColorRGB getColor(const LPLight *light, uint8_t group) const;
 
     bool renderSegment() {
         return flags & B_RENDER_SEGMENT;

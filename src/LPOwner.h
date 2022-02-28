@@ -12,10 +12,10 @@ class LPOwner
     LPOwner(uint8_t group) : group(group) {}
 
     virtual void emit(LPLight* light) = 0;
-    void add(LPLight *light) {
+    void add(LPLight* const light) {
         light->owner = this;
         light->owner->update(light);
     }
-    virtual void update(LPLight *light) = 0;
+    virtual void update(LPLight* const light) = 0;
 };
 

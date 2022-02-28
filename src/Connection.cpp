@@ -58,7 +58,7 @@ void Connection::emit(LPLight* light) {
     add(light);
 }
 
-void Connection::update(LPLight *light) {
+void Connection::update(LPLight* const light) {
     light->resetPixels();
     Behaviour *behaviour = light->getBehaviour();
     if (light->shouldExpire() && (light->getSpeed() == 0 || (behaviour != NULL && behaviour->expireImmediately()))) {
@@ -79,13 +79,22 @@ void Connection::update(LPLight *light) {
     }
 }
 
-void Connection::outgoing(LPLight* light) {
-  Intersection *neuron = light->outPort->direction ? from : to;
-  Port *port = light->outPort->direction ? fromPort : toPort;
-  light->position -= numLeds;
-  light->setInPort(port);
-  light->setOutPort(NULL);
-  neuron->add(light);
+void Connection::outgoing(LPLight* const light) {
+    bool dir = light->outPort->direction;
+    light->position -= numLeds;
+    if (dir) {
+        light->setInPort(fromPort);
+    }
+    else {
+        light->setInPort(toPort);
+    }
+    light->setOutPort(NULL);
+    if (dir) {
+        from->add(light);
+    }
+    else {
+        to->add(light);
+    }
 }
 
 uint16_t Connection::getFromPixel() {

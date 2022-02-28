@@ -22,8 +22,8 @@ class Connection : public LPOwner {
     Connection(Intersection *from, Intersection *to, uint8_t group);
     void add(LPLight *light);
     void emit(LPLight* light);
-    void update(LPLight *light);
-    void outgoing(LPLight *light);
+    void update(LPLight* const light);
+    void outgoing(LPLight* const light);
     uint16_t getPixel(uint16_t i) {
       return fromPixel + (i * (pixelDir ? 1 : -1));
     }

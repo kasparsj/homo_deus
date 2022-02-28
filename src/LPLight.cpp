@@ -11,7 +11,7 @@ void LPLight::resetPixels() {
   // pixel2 = -1;
 }
 
-Port* LPLight::getOutPort(uint8_t intersectionId) {
+Port* LPLight::getOutPort(uint8_t intersectionId) const {
   for (uint8_t i=0; i<OUT_PORTS_MEMORY; i++) {
     if (outPortsInt[i] == intersectionId) {
       return outPorts[i];
@@ -20,7 +20,7 @@ Port* LPLight::getOutPort(uint8_t intersectionId) {
   return NULL;
 }
 
-void LPLight::setOutPort(Port *port, int8_t intersectionId) {
+void LPLight::setOutPort(Port* const port, int8_t intersectionId) {
   outPort = port;
   if (intersectionId > -1) {
     for (uint8_t i=(OUT_PORTS_MEMORY-1); i>0; i--) {
@@ -119,11 +119,11 @@ bool LPLight::shouldExpire() {
   return gMillis >= (list->lifeMillis + lifeMillis) && (list->fadeSpeed == 0 || brightness == 0);
 }
 
-LPLight* LPLight::getPrev() {
+LPLight* LPLight::getPrev() const {
     return idx > 0 ? (*list)[idx - 1] : NULL;
 }
 
-LPLight* LPLight::getNext() {
+LPLight* LPLight::getNext() const {
     return ((idx+1) < list->numLights) ? (*list)[idx+1] : NULL;
 }
 
@@ -143,10 +143,10 @@ ColorRGB LPLight::getColor() {
     return list->getColor();
 }
 
-Model* LPLight::getModel() {
+Model* LPLight::getModel() const {
     return list->model;
 }
 
-Behaviour* LPLight::getBehaviour() {
+Behaviour* LPLight::getBehaviour() const {
     return list->behaviour;
 }

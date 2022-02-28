@@ -36,17 +36,17 @@ class LPLight
     void setInPort(Port *port) {
       inPort = port;
     }
-    Port* getOutPort(uint8_t intersectionId);
-    void setOutPort(Port *port, int8_t intersectionId = -1);
+    Port* getOutPort(uint8_t intersectionId) const;
+    void setOutPort(Port* const port, int8_t intersectionId = -1);
     void resetPixels();
     void update();
     virtual void nextFrame();
     virtual bool shouldExpire();
 
-    LPLight* getPrev();
-    LPLight* getNext();
-    virtual Model* getModel();
-    virtual Behaviour* getBehaviour();
+    LPLight* getPrev() const;
+    LPLight* getNext() const;
+    virtual Model* getModel() const;
+    virtual Behaviour* getBehaviour() const;
     virtual float getSpeed();
     virtual ofxeasing::function getEasing();
     virtual uint32_t getLife();

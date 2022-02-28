@@ -40,7 +40,7 @@ void Intersection::emit(LPLight* light) {
     light->owner = this;
 }
 
-void Intersection::update(LPLight *light) {
+void Intersection::update(LPLight* const light) {
   if (!light->isExpired) {
     light->resetPixels();
     if (light->shouldExpire()) {
@@ -59,7 +59,8 @@ void Intersection::update(LPLight *light) {
   }
 }
 
-Port* Intersection::sendOut(LPLight *light) {
+//Port* Intersection::sendOut(LPLight *light) {
+void Intersection::sendOut(LPLight* const light) {
   Port *port = NULL;
   LPLight* linkedPrev = light->getPrev();
   if (linkedPrev != NULL) {
@@ -80,7 +81,7 @@ Port* Intersection::sendOut(LPLight *light) {
     }
     port->connection->add(light);
   }
-  return port;
+  //return port;
 }
 
 uint16_t Intersection::sumW(Model *model, Port *incoming) {
