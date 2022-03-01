@@ -44,15 +44,6 @@ Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LP
   }
 }
 
-void Connection::add(LPLight* const light) const {
-    if (numLeds > 0) {
-        LPOwner::add(light);
-    }
-    else {
-        outgoing(light);
-    }
-}
-
 void Connection::emit(LPLight* const light) const {
     light->setOutPort(fromPort, from->id);
     add(light);
@@ -89,7 +80,7 @@ bool Connection::render(LPLight* const light) const {
     return false;
 }
 
-void Connection::outgoing(LPLight* const light) const {
+inline void Connection::outgoing(LPLight* const light) const {
     light->position -= numLeds;
     const bool dir = light->outPort->direction;
     if (dir) {

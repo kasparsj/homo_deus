@@ -20,7 +20,14 @@ class Connection : public LPOwner {
     uint16_t toPixel;
     
     Connection(Intersection *from, Intersection *to, uint8_t group);
-    void add(LPLight* const light) const;
+    inline void add(LPLight* const light) const {
+        if (numLeds > 0) {
+            LPOwner::add(light);
+        }
+        else {
+            outgoing(light);
+        }
+    }
     void emit(LPLight* const light) const;
     void update(LPLight* const light) const;
     uint16_t getPixel(uint16_t i) const {
@@ -30,7 +37,7 @@ class Connection : public LPOwner {
     uint16_t getToPixel() const;
     
   private:
-    inline void outgoing(LPLight* const light) const;
+    void outgoing(LPLight* const light) const;
     bool shouldExpire(const LPLight* const light) const;
     bool render(LPLight* const light) const;
 };
