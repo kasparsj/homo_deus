@@ -89,7 +89,7 @@ float LightList::getPosition(LPLight* const light) const {
   return light->position + light->getSpeed();
 }
 
-void LightList::initPosition(uint16_t i, LPLight* const light) {
+void LightList::initPosition(uint16_t i, LPLight* const light) const {
   float position = (speed != 0 ? i * -1.f : numLights - 1 - i * 1.f);
   if (order == LIST_ORDER_RANDOM) {
     position = LP_RANDOM(model->getMaxLength());
@@ -97,7 +97,7 @@ void LightList::initPosition(uint16_t i, LPLight* const light) {
   light->position = position;
 }
 
-void LightList::initBri(uint16_t i, LPLight* const light) {
+void LightList::initBri(uint16_t i, LPLight* const light) const {
   switch (order) {
     case LIST_ORDER_RANDOM:
       if (fadeThresh > 0) {
@@ -117,7 +117,7 @@ uint16_t LightList::getBri(const LPLight* light) const {
   return light->bri + fadeSpeed;
 }
 
-void LightList::initLife(uint16_t i, LPLight* const light) {
+void LightList::initLife(uint16_t i, LPLight* const light) const {
   uint32_t lifeMillis = light->lifeMillis;
   if (order == LIST_ORDER_SEQUENTIAL) {
     lifeMillis += ceil(1.f / light->getSpeed() * i) * EmitParams::frameMs();

@@ -98,9 +98,9 @@ class LightList {
     ColorRGB color;
 
     LPLight* createLight(uint16_t i, uint8_t brightness);
-    void initPosition(uint16_t i, LPLight* const light);
-    void initBri(uint16_t i, LPLight* const light);
-    void initLife(uint16_t i, LPLight* const light);
+    void initPosition(uint16_t i, LPLight* const light) const;
+    void initBri(uint16_t i, LPLight* const light) const;
+    void initLife(uint16_t i, LPLight* const light) const;
     inline uint16_t body() {
         return numLights - lead - trail;
     }
