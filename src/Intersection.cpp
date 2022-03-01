@@ -93,7 +93,7 @@ uint16_t Intersection::sumW(const Model *model, const Port *incoming) const {
   return sum;
 }
 
-Port *Intersection::randomPort(const Port *incoming, const Behaviour *behaviour) const {
+Port* Intersection::randomPort(const Port *incoming, const Behaviour *behaviour) const {
   Port *port;
   do {
     port = ports[(uint8_t) LP_RANDOM(numPorts)];
@@ -101,7 +101,7 @@ Port *Intersection::randomPort(const Port *incoming, const Behaviour *behaviour)
   return port;
 }
 
-Port *Intersection::choosePort(const Model *model, const LPLight *light) const {
+Port* Intersection::choosePort(const Model *model, const LPLight *light) const {
     Port *incoming = light->inPort;
     uint16_t sum = sumW(model, incoming);
     if (sum == 0) {

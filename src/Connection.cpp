@@ -80,7 +80,7 @@ void Connection::update(LPLight* const light) {
 }
 
 void Connection::outgoing(LPLight* const light) {
-    bool dir = light->outPort->direction;
+    const bool dir = light->outPort->direction;
     light->position -= numLeds;
     if (dir) {
         light->setInPort(fromPort);
