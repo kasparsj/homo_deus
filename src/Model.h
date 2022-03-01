@@ -45,7 +45,7 @@ class Model {
       put(con, w, w);
     }
     
-    uint8_t get(Port *outgoing, Port *incoming) {
+    uint8_t get(const Port *outgoing, const Port *incoming) const {
       if (outgoing == incoming) {
         return 0;
       }

@@ -15,8 +15,8 @@ class Weight {
         delete conditional;
     }
     
-    void add(Port *incoming, uint8_t w);
-    uint8_t get(Port *incoming);
+    void add(const Port *incoming, uint8_t w);
+    uint8_t get(const Port *incoming) const;
     
   private:
     uint8_t w;

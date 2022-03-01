@@ -20,25 +20,25 @@ class Behaviour {
     float getPosition(LPLight *light) const;
     ColorRGB getColor(const LPLight *light, uint8_t group) const;
 
-    bool renderSegment() {
+    bool renderSegment() const {
         return flags & B_RENDER_SEGMENT;
     }
-    bool allowBounce() {
+    bool allowBounce() const {
         return flags & B_ALLOW_BOUNCE;
     }
-    bool forceBounce() {
+    bool forceBounce() const {
         return flags & B_FORCE_BOUNCE;
     }
-    bool expireImmediately() {
+    bool expireImmediately() const {
         return flags & B_EXPIRE_IMMEDIATE;
     }
-    bool emitFromConnection() {
+    bool emitFromConnection() const {
         return flags & B_EMIT_FROM_CONN;
     }
-    bool fillEase() {
+    bool fillEase() const {
         return flags & B_FILL_EASE;
     }
-    bool randomColor() {
+    bool randomColor() const {
         return flags & B_RANDOM_COLOR;
     }
 };
