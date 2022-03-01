@@ -60,21 +60,23 @@ void Connection::emit(LPLight* const light) {
 
 void Connection::update(LPLight* const light) const {
     light->resetPixels();
-    Behaviour *behaviour = light->getBehaviour();
-    if (light->shouldExpire() && (light->getSpeed() == 0 || (behaviour != NULL && behaviour->expireImmediately()))) {
-      light->isExpired = true;
-      light->owner = NULL;
+    {
+        const Behaviour *behaviour = light->getBehaviour();
+        if (light->shouldExpire() &&
+           (light->getSpeed() == 0 || (behaviour != NULL && behaviour->expireImmediately()))) {
+          light->isExpired = true;
+          light->owner = NULL;
+          return;
+        }
     }
-    else {
+    {
         // handle float inprecision
         float pos = round(light->position * 1000) / 1000.0;
         if (pos < numLeds) {
           pos = ofxeasing::map(light->position, 0, numLeds, 0, numLeds, light->getEasing());
           uint16_t ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
           light->pixel1 = getPixel(ledIdx);
-        }
-        else {
-          outgoing(light);
+          return;
         }
     }
 }

@@ -77,9 +77,9 @@ void Intersection::sendOut(LPLight* const light) const {
   light->owner = NULL;
   if (port != NULL) { 
     {
-      const Behaviour *behaviour = light->getBehaviour();
+      const Behaviour* behaviour = light->getBehaviour();
       if (behaviour->colorChangeGroups & port->group) {
-        (light)->setColor(behaviour->getColor(light, port->group));
+        light->setColor(behaviour->getColor(light, port->group));
       }      
     } // free behaviour
     port->connection->add(light);
