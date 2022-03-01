@@ -26,7 +26,7 @@ void Intersection::addPort(Port *p) {
   }
 }
 
-void Intersection::emit(LPLight* const light) {
+void Intersection::emit(LPLight* const light) const {
     // go straight out of zeroConnection
     const Behaviour *behaviour = light->getBehaviour();
     if (numPorts == 2) {
@@ -41,45 +41,47 @@ void Intersection::emit(LPLight* const light) {
 }
 
 void Intersection::update(LPLight* const light) const {
-  if (!light->isExpired) {
-    light->resetPixels();
-    if (light->shouldExpire()) {
-      if (light->getSpeed() == 0 || light->position >= 1.f) {
-        light->isExpired = true;
+    if (!light->isExpired) {
+        light->resetPixels();
+        if (light->shouldExpire()) {
+            if (light->getSpeed() == 0 || light->position >= 1.f) { // expire
+                light->isExpired = true;
+                light->owner = NULL;
+            }
+            return;
+        }
+        if (light->position >= 0.f && light->position < 1.f) { // render
+            light->pixel1 = topPixel;
+            return;
+        }
+        // sendOut
+        Port* const port = getOutPortFor(light);
+        light->setOutPort(port, id);
+        light->setInPort(NULL);
+        light->position -= 1.f;
         light->owner = NULL;
-      }
-    }
-    else if (light->position >= 1.f) {
-      // neurons are updated after connections
-      sendOut(light);
-    }       
-    else if (light->position >= 0.f) {
-      light->pixel1 = topPixel;
-    }
+        if (port != NULL) {
+            handleColorChange(light, port);
+            port->connection->add(light);
+        }
   }
 }
 
-//Port* Intersection::sendOut(LPLight* const light) {
-void Intersection::sendOut(LPLight* const light) const {
-  Port* port = NULL;
-  {
+Port* Intersection::getOutPortFor(const LPLight* light) const {
+    Port* port = getPrevOutPort(light);
+    if (port == NULL) {
+        port = choosePort(light->getModel(), light);
+    }
+    return port;
+}
+
+Port* Intersection::getPrevOutPort(const LPLight* light) const {
+    Port* port = NULL;
     const LPLight* linkedPrev = light->getPrev();
     if (linkedPrev != NULL) {
-      port = linkedPrev->getOutPort(id);
+        port = linkedPrev->getOutPort(id);
     }
-  }
-  if (port == NULL) {
-    port = choosePort(light->getModel(), light);
-  }
-  light->setOutPort(port, id);
-  light->setInPort(NULL);
-  light->position -= 1.f;
-  light->owner = NULL;
-  if (port != NULL) { 
-    handleColorChange(light, port);
-    port->connection->add(light);
-  }
-  //return port;
+    return port;
 }
 
 void Intersection::handleColorChange(LPLight* const light, const Port *port) const {

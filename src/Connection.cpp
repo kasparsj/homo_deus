@@ -44,7 +44,7 @@ Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LP
   }
 }
 
-void Connection::add(LPLight* const light) {
+void Connection::add(LPLight* const light) const {
     if (numLeds > 0) {
         LPOwner::add(light);
     }
@@ -53,33 +53,40 @@ void Connection::add(LPLight* const light) {
     }
 }
 
-void Connection::emit(LPLight* const light) {
+void Connection::emit(LPLight* const light) const {
     light->setOutPort(fromPort, from->id);
     add(light);
 }
 
 void Connection::update(LPLight* const light) const {
     light->resetPixels();
-    {
-        const Behaviour *behaviour = light->getBehaviour();
-        if (light->shouldExpire() &&
-           (light->getSpeed() == 0 || (behaviour != NULL && behaviour->expireImmediately()))) {
-          light->isExpired = true;
-          light->owner = NULL;
-          return;
-        }
+    if (shouldExpire(light)) {
+        light->isExpired = true;
+        light->owner = NULL;
+        return;
     }
-    {
-        // handle float inprecision
-        float pos = round(light->position * 1000) / 1000.0;
-        if (pos < numLeds) {
-          pos = ofxeasing::map(light->position, 0, numLeds, 0, numLeds, light->getEasing());
-          uint16_t ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
-          light->pixel1 = getPixel(ledIdx);
-          return;
-        }
+    if (render(light)) {
+        return;
     }
     outgoing(light);
+}
+
+bool Connection::shouldExpire(const LPLight* light) const {
+    const Behaviour *behaviour = light->getBehaviour();
+    return (light->shouldExpire() &&
+        (light->getSpeed() == 0 || (behaviour != NULL && behaviour->expireImmediately())));
+}
+
+bool Connection::render(LPLight* const light) const {
+    // handle float inprecision
+    float pos = round(light->position * 1000) / 1000.0;
+    if (pos < numLeds) {
+        pos = ofxeasing::map(light->position, 0, numLeds, 0, numLeds, light->getEasing());
+        const uint16_t ledIdx = light->outPort->direction ? ceil((float) numLeds - pos - 1.0) : floor(pos);
+        light->pixel1 = getPixel(ledIdx);
+        return true;
+    }
+    return false;
 }
 
 void Connection::outgoing(LPLight* const light) const {
@@ -92,7 +99,6 @@ void Connection::outgoing(LPLight* const light) const {
         light->setInPort(toPort);
     }
     light->setOutPort(NULL);
-    LP_LOGF("con:out %d : %2.f : %d\n", light->idx, light->position, uxTaskGetStackHighWaterMark(NULL));
     if (dir) {
         from->add(light);
     }

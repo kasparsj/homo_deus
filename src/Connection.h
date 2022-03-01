@@ -20,8 +20,8 @@ class Connection : public LPOwner {
     uint16_t toPixel;
     
     Connection(Intersection *from, Intersection *to, uint8_t group);
-    void add(LPLight* const light);
-    void emit(LPLight* const light);
+    void add(LPLight* const light) const;
+    void emit(LPLight* const light) const;
     void update(LPLight* const light) const;
     void outgoing(LPLight* const light) const;
     uint16_t getPixel(uint16_t i) const {
@@ -29,4 +29,8 @@ class Connection : public LPOwner {
     }
     uint16_t getFromPixel() const;
     uint16_t getToPixel() const;
+    
+  private:
+    bool shouldExpire(const LPLight* light) const;
+    bool render(LPLight* const light) const;
 };

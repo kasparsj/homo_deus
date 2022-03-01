@@ -26,7 +26,7 @@ class LPLight
     float position;
     uint16_t bri = 255;
     uint8_t brightness = 0;
-    LPOwner *owner = 0;
+    const LPOwner *owner = 0;
     uint32_t lifeMillis = 0; // for LPLight this is offsetMillis
 
     LPLight(LightList* const list, uint16_t idx = 0, uint8_t maxBri = 255) : list(list), idx(idx), maxBri(maxBri) {
