@@ -127,10 +127,10 @@ void LightList::initLife(uint16_t i, LPLight* const light) const {
 
 bool LightList::update() {
     if (numEmitted < numLights) {
-        uint8_t batchSize = numLights - numEmitted;
-        uint8_t j = numEmitted;
+        const uint8_t batchSize = numLights - numEmitted;
+        const uint8_t j = numEmitted;
         for (uint8_t i=0; i<batchSize; i++) {
-            LPLight *light = (*this)[i+j];
+            LPLight* const light = (*this)[i+j];
             if (light->position < 0) {
                 break;
             }
@@ -140,10 +140,10 @@ bool LightList::update() {
     }
     bool allExpired = true;
     for (uint16_t j=0; j<numLights; j++) {
-        LPLight* light = lights[j];
+        LPLight* const light = lights[j];
         if (light == NULL) continue;
         if (light->isExpired) {
-          LPLight *next = light->getNext();
+          LPLight* const next = light->getNext();
           if (next != NULL) {
             next->idx = 0;
           }
