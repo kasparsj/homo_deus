@@ -101,6 +101,7 @@ class LightList {
     void initPosition(uint16_t i, LPLight* const light) const;
     void initBri(uint16_t i, LPLight* const light) const;
     void initLife(uint16_t i, LPLight* const light) const;
+    void doEmit();
     inline uint16_t body() {
         return numLights - lead - trail;
     }
