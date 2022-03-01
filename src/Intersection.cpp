@@ -28,7 +28,7 @@ void Intersection::addPort(Port *p) {
 
 void Intersection::emit(LPLight* light) {
     // go straight out of zeroConnection
-    Behaviour *behaviour = light->getBehaviour();
+    const Behaviour *behaviour = light->getBehaviour();
     if (numPorts == 2) {
       for (uint8_t i=0; i<2; i++) {
         if (behaviour->forceBounce() ? ports[i]->connection->numLeds > 0 : ports[i]->connection->numLeds == 0) {

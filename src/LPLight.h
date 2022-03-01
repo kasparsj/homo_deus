@@ -45,8 +45,8 @@ class LPLight
 
     LPLight* getPrev() const;
     LPLight* getNext() const;
-    virtual Model* getModel() const;
-    virtual Behaviour* getBehaviour() const;
+    virtual const Model* getModel() const;
+    virtual const Behaviour* getBehaviour() const;
     virtual float getSpeed() const;
     virtual ofxeasing::function getEasing() const;
     virtual uint32_t getLife() const;

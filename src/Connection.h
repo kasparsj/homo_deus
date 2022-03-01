@@ -23,10 +23,10 @@ class Connection : public LPOwner {
     void add(LPLight *light);
     void emit(LPLight* light);
     void update(LPLight* const light);
-    void outgoing(LPLight* const light);
-    uint16_t getPixel(uint16_t i) {
+    void outgoing(LPLight* const light) const;
+    uint16_t getPixel(uint16_t i) const {
       return fromPixel + (i * (pixelDir ? 1 : -1));
     }
-    uint16_t getFromPixel();
-    uint16_t getToPixel();
+    uint16_t getFromPixel() const;
+    uint16_t getToPixel() const;
 };

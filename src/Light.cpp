@@ -40,14 +40,14 @@ bool Light::shouldExpire() const {
   return gMillis >= lifeMillis && (list->fadeSpeed == 0 || brightness == 0);
 }
 
-Model* Light::getModel() const {
+const Model* Light::getModel() const {
   if (list != NULL) {
     return list->model;
   }
   return NULL;
 }
 
-Behaviour* Light::getBehaviour() const {
+const Behaviour* Light::getBehaviour() const {
   if (list != NULL) {
     return list->behaviour;
   }

@@ -58,7 +58,7 @@ ColorRGB LPLight::getPixelColor() {
 
 uint16_t* LPLight::getPixels() {
   if (pixel1 >= 0) {
-    Behaviour *behaviour = getBehaviour();
+    const Behaviour *behaviour = getBehaviour();
     if (behaviour != NULL && behaviour->renderSegment()) {
         setSegmentPixels();
     }
@@ -143,10 +143,10 @@ ColorRGB LPLight::getColor() const {
     return list->getColor();
 }
 
-Model* LPLight::getModel() const {
+const Model* LPLight::getModel() const {
     return list->model;
 }
 
-Behaviour* LPLight::getBehaviour() const {
+const Behaviour* LPLight::getBehaviour() const {
     return list->behaviour;
 }

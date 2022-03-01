@@ -42,8 +42,8 @@ class Light : public LPLight {
     void nextFrame();
     bool shouldExpire() const;
     
-    Model* getModel() const;
-    Behaviour* getBehaviour() const;
+    const Model* getModel() const;
+    const Behaviour* getBehaviour() const;
 
   private:
 

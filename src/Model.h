@@ -65,5 +65,5 @@ class Model {
         return weight;
     }
 
-    uint16_t getMaxLength();
+    uint16_t getMaxLength() const;
 };

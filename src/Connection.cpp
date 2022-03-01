@@ -79,7 +79,7 @@ void Connection::update(LPLight* const light) {
     }
 }
 
-void Connection::outgoing(LPLight* const light) {
+void Connection::outgoing(LPLight* const light) const {
     const bool dir = light->outPort->direction;
     light->position -= numLeds;
     if (dir) {
@@ -89,6 +89,7 @@ void Connection::outgoing(LPLight* const light) {
         light->setInPort(toPort);
     }
     light->setOutPort(NULL);
+    LP_LOGF("con:out %d : %2.f : %d\n", light->idx, light->position, uxTaskGetStackHighWaterMark(NULL));
     if (dir) {
         from->add(light);
     }
@@ -97,10 +98,10 @@ void Connection::outgoing(LPLight* const light) {
     }
 }
 
-uint16_t Connection::getFromPixel() {
+uint16_t Connection::getFromPixel() const {
   return fromPort->intersection->topPixel;
 }
 
-uint16_t Connection::getToPixel() {
+uint16_t Connection::getToPixel() const {
   return toPort->intersection->topPixel;
 }
