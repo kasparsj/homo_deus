@@ -10,7 +10,7 @@ uint16_t Behaviour::getBri(const LPLight *light) const {
   return light->bri + light->list->fadeSpeed;
 }
 
-float Behaviour::getPosition(LPLight *light) const {
+float Behaviour::getPosition(LPLight* const light) const {
   if (flags & B_POS_CHANGE_FADE) {
     if (light->bri >= 511) {
       light->bri -= 511;

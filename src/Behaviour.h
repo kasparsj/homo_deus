@@ -17,7 +17,7 @@ class Behaviour {
     }
 
     uint16_t getBri(const LPLight *light) const;
-    float getPosition(LPLight *light) const;
+    float getPosition(LPLight* const light) const;
     ColorRGB getColor(const LPLight *light, uint8_t group) const;
 
     bool renderSegment() const {
