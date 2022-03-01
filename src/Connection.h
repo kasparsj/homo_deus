@@ -23,7 +23,6 @@ class Connection : public LPOwner {
     void add(LPLight* const light) const;
     void emit(LPLight* const light) const;
     void update(LPLight* const light) const;
-    void outgoing(LPLight* const light) const;
     uint16_t getPixel(uint16_t i) const {
       return fromPixel + (i * (pixelDir ? 1 : -1));
     }
@@ -31,6 +30,7 @@ class Connection : public LPOwner {
     uint16_t getToPixel() const;
     
   private:
+    inline void outgoing(LPLight* const light) const;
     bool shouldExpire(const LPLight* light) const;
     bool render(LPLight* const light) const;
 };
