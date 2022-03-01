@@ -76,15 +76,17 @@ void Intersection::sendOut(LPLight* const light) const {
   light->position -= 1.f;
   light->owner = NULL;
   if (port != NULL) { 
-    {
-      const Behaviour* behaviour = light->getBehaviour();
-      if (behaviour->colorChangeGroups & port->group) {
-        light->setColor(behaviour->getColor(light, port->group));
-      }      
-    } // free behaviour
+    colorChange(light, port);
     port->connection->add(light);
   }
   //return port;
+}
+
+void Intersection::colorChange(LPLight* const light, const Port *port) const {
+    const Behaviour* behaviour = light->getBehaviour();
+    if (behaviour->colorChangeGroups & port->group) {
+        light->setColor(behaviour->getColor(light, port->group));
+    }
 }
 
 uint16_t Intersection::sumW(const Model *model, const Port *incoming) const {
