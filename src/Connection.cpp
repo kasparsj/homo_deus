@@ -79,6 +79,7 @@ void Connection::update(LPLight* const light) const {
           return;
         }
     }
+    outgoing(light);
 }
 
 void Connection::outgoing(LPLight* const light) const {

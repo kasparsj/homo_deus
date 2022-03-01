@@ -82,7 +82,7 @@ void LightList::initEmit(uint8_t posOffset) {
     }
 }
 
-float LightList::getPosition(LPLight *light) const {
+float LightList::getPosition(LPLight* const light) const {
   if (behaviour != NULL) {
     return behaviour->getPosition(light);
   }
@@ -110,7 +110,7 @@ void LightList::initBri(uint16_t i, LPLight* const light) {
   }
 }
 
-uint16_t LightList::getBri(LPLight *light) const {
+uint16_t LightList::getBri(const LPLight* light) const {
   if (behaviour != NULL) {
     return behaviour->getBri(light);
   }

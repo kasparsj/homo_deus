@@ -89,8 +89,8 @@ class LightList {
     void initEmit(uint8_t posOffset = 0);
     bool update();
     void split();
-    float getPosition(LPLight *light) const;
-    uint16_t getBri(LPLight *light) const;
+    float getPosition(LPLight* const light) const;
+    uint16_t getBri(const LPLight *light) const;
     ColorRGB getColor(int16_t pixel = -1);
 
   private:
