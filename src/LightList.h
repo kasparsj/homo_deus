@@ -89,8 +89,8 @@ class LightList {
     void initEmit(uint8_t posOffset = 0);
     bool update();
     void split();
-    float getPosition(LPLight *light);
-    uint16_t getBri(LPLight *light);
+    float getPosition(LPLight *light) const;
+    uint16_t getBri(LPLight *light) const;
     ColorRGB getColor(int16_t pixel = -1);
 
   private:
@@ -98,9 +98,9 @@ class LightList {
     ColorRGB color;
 
     LPLight* createLight(uint16_t i, uint8_t brightness);
-    void initPosition(uint16_t i, LPLight* light);
-    void initBri(uint16_t i, LPLight* light);
-    void initLife(uint16_t i, LPLight* light);
+    void initPosition(uint16_t i, LPLight* const light);
+    void initBri(uint16_t i, LPLight* const light);
+    void initLife(uint16_t i, LPLight* const light);
     inline uint16_t body() {
         return numLights - lead - trail;
     }
