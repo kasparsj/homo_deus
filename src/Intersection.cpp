@@ -60,11 +60,13 @@ void Intersection::update(LPLight* const light) {
 }
 
 //Port* Intersection::sendOut(LPLight* const light) {
-void Intersection::sendOut(LPLight* const light) {
-  Port *port = NULL;
-  LPLight* linkedPrev = light->getPrev();
-  if (linkedPrev != NULL) {
-    port = linkedPrev->getOutPort(id);
+void Intersection::sendOut(LPLight* const light) const {
+  Port* port = NULL;
+  {
+    const LPLight* linkedPrev = light->getPrev();
+    if (linkedPrev != NULL) {
+      port = linkedPrev->getOutPort(id);
+    }
   }
   Model *model = light->getModel();
   Behaviour *behaviour = light->getBehaviour();

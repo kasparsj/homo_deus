@@ -35,7 +35,7 @@ class Intersection : public LPOwner {
   private:
 
 //    Port* sendOut(LPLight* const light);
-    void sendOut(LPLight* const light);
+    void sendOut(LPLight* const light) const;
     uint16_t sumW(const Model *model, const Port *incoming) const;
     Port* randomPort(const Port *incoming, const Behaviour *behaviour) const;
     Port* choosePort(const Model *model, const LPLight* light) const;
