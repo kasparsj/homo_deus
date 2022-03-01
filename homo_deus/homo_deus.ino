@@ -280,9 +280,10 @@ void doCommand(char command) {
       doEmit(params);
       break;
     }
-    // todo: LIST_ORDER_RANDOM is broken
     case '*': {
-      EmitParams params(EmitParams::DEFAULT_MODEL, 0);
+      // works reliably with M_STAR, other models might or might not work
+      EmitParams params(M_STAR);
+      params.speed = 0;
       params.fadeSpeed = 1;
       params.fadeThresh = 127;
       params.order = LIST_ORDER_RANDOM;

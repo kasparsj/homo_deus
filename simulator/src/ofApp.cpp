@@ -247,7 +247,8 @@ void ofApp::doCommand(char command) {
       break;
     }
     case '*': {
-      EmitParams params;
+      // works reliably with M_STAR, other models might or might not work
+      EmitParams params(M_STAR);
       params.speed = 0;
       params.fadeSpeed = 1;
       params.fadeThresh = 127;
