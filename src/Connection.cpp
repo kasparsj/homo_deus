@@ -71,7 +71,7 @@ void Connection::update(LPLight* const light) const {
     outgoing(light);
 }
 
-bool Connection::shouldExpire(const LPLight* light) const {
+bool Connection::shouldExpire(const LPLight* const light) const {
     const Behaviour *behaviour = light->getBehaviour();
     return (light->shouldExpire() &&
         (light->getSpeed() == 0 || (behaviour != NULL && behaviour->expireImmediately())));

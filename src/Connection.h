@@ -31,6 +31,6 @@ class Connection : public LPOwner {
     
   private:
     inline void outgoing(LPLight* const light) const;
-    bool shouldExpire(const LPLight* light) const;
+    bool shouldExpire(const LPLight* const light) const;
     bool render(LPLight* const light) const;
 };
