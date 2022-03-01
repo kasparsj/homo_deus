@@ -76,13 +76,13 @@ void Intersection::sendOut(LPLight* const light) const {
   light->position -= 1.f;
   light->owner = NULL;
   if (port != NULL) { 
-    colorChange(light, port);
+    handleColorChange(light, port);
     port->connection->add(light);
   }
   //return port;
 }
 
-void Intersection::colorChange(LPLight* const light, const Port *port) const {
+void Intersection::handleColorChange(LPLight* const light, const Port *port) const {
     const Behaviour* behaviour = light->getBehaviour();
     if (behaviour->colorChangeGroups & port->group) {
         light->setColor(behaviour->getColor(light, port->group));
