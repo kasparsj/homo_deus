@@ -29,8 +29,8 @@ class Intersection : public LPOwner {
     }
     
     void addPort(Port *p);
-    void emit(LPLight* light);
-    void update(LPLight* const light);
+    void emit(LPLight* const light);
+    void update(LPLight* const light) const;
 
   private:
 

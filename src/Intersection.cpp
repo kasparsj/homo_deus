@@ -26,7 +26,7 @@ void Intersection::addPort(Port *p) {
   }
 }
 
-void Intersection::emit(LPLight* light) {
+void Intersection::emit(LPLight* const light) {
     // go straight out of zeroConnection
     const Behaviour *behaviour = light->getBehaviour();
     if (numPorts == 2) {
@@ -40,7 +40,7 @@ void Intersection::emit(LPLight* light) {
     light->owner = this;
 }
 
-void Intersection::update(LPLight* const light) {
+void Intersection::update(LPLight* const light) const {
   if (!light->isExpired) {
     light->resetPixels();
     if (light->shouldExpire()) {
@@ -68,19 +68,20 @@ void Intersection::sendOut(LPLight* const light) const {
       port = linkedPrev->getOutPort(id);
     }
   }
-  Model *model = light->getModel();
-  Behaviour *behaviour = light->getBehaviour();
   if (port == NULL) {
-    port = choosePort(model, light);
+    port = choosePort(light->getModel(), light);
   }
   light->setOutPort(port, id);
   light->setInPort(NULL);
   light->position -= 1.f;
   light->owner = NULL;
   if (port != NULL) { 
-    if (behaviour->colorChangeGroups & port->group) {
-      (light)->setColor(behaviour->getColor(light, port->group));
-    }
+    {
+      const Behaviour *behaviour = light->getBehaviour();
+      if (behaviour->colorChangeGroups & port->group) {
+        (light)->setColor(behaviour->getColor(light, port->group));
+      }      
+    } // free behaviour
     port->connection->add(light);
   }
   //return port;

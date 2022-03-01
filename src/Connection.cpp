@@ -44,7 +44,7 @@ Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LP
   }
 }
 
-void Connection::add(LPLight *light) {
+void Connection::add(LPLight* const light) {
     if (numLeds > 0) {
         LPOwner::add(light);
     }
@@ -53,12 +53,12 @@ void Connection::add(LPLight *light) {
     }
 }
 
-void Connection::emit(LPLight* light) {
+void Connection::emit(LPLight* const light) {
     light->setOutPort(fromPort, from->id);
     add(light);
 }
 
-void Connection::update(LPLight* const light) {
+void Connection::update(LPLight* const light) const {
     light->resetPixels();
     Behaviour *behaviour = light->getBehaviour();
     if (light->shouldExpire() && (light->getSpeed() == 0 || (behaviour != NULL && behaviour->expireImmediately()))) {
