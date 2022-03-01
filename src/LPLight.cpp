@@ -49,7 +49,7 @@ uint8_t LPLight::getBrightness() const {
     return 0;
 }
 
-ColorRGB LPLight::getPixelColor() {
+ColorRGB LPLight::getPixelColor() const {
     if (brightness == 255) {
         return list->getColor(pixel1);
     }

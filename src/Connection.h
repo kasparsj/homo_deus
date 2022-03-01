@@ -10,10 +10,10 @@ class Intersection;
 class Connection : public LPOwner {
 
   public:
-    Intersection *from;
-    Intersection *to;
-    Port *fromPort;
-    Port *toPort;
+    Intersection* from;
+    Intersection* to;
+    Port* fromPort;
+    Port* toPort;
     uint8_t numLeds = 0;
     bool pixelDir;
     uint16_t fromPixel;

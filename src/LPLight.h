@@ -54,7 +54,7 @@ class LPLight
     virtual ColorRGB getColor() const;
     virtual void setColor(ColorRGB color) {}
     virtual uint8_t getBrightness() const;
-    virtual ColorRGB getPixelColor();
+    virtual ColorRGB getPixelColor() const;
     uint16_t* getPixels();
 
   private:

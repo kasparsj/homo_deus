@@ -90,8 +90,8 @@ bool Connection::render(LPLight* const light) const {
 }
 
 void Connection::outgoing(LPLight* const light) const {
-    const bool dir = light->outPort->direction;
     light->position -= numLeds;
+    const bool dir = light->outPort->direction;
     if (dir) {
         light->setInPort(fromPort);
     }
