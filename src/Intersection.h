@@ -34,11 +34,11 @@ class Intersection : public LPOwner {
 
   private:
 
-    uint16_t sumW(const Model *model, const Port *incoming) const;
-    Port* randomPort(const Port *incoming, const Behaviour *behaviour) const;
-    Port* choosePort(const Model *model, const LPLight* light) const;
-    Port* getOutPortFor(const LPLight* light) const;
-    Port* getPrevOutPort(const LPLight* light) const;
-    void handleColorChange(LPLight* const light, const Port *port) const;
+    uint16_t sumW(const Model* const model, const Port* const incoming) const;
+    Port* randomPort(const Port* const incoming, const Behaviour* const behaviour) const;
+    Port* choosePort(const Model* const model, const LPLight* const light) const;
+    Port* getOutPortFor(const LPLight* const light) const;
+    Port* getPrevOutPort(const LPLight* const light) const;
+    void handleColorChange(LPLight* const light, const Port* const port) const;
   
 };

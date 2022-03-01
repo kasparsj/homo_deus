@@ -67,7 +67,7 @@ void Intersection::update(LPLight* const light) const {
   }
 }
 
-Port* Intersection::getOutPortFor(const LPLight* light) const {
+Port* Intersection::getOutPortFor(const LPLight* const light) const {
     Port* port = getPrevOutPort(light);
     if (port == NULL) {
         port = choosePort(light->getModel(), light);
@@ -75,7 +75,7 @@ Port* Intersection::getOutPortFor(const LPLight* light) const {
     return port;
 }
 
-Port* Intersection::getPrevOutPort(const LPLight* light) const {
+Port* Intersection::getPrevOutPort(const LPLight* const light) const {
     Port* port = NULL;
     const LPLight* linkedPrev = light->getPrev();
     if (linkedPrev != NULL) {
@@ -84,14 +84,14 @@ Port* Intersection::getPrevOutPort(const LPLight* light) const {
     return port;
 }
 
-void Intersection::handleColorChange(LPLight* const light, const Port *port) const {
+void Intersection::handleColorChange(LPLight* const light, const Port* const port) const {
     const Behaviour* behaviour = light->getBehaviour();
     if (behaviour->colorChangeGroups & port->group) {
         light->setColor(behaviour->getColor(light, port->group));
     }
 }
 
-uint16_t Intersection::sumW(const Model *model, const Port *incoming) const {
+uint16_t Intersection::sumW(const Model* const model, const Port* const incoming) const {
   uint16_t sum = 0;
   for (uint8_t i=0; i<numPorts; i++) {
     Port *port = ports[i];
@@ -100,7 +100,7 @@ uint16_t Intersection::sumW(const Model *model, const Port *incoming) const {
   return sum;
 }
 
-Port* Intersection::randomPort(const Port *incoming, const Behaviour *behaviour) const {
+Port* Intersection::randomPort(const Port* const incoming, const Behaviour* const behaviour) const {
   Port *port;
   do {
     port = ports[(uint8_t) LP_RANDOM(numPorts)];
@@ -108,7 +108,7 @@ Port* Intersection::randomPort(const Port *incoming, const Behaviour *behaviour)
   return port;
 }
 
-Port* Intersection::choosePort(const Model *model, const LPLight *light) const {
+Port* Intersection::choosePort(const Model* const model, const LPLight* const light) const {
     Port *incoming = light->inPort;
     uint16_t sum = sumW(model, incoming);
     if (sum == 0) {
