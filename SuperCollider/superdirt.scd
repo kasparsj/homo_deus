@@ -29,7 +29,7 @@ var hdP = ~hdP;
 ~dirt.soundLibrary.addSynth(\hd_drone, (play: {
 	~freq = (~freq ? 51);
 	hdP.drone(
-		\instrument, if (~instrument.notNil, { ~instrument.asSymbol }, { [\SineDrone, \SineDrone, \PulseDrone].choose }),
+		\instrument, if (~inst.notNil, { ~inst.asSymbol }, { [\SineDrone, \SineDrone, \PulseDrone].choose }),
 		\freq, (~freq..(~freq+2)).scramble,
 		\pan, ~pan ? [-1, 1].scramble,
 		\dur, Pseq([~sustain], 1),
