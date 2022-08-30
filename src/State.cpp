@@ -139,12 +139,12 @@ void State::update() {
                     // first value is length
                     uint16_t numPixels = pixels[0];
                     for (uint16_t k=1; k<numPixels+1; k++) {
-                        setPixel(pixels[k], color);
+                        setPixels(pixels[k], color, lightList);
                     }
                 }
             }
             else if (light->pixel1 >= 0) {
-                setPixel(light->pixel1, color);
+                setPixels(light->pixel1, color, lightList);
             }
             light->nextFrame();
         }
@@ -160,6 +160,16 @@ ColorRGB State::getPixel(uint16_t i, uint8_t maxBrightness) {
     color.B = min(pixelValuesB[i] / pixelDiv[i] / 255.f, 1.f) * maxBrightness;
   }
   return color;
+}
+
+void State::setPixels(uint16_t pixel, ColorRGB &color, const LightList* const lightList) {
+    setPixel(pixel, color);
+    if (lightList->behaviour != NULL && lightList->behaviour->mirror()) {
+        uint16_t mirrorPixel = object.getMirrorPixel(pixel);
+        setPixel(mirrorPixel, color);
+        // rough fix for length difference
+        //setPixel(mirrorPixel + (lightList->speed/lightList->speed), color);
+    }
 }
 
 void State::setPixel(uint16_t pixel, ColorRGB &color) {

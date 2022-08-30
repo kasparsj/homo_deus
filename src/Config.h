@@ -72,6 +72,7 @@ enum BehaviourFlags {
     B_EMIT_FROM_CONN = 64,
     B_FILL_EASE = 128,
     B_RANDOM_COLOR = 256,
+    B_MIRROR = 512,
 };
 
 enum ListOrder { 

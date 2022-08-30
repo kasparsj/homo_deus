@@ -81,3 +81,29 @@ void HeptagonStar::setup() {
     models[M_INNER_TRIS]->put(innerConnection, 10);
   }
 }
+
+uint16_t HeptagonStar::getMirrorPixel(uint16_t pixel) const {
+    uint8_t pathIndex = 0;
+    for (int i=0; i<connCount[0]; i++) {
+        if (pixel >= conn[0][i]->to->topPixel && pixel <= conn[0][(i + 3) % 7]->from->topPixel) {
+            pathIndex = i;
+        }
+    }
+    uint8_t mirrorIndex = (pathIndex + 4) % 7;
+    float progress = getProgressOnOuterPath(pathIndex, pixel);
+    return getPixelOnOuterPath(mirrorIndex, progress);
+}
+
+float HeptagonStar::getProgressOnOuterPath(uint8_t pathIndex, uint16_t pixel) const {
+    Intersection *from = conn[0][pathIndex]->to;
+    uint8_t toIndex = (pathIndex + 3) % 7;
+    Intersection *to = conn[0][toIndex]->from;
+    return (float) (pixel - from->topPixel) / (to->topPixel - from->topPixel);
+}
+
+uint16_t HeptagonStar::getPixelOnOuterPath(uint8_t pathIndex, float perc) const {
+    Intersection *from = conn[0][pathIndex]->to;
+    uint8_t toIndex = (pathIndex + 3) % 7;
+    Intersection *to = conn[0][toIndex]->from;
+    return from->topPixel + round((to->topPixel - from->topPixel) * perc);
+}

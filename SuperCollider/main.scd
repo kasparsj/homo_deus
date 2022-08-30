@@ -4,7 +4,9 @@ s.latency = 0.1;
 s.waitForBoot {
 	"hd.scd".loadRelative;
 	"patterns.scd".loadRelative;
-	"superdirt.scd".loadRelative;
+	if (~dirt.notNil, {
+		"superdirt.scd".loadRelative;
+	});
 
 	//~hd.net = NetAddr("homo-deus", 54321);
 	//~hd.net = NetAddr("192.168.209.181", 54321);

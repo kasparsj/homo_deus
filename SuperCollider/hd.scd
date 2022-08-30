@@ -59,6 +59,7 @@ s.sync;
 	EMIT_FROM_CONN: 64,
 	FILL_EASE: 128,
 	RANDOM_COLOR: 256,
+	MIRROR: 512,
 );
 
 ~hd[\LIST_ORDER] = (

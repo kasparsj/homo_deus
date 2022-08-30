@@ -51,6 +51,7 @@ class State {
     
   private:
     void doEmit(LPOwner* from, LightList *lightList, EmitParams& params);
+    void setPixels(uint16_t pixel, ColorRGB &color, const LightList* const lightList);
     void setPixel(uint16_t pixel, ColorRGB &color);
 
 };

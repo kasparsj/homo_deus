@@ -22,10 +22,10 @@ class LPObject {
     void initInter(uint8_t inter1Count, uint8_t inter2Count=0, uint8_t inter3Count=0, uint8_t inter4Count=0, uint8_t inter5Count=0);
     void initConn(uint8_t conn1Count, uint8_t conn2Count=0, uint8_t conn3Count=0, uint8_t conn4Count=0, uint8_t conn5Count=0);
     void initModels(uint8_t modelCount);
-    Model* addModel(Model *model);
-    Intersection* addIntersection(Intersection *intersection);
-    Connection* addConnection(Connection *connection);
-    Connection* addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group);
+    virtual Model* addModel(Model *model);
+    virtual Intersection* addIntersection(Intersection *intersection);
+    virtual Connection* addConnection(Connection *connection);
+    virtual Connection* addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group);
     Model* getModel(int i) {
       return models[i];
     }
@@ -49,6 +49,9 @@ class LPObject {
         }
         return count;
     }
+    
+    virtual bool isMirrorSupported() { return false; }
+    virtual uint16_t getMirrorPixel(uint16_t pixel) const = 0;
 
   private:
     uint8_t nextInter[MAX_GROUPS];

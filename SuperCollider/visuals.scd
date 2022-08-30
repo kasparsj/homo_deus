@@ -6,18 +6,18 @@
 
 ~hd.stopAll();
 
-//
 (
-Pbind(
+Pdef(\segment_test, Pbind(
 	\type, \hd,
 	\behaviour, \RENDER_SEGMENT,
 	\length, 1,
-).play;
+)).play;
 )
 
-//
+Pdef(\segment_test).stop;
+
 (
-Pbind(
+Pdef(\fade_test, Pbind(
 	\type, \hd,
 	\head, 1,
 	\trail, 0,
@@ -28,5 +28,17 @@ Pbind(
 	//\thresh, 0.98,
 	\fadeEase, \EXPONENTIAL_IN,
 	//\minBri, 1.0,
-).play;
+)).play;
 )
+
+Pdef(\fade_test).stop;
+
+(
+Pdef(\mirror_test, Pbind(
+	\type, \hd,
+	\behaviour, \MIRROR,
+//	\length, 1,
+)).play;
+)
+
+Pdef(\mirror_test).stop;

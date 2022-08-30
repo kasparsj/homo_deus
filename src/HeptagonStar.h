@@ -23,6 +23,12 @@ class HeptagonStar : public LPObject {
     HeptagonStar(uint16_t pixelCount) : LPObject(pixelCount) {
         setup();
     }
+    
+    bool isMirrorSupported() { return true; }
+    uint16_t getMirrorPixel(uint16_t pixel) const;
+    float getProgressOnOuterPath(uint8_t pathIndex, uint16_t pixel) const;
+    uint16_t getPixelOnOuterPath(uint8_t pathIndex, float perc) const;
+    // todo: implement getXYZ
 
   private:
     void setup();
