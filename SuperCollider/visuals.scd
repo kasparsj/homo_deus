@@ -36,9 +36,9 @@ Pdef(\fade_test).stop;
 (
 Pdef(\mirror_test, Pbind(
 	\type, \hd,
+	\behaviour, \MIRROR,
 	// \behaviour, \MIRROR_ROTATE,
-	\behaviour, \MIRROR_FLIP,
-	\from, 0,
+	// \from, 0,
 	// \behaviour, [\MIRROR_FLIP, \RENDER_SEGMENT],
 	// \speed, 1,
 	// \length, 1,
