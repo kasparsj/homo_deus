@@ -11,7 +11,8 @@ s.waitForBoot {
 	//~hd.net = NetAddr("homo-deus", 54321);
 	//~hd.net = NetAddr("192.168.209.181", 54321);
 	//~hd.net = NetAddr("192.168.0.105", 54321);
-	~hd.net = NetAddr("127.0.0.1", 54321);
+	~hd.net = NetAddr("192.168.0.111", 54321);
+	//~hd.net = NetAddr("127.0.0.1", 54321);
 
 	~playAuto = false;
 	if (~playAuto) {

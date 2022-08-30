@@ -39,7 +39,7 @@ Pdef(\mirror_test, Pbind(
 	// \behaviour, \MIRROR_ROTATE,
 	\behaviour, \MIRROR_FLIP,
 	\from, 0,
-	\behaviour, [\MIRROR_FLIP, \RENDER_SEGMENT],
+	// \behaviour, [\MIRROR_FLIP, \RENDER_SEGMENT],
 	// \speed, 1,
 	// \length, 1,
 )).play;

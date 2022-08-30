@@ -86,6 +86,7 @@ uint16_t* HeptagonStar::getMirroredPixels(uint16_t pixel, LPOwner* mirrorFlipEmi
     uint8_t pathIndex = getStarSegmentIndex(pixel);
     float progress = getProgressOnStarSegment(pathIndex, pixel);
     uint8_t i = 1;
+    mirrorPixels[0] = 0;
     if (mirrorFlipEmitter != NULL) {
         try {
             uint8_t emitterIndex = static_cast<Intersection*>(mirrorFlipEmitter)->id / 2;
