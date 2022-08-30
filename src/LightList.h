@@ -32,7 +32,7 @@ class LightList {
     uint16_t numLights = 0;
     uint16_t lead = 0;
     uint16_t trail = 0;
-    LPLight **lights;
+    LPLight **lights = 0;
     LPOwner *emitter = 0;
     uint16_t numEmitted = 0;
     uint8_t numSplits = 0;
@@ -47,20 +47,12 @@ class LightList {
         delete behaviour;
       }
     }
-
+    
     void init(uint16_t numLights);
     void setup(uint16_t numLights, uint8_t brightness = 255);
-    float getBriMult(uint16_t i) {
-        float mult = 1.f;
-        if (i < lead) {
-            mult = (255.f / (lead + 1)) * (i + 1) / 255.f;
-        }
-        else if (i >= lead + body()) {
-            uint16_t j = i - (lead + body());
-            mult = (255.f - (255.f / (trail + 1)) * (j + 1)) / 255.f;
-        }
-        return mult;
-    }
+    
+    uint8_t randomBrightness();
+    float getBriMult(uint16_t i);
 
     LPLight* operator [] (uint16_t i) const {
       return lights[i];
@@ -86,6 +78,7 @@ class LightList {
     void setLeadTrail(uint16_t trail);
     void setDuration(uint32_t durMillis);
     void setColor(ColorRGB color);
+    void setupWith(uint16_t length, EmitParams &params);
     void initEmit(uint8_t posOffset = 0);
     bool update();
     void split();

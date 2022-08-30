@@ -2,12 +2,20 @@
 #include "Light.h"
 #include "Model.h"
 #include "Globals.h"
+#include "LPRandom.h"
 
 uint16_t LightList::nextId = 0;
 
 void LightList::init(uint16_t numLights) {
-  this->numLights = numLights;
-  lights = new LPLight*[numLights]();
+    if (lights != NULL) {
+        for (uint16_t i=0; i<this->numLights; i++) {
+            delete lights[i];
+        }
+        delete lights;
+    }
+    this->numLights = numLights;
+    numEmitted = 0;
+    lights = new LPLight*[numLights]();
 }
 
 void LightList::setup(uint16_t numLights, uint8_t brightness) {
@@ -15,6 +23,22 @@ void LightList::setup(uint16_t numLights, uint8_t brightness) {
     for (uint16_t i=0; i<this->numLights; i++) {
         createLight(i, brightness);
     }
+}
+
+uint8_t LightList::randomBrightness() {
+  return LP_RANDOM(256);
+}
+
+float LightList::getBriMult(uint16_t i) {
+    float mult = 1.f;
+    if (i < lead) {
+        mult = (255.f / (lead + 1)) * (i + 1) / 255.f;
+    }
+    else if (i >= lead + body()) {
+        uint16_t j = i - (lead + body());
+        mult = (255.f - (255.f / (trail + 1)) * (j + 1)) / 255.f;
+    }
+    return mult;
 }
 
 LPLight* LightList::createLight(uint16_t i, uint8_t brightness) {
@@ -70,6 +94,25 @@ void LightList::setLeadTrail(uint16_t trail) {
         this->lead = (uint16_t) trail / 2;
         this->trail = (uint16_t) ceil(trail / 2.f);
     }
+}
+
+void LightList::setupWith(uint16_t length, EmitParams &params) {
+    float speed = params.speed >= 0 ? params.speed : LPRandom::randomSpeed();
+    uint32_t duration = params.duration > 0 ? params.duration : LPRandom::randomDuration();
+    order = params.order;
+    head = params.head;
+    linked = params.linked;
+    minBri = params.minBri;
+    setColor(params.color);
+    setSpeed(speed, params.ease);
+    setDuration(duration);
+    setFade(params.fadeSpeed, params.fadeThresh, params.fadeEase);
+    noteId = params.noteId;
+    uint16_t numTrail = params.speed == 0 ? params.trail : params.getSpeedTrail(speed, length);
+    uint8_t maxBri = params.maxBri > 0 ? params.maxBri : randomBrightness();
+    uint16_t numFull = max(1, length - numTrail);
+    setLeadTrail(numTrail);
+    setup(numFull, maxBri);
 }
 
 void LightList::initEmit(uint8_t posOffset) {

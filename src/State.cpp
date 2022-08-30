@@ -20,10 +20,6 @@ uint16_t State::randomLength() {
   return (uint16_t) (EMITTER_MIN_LENGTH + LP_RANDOM(max(EMITTER_MAX_LENGTH - EMITTER_MIN_LENGTH, 0)));
 }
 
-uint8_t State::randomBrightness() {
-  return LP_RANDOM(256);
-}
-
 uint16_t State::randomNextEmit() {
   return EMITTER_MIN_NEXT + LP_RANDOM(max(EMITTER_MAX_NEXT - EMITTER_MIN_NEXT, 0));
 }
@@ -34,7 +30,9 @@ ColorRGB State::paletteColor(uint8_t color) {
   CRGB crgb = ColorFromPalette(palette, color);
   return ColorRGB(crgb.r, crgb.g, crgb.b);  
   #else
-  return ColorRGB();
+  uint8_t g = (color >> 4) & 0xF;
+  uint8_t b = (color & 0xF);
+  return ColorRGB(255, g * 16, b * 16);
   #endif
 }
 
@@ -47,49 +45,49 @@ void State::autoEmit(unsigned long ms) {
 }
 
 int8_t State::emit(EmitParams &params) {
-  uint16_t length = params.length > 0 ? params.length : randomLength();
-  if (totalLights + length > MAX_TOTAL_LIGHTS) {
-    LP_LOGF("emit failed, %d is over max %d lights\n", totalLights + length, MAX_TOTAL_LIGHTS);
-    return -1;
-  }
-  uint8_t which = params.model >= 0 ? params.model : randomModel();  
-  Model *model = object.getModel(which);
-  Behaviour *behaviour = new Behaviour(params);
-  LPOwner *emitter = getEmitter(model, behaviour, params);
-  if (emitter == NULL) {
-    LP_LOGF("emit failed, no free emitter.");
-    return -1;
-  }
-  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
-    if (lightLists[i] == NULL) {
-      float speed = params.speed >= 0 ? params.speed : LPRandom::randomSpeed();
-      uint32_t duration = params.duration > 0 ? params.duration : LPRandom::randomDuration();
-      uint8_t maxBri = params.maxBri > 0 ? params.maxBri : randomBrightness();
-      uint16_t numTrail = params.speed == 0 ? params.trail : params.getSpeedTrail(speed, length);
-      lightLists[i] = new LightList();
-      lightLists[i]->model = model;
-      lightLists[i]->behaviour = behaviour;
-      lightLists[i]->order = params.order;
-      lightLists[i]->head = params.head;
-      lightLists[i]->linked = params.linked;
-      lightLists[i]->minBri = params.minBri;
-      lightLists[i]->setColor(params.color);
-      lightLists[i]->setSpeed(speed, params.ease);
-      lightLists[i]->setDuration(duration);
-      lightLists[i]->setFade(params.fadeSpeed, params.fadeThresh, params.fadeEase);
-      lightLists[i]->setLeadTrail(numTrail);
-      lightLists[i]->noteId = params.noteId;
-      uint16_t numFull = max(1, length - numTrail);
-      lightLists[i]->setup(numFull, maxBri);
-      doEmit(emitter, lightLists[i], params);
-      #ifdef LP_OSC_REPLY
-      LP_OSC_REPLY(i);
-      #endif
-      return i;
+    uint8_t which = params.model >= 0 ? params.model : randomModel();
+    Model *model = object.getModel(which);
+    Behaviour *behaviour = new Behaviour(params);
+    int8_t index = prepareFrom(params);
+    if (index > -1) {
+        lightLists[index]->model = model;
+        lightLists[index]->behaviour = behaviour;
+        LPOwner *emitter = getEmitter(model, behaviour, params);
+        if (emitter == NULL) {
+            LP_LOGF("emit failed, no free emitter.");
+            return -1;
+        }
+        doEmit(emitter, lightLists[index], params);
+        #ifdef LP_OSC_REPLY
+        LP_OSC_REPLY(i);
+        #endif
     }
-  }
-  LP_LOGF("emit failed: no free light lists");
-  return -1;
+}
+
+int8_t State::prepareFrom(EmitParams &params) {
+    uint16_t length = params.length > 0 ? params.length : randomLength();
+    if (totalLights + length > MAX_TOTAL_LIGHTS) {
+      LP_LOGF("emit failed, %d is over max %d lights\n", totalLights + length, MAX_TOTAL_LIGHTS);
+      return -1;
+    }
+    if (params.noteId > 0) {
+        int8_t noteIndex = findNote(params.noteId);
+        if (noteIndex > -1) {
+            totalLights -= lightLists[noteIndex]->numLights;
+            totalLightLists--;
+            lightLists[noteIndex]->setupWith(length, params);
+            return noteIndex;
+        }
+    }
+    for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
+      if (lightLists[i] == NULL) {
+        lightLists[i] = new LightList();
+        lightLists[i]->setupWith(length, params);
+        return i;
+      }
+    }
+    LP_LOGF("emit failed: no free light lists");
+    return -1;
 }
 
 LPOwner* State::getEmitter(Model* model, Behaviour* behaviour, EmitParams& params) {
@@ -206,13 +204,21 @@ void State::stopAll() {
   }
 }
 
-void State::stopNote(uint8_t noteId) {
-  for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
-    if (lightLists[i] == NULL) continue;
-    if (lightLists[i]->noteId == noteId) {
-      lightLists[i]->setDuration(0);
+int8_t State::findNote(uint8_t noteId) {
+    for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
+      if (lightLists[i] == NULL) continue;
+      if (lightLists[i]->noteId == noteId) {
+        return i;
+      }
     }
-  }
+    return -1;
+}
+
+void State::stopNote(uint8_t noteId) {
+    int8_t index = findNote(noteId);
+    if (index > -1) {
+        lightLists[index]->setDuration(0);
+    }
 }
 
 void State::debug() {

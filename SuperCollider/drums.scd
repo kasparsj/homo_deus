@@ -1,5 +1,6 @@
 (
-~threshold = 1.0;
+~threshold = 0.5;
+~rate = 64;
 ~synths = [];
 ~file = "/Users/kasparsj/Music/ivars/tema1.wav";
 // ~file = "/Users/kasparsj/Music/ivars/tema1_2.wav";
@@ -20,34 +21,40 @@ if (~file.isNil, {
 
 (
 SynthDef(\soundin, {|out=0, in=0, rate=60|
-	var input, amp, chain, onset, loudness, mfcc, trig;
+	var input, amp, chain, onset, loudness, mfcc, track, trig;
+	var trackb, trackh, trackq, tempo;
     input = SoundIn.ar(in);
 	chain = FFT(LocalBuf(1024), input);
 	onset = Onsets.kr(chain, ~threshold);
 	amp = Amplitude.kr(input);
     loudness = Loudness.kr(chain);
 	mfcc = MFCC.kr(chain, 3);
+	track = [];//track = AutoTrack.kr(input);
     trig = Impulse.kr(rate);
-    SendReply.kr(trig, '/visuals', [in, onset, amp, loudness] ++ mfcc);
+    SendReply.kr(trig, '/visuals', [in, onset, amp, loudness] ++ track ++ mfcc);
 //	Out.ar(out, input);
 }).add;
 
 SynthDef(\buf, {|out=0, in=0, rate=60, bufnum|
-	var input, amp, chain, onset, loudness, mfcc, trig;
+	var input, amp, chain, onset, loudness, mfcc, track, trig;
+	var trackb, trackh, trackq, tempo;
 	input = PlayBuf.ar(1, bufnum, BufRateScale.kr(bufnum), loop: 1);
 	chain = FFT(LocalBuf(1024), input);
 	onset = Onsets.kr(chain, ~threshold);
 	amp = Amplitude.kr(input);
     loudness = Loudness.kr(chain);
-	mfcc = MFCC.kr(chain);
+	mfcc = MFCC.kr(chain, 3);
+	track = [];//track = AutoTrack.kr(input);
     trig = Impulse.kr(rate);
-    SendReply.kr(trig, '/visuals', [in, onset, amp, loudness] ++ mfcc);
+    SendReply.kr(trig, '/channel_data', [in, onset, amp, loudness] ++ track ++ mfcc);
 	Out.ar(out, Splay.ar(input));
 }).add;
 )
 
+~hd.stopAll();
+
 (
-OSCdef(\visuals, {|msg|
+OSCdef(\channel_rec, {|msg|
     var data = msg[3..];
 	var in = data[0];
 	var onset = data[1];
@@ -55,26 +62,44 @@ OSCdef(\visuals, {|msg|
 	var loudness = data[3];
 	var mfcc = data[4..];
 	if (onset == 1, {
-		(
+		/*(
 			type: \hd,
 			from: in.asInteger,
+			emit: 0,
 			length: loudness / 4,
 			//color: (mfcc * 255).collect(_.asInteger),
-			color: [(mfcc[0] * 255).asInteger, 64, (mfcc[1] * 127).asInteger],
+			//color: [(mfcc[0] * 255).asInteger, 64, (mfcc[1] * 127).asInteger],
+			colorIndex: in.asInteger * 32,
 			//life: (amp / 100).asInteger,
-			speed: amp * 40,
+			dur: amp * 7,
+			speed: amp * 10,
 			life: loudness / 5,
 			behaviour: [\EXPIRE_IMMEDIATE, \MIRROR],
-		).play;
+		).play;*/
 	});
-}, '/visuals');
+	// not working very well
+	(
+		type: \hd,
+		from: (in*2).asInteger,
+		length: (amp * 100).max(1).pow(3).asInteger,
+		speed: 0,
+		//color: [(mfcc[0] * 255).asInteger, 64, (mfcc[1] * 127).asInteger],
+		//color: (mfcc * 255).collect(_.asInteger),
+		//color: 0xffffff,
+		color: 0xff0000,
+		// colorIndex: in.asInteger * 32,
+		dur: 1,
+		behaviour: [\MIRROR],
+		noteId: (1+in).asInteger,
+	).play;
+}, '/channel_data');
 )
 
 (
 var synthName = if (~file.isNil, { \soundin }, { \buf });
 ~numChannels.do {|i|
 	var bufnum = if (~file.isNil, { nil }, { ~buffers[i].bufnum; });
-	~synths = ~synths.add(Synth(synthName, [in: i, rate: 120, bufnum: bufnum]));
+	~synths = ~synths.add(Synth(synthName, [in: i, rate: ~rate, bufnum: bufnum]));
 };
 )
 

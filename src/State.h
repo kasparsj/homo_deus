@@ -35,16 +35,17 @@ class State {
     
     uint8_t randomModel();
     uint16_t randomLength();
-    uint8_t randomBrightness();
     uint16_t randomNextEmit();
     ColorRGB paletteColor(uint8_t color);
     void autoEmit(unsigned long millis);
     int8_t emit(EmitParams &params);
+    int8_t prepareFrom(EmitParams &params);
     LPOwner* getEmitter(Model* model, Behaviour* behaviour, EmitParams& params);
     void update();
     void colorAll();
     void splitAll();
     void stopAll();
+    int8_t findNote(uint8_t noteId);
     void stopNote(uint8_t i);
     ColorRGB getPixel(uint16_t i, uint8_t maxBrightness = FULL_BRIGHTNESS);
     void debug();

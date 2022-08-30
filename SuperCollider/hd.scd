@@ -140,16 +140,23 @@ s.sync;
 		var color = self.getColor(~color.value);
 		if (color.notNil) {
 			args = args.addAll([self[\PARAM][\COLOR], color]);
+		} {
+			if (~colorIndex.value.notNil) {
+				args = args.addAll([self[\PARAM][\COLOR_INDEX], ~colorIndex.value]);
+			};
 		};
 		if (self.useEmit) {
 			// emit (with duration)
 			var duration = dur+lag+serverLatency;
 			args[1] = "/emit";
 			args = args.addAll([self[\PARAM][\DURATION], (duration*1000).asInteger]);
+			if (~noteId.value.notNil, {
+				args = args.addAll([self[\PARAM][\NOTE_ID], ~noteId.value]);
+			});
 			self.sendMsgIn(*args);
 		} {
 			// note_on + note_off
-			var noteId = self.getNoteId();
+			var noteId = ~noteId.value ? self.getNoteId();
 			var offTime = (thisThread.clock.tempo.reciprocal*dur)+lag+serverLatency;
 			args = args.addAll([self[\PARAM][\NOTE_ID], noteId]);
 			args[1] = "/note_on";
