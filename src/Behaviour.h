@@ -41,7 +41,10 @@ class Behaviour {
     bool randomColor() const {
         return flags & B_RANDOM_COLOR;
     }
-    bool mirror() const {
-        return flags & B_MIRROR;
+    bool mirrorFlip() const {
+        return flags & B_MIRROR_FLIP;
+    }
+    bool mirrorRotate() const {
+        return flags & B_MIRROR_ROTATE;
     }
 };

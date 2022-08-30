@@ -25,12 +25,15 @@ class HeptagonStar : public LPObject {
     }
     
     bool isMirrorSupported() { return true; }
-    uint16_t getMirrorPixel(uint16_t pixel) const;
-    float getProgressOnOuterPath(uint8_t pathIndex, uint16_t pixel) const;
-    uint16_t getPixelOnOuterPath(uint8_t pathIndex, float perc) const;
+    uint16_t* getMirroredPixels(uint16_t pixel, LPOwner* mirrorFlipEmitter, bool mirrorRotate);
+    uint8_t getStarSegmentIndex(uint16_t pixel) const;
+    float getProgressOnStarSegment(uint8_t pathIndex, uint16_t pixel) const;
+    uint16_t getPixelOnStarSegment(uint8_t pathIndex, float perc) const;
     // todo: implement getXYZ
 
   private:
     void setup();
+    
+    uint16_t mirrorPixels[3];
 
 };

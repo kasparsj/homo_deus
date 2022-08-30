@@ -51,7 +51,7 @@ class LPObject {
     }
     
     virtual bool isMirrorSupported() { return false; }
-    virtual uint16_t getMirrorPixel(uint16_t pixel) const = 0;
+    virtual uint16_t* getMirroredPixels(uint16_t pixel, LPOwner* mirrorFlipEmitter, bool mirrorRotate) = 0;
 
   private:
     uint8_t nextInter[MAX_GROUPS];

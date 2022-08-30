@@ -164,11 +164,15 @@ ColorRGB State::getPixel(uint16_t i, uint8_t maxBrightness) {
 
 void State::setPixels(uint16_t pixel, ColorRGB &color, const LightList* const lightList) {
     setPixel(pixel, color);
-    if (lightList->behaviour != NULL && lightList->behaviour->mirror()) {
-        uint16_t mirrorPixel = object.getMirrorPixel(pixel);
-        setPixel(mirrorPixel, color);
-        // rough fix for length difference
-        //setPixel(mirrorPixel + (lightList->speed/lightList->speed), color);
+    if (lightList->behaviour != NULL && (lightList->behaviour->mirrorFlip() || lightList->behaviour->mirrorRotate())) {
+        uint16_t* mirrorPixels = object.getMirroredPixels(pixel, lightList->behaviour->mirrorFlip() ? lightList->emitter : 0, lightList->behaviour->mirrorRotate());
+        if (mirrorPixels != NULL) {
+            // first value is length
+            uint16_t numPixels = mirrorPixels[0];
+            for (uint16_t k=1; k<numPixels+1; k++) {
+                setPixel(mirrorPixels[k], color);
+            }
+        }
     }
 }
 
