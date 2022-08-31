@@ -98,10 +98,12 @@ void LightList::setupFrom(EmitParams &params, uint16_t totalLights) {
     if (length > 0 && behaviour->smoothChanges()) {
         newLen = length + (newLen- length) * 0.1;
     }
-    if (totalLights + newLen > MAX_TOTAL_LIGHTS) {
-        char error[50];
-        sprintf(error, "emit failed, %d is over max %d lights\n", totalLights + newLen, MAX_TOTAL_LIGHTS);
-        throw error;
+    if (totalLights - length + newLen > MAX_TOTAL_LIGHTS) {
+        // todo: fix
+        //char error[50];
+        //sprintf(error, "emit failed, %d is over max %d lights\n", totalLights + newLen, MAX_TOTAL_LIGHTS);
+        //throw error;
+        throw "emit failed, over max lights";
     }
     if (behaviour != NULL) {
         delete behaviour;

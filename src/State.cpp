@@ -61,7 +61,6 @@ int8_t State::emit(EmitParams &params) {
 int8_t State::getOrCreateList(EmitParams &params) {
     LightList* lightList = NULL;
     try {
-        uint16_t length = params.getLength();
         if (params.noteId > 0) {
             int8_t listIndex = findList(params.noteId);
             if (listIndex > -1) {
