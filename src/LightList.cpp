@@ -2,7 +2,7 @@
 #include "Light.h"
 #include "Model.h"
 #include "Globals.h"
-#include "LPRandom.h"
+#include <stdio.h>
 
 uint16_t LightList::nextId = 0;
 
@@ -23,10 +23,6 @@ void LightList::setup(uint16_t numLights, uint8_t brightness) {
     for (uint16_t i=0; i<this->numLights; i++) {
         createLight(i, brightness);
     }
-}
-
-uint8_t LightList::randomBrightness() {
-  return LP_RANDOM(256);
 }
 
 float LightList::getBriMult(uint16_t i) {
@@ -96,21 +92,34 @@ void LightList::setLeadTrail(uint16_t trail) {
     }
 }
 
-void LightList::setupWith(uint16_t length, EmitParams &params) {
-    float speed = params.speed >= 0 ? params.speed : LPRandom::randomSpeed();
-    uint32_t duration = params.duration > 0 ? params.duration : LPRandom::randomDuration();
+void LightList::setupFrom(EmitParams &params, uint16_t totalLights) {
+    uint16_t newLen = params.getLength();
+    Behaviour* newBehaviour = new Behaviour(params);
+    if (length > 0 && behaviour->smoothChanges()) {
+        newLen = length + (newLen- length) * 0.1;
+    }
+    if (totalLights + newLen > MAX_TOTAL_LIGHTS) {
+        char error[50];
+        sprintf(error, "emit failed, %d is over max %d lights\n", totalLights + newLen, MAX_TOTAL_LIGHTS);
+        throw error;
+    }
+    if (behaviour != NULL) {
+        delete behaviour;
+    }
+    behaviour = newBehaviour;
+    length = newLen;
     order = params.order;
     head = params.head;
     linked = params.linked;
     minBri = params.minBri;
     setColor(params.color);
-    setSpeed(speed, params.ease);
-    setDuration(duration);
+    setSpeed(params.getSpeed(), params.ease);
+    setDuration(params.getDuration());
     setFade(params.fadeSpeed, params.fadeThresh, params.fadeEase);
     noteId = params.noteId;
-    uint16_t numTrail = params.speed == 0 ? params.trail : params.getSpeedTrail(speed, length);
-    uint8_t maxBri = params.maxBri > 0 ? params.maxBri : randomBrightness();
-    uint16_t numFull = max(1, length - numTrail);
+    uint16_t numTrail = params.speed == 0 ? params.trail : params.getSpeedTrail(speed, newLen);
+    uint8_t maxBri = params.getMaxBri();
+    uint16_t numFull = max(1, newLen - numTrail);
     setLeadTrail(numTrail);
     setup(numFull, maxBri);
 }

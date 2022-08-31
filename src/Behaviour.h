@@ -47,4 +47,7 @@ class Behaviour {
     bool mirrorRotate() const {
         return flags & B_MIRROR_ROTATE;
     }
+    bool smoothChanges() const {
+        return flags & B_SMOOTH_CHANGES;
+    }
 };

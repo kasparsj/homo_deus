@@ -16,10 +16,6 @@ uint8_t State::randomModel() {
   return floor(LP_RANDOM(object.modelCount));
 }
 
-uint16_t State::randomLength() {
-  return (uint16_t) (EMITTER_MIN_LENGTH + LP_RANDOM(max(EMITTER_MAX_LENGTH - EMITTER_MIN_LENGTH, 0)));
-}
-
 uint16_t State::randomNextEmit() {
   return EMITTER_MIN_NEXT + LP_RANDOM(max(EMITTER_MAX_NEXT - EMITTER_MIN_NEXT, 0));
 }
@@ -47,12 +43,10 @@ void State::autoEmit(unsigned long ms) {
 int8_t State::emit(EmitParams &params) {
     uint8_t which = params.model >= 0 ? params.model : randomModel();
     Model *model = object.getModel(which);
-    Behaviour *behaviour = new Behaviour(params);
-    int8_t index = prepareFrom(params);
+    int8_t index = getOrCreateList(params);
     if (index > -1) {
         lightLists[index]->model = model;
-        lightLists[index]->behaviour = behaviour;
-        LPOwner *emitter = getEmitter(model, behaviour, params);
+        LPOwner *emitter = getEmitter(model, lightLists[index]->behaviour, params);
         if (emitter == NULL) {
             LP_LOGF("emit failed, no free emitter.");
             return -1;
@@ -64,30 +58,38 @@ int8_t State::emit(EmitParams &params) {
     }
 }
 
-int8_t State::prepareFrom(EmitParams &params) {
-    uint16_t length = params.length > 0 ? params.length : randomLength();
-    if (totalLights + length > MAX_TOTAL_LIGHTS) {
-      LP_LOGF("emit failed, %d is over max %d lights\n", totalLights + length, MAX_TOTAL_LIGHTS);
-      return -1;
-    }
-    if (params.noteId > 0) {
-        int8_t noteIndex = findNote(params.noteId);
-        if (noteIndex > -1) {
-            totalLights -= lightLists[noteIndex]->numLights;
-            totalLightLists--;
-            lightLists[noteIndex]->setupWith(length, params);
-            return noteIndex;
+int8_t State::getOrCreateList(EmitParams &params) {
+    LightList* lightList = NULL;
+    try {
+        uint16_t length = params.getLength();
+        if (params.noteId > 0) {
+            int8_t listIndex = findList(params.noteId);
+            if (listIndex > -1) {
+                uint16_t prevLights = lightLists[listIndex]->numLights;
+                lightLists[listIndex]->setupFrom(params, totalLights);
+                totalLights -= prevLights;
+                totalLightLists--;
+                return listIndex;
+            }
         }
+        for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
+          if (lightLists[i] == NULL) {
+            lightList = new LightList();
+            lightList->setupFrom(params, totalLights);
+            lightLists[i] = lightList;
+            return i;
+          }
+        }
+        LP_LOGF("emit failed: no free light lists");
+        return -1;
     }
-    for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
-      if (lightLists[i] == NULL) {
-        lightLists[i] = new LightList();
-        lightLists[i]->setupWith(length, params);
-        return i;
-      }
+    catch (const char * error) {
+        if (lightList != NULL) {
+            delete lightList;
+        }
+        LP_LOGF(error);
+        return -1;
     }
-    LP_LOGF("emit failed: no free light lists");
-    return -1;
 }
 
 LPOwner* State::getEmitter(Model* model, Behaviour* behaviour, EmitParams& params) {
@@ -204,7 +206,7 @@ void State::stopAll() {
   }
 }
 
-int8_t State::findNote(uint8_t noteId) {
+int8_t State::findList(uint8_t noteId) {
     for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
       if (lightLists[i] == NULL) continue;
       if (lightLists[i]->noteId == noteId) {
@@ -215,7 +217,7 @@ int8_t State::findNote(uint8_t noteId) {
 }
 
 void State::stopNote(uint8_t noteId) {
-    int8_t index = findNote(noteId);
+    int8_t index = findList(noteId);
     if (index > -1) {
         lightLists[index]->setDuration(0);
     }

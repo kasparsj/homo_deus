@@ -29,6 +29,7 @@ class LightList {
     bool linked = true;
     Model *model = 0;
     Behaviour *behaviour = 0;
+    uint16_t length = 0;
     uint16_t numLights = 0;
     uint16_t lead = 0;
     uint16_t trail = 0;
@@ -51,7 +52,6 @@ class LightList {
     void init(uint16_t numLights);
     void setup(uint16_t numLights, uint8_t brightness = 255);
     
-    uint8_t randomBrightness();
     float getBriMult(uint16_t i);
 
     LPLight* operator [] (uint16_t i) const {
@@ -78,7 +78,7 @@ class LightList {
     void setLeadTrail(uint16_t trail);
     void setDuration(uint32_t durMillis);
     void setColor(ColorRGB color);
-    void setupWith(uint16_t length, EmitParams &params);
+    void setupFrom(EmitParams &params, uint16_t totalLights);
     void initEmit(uint8_t posOffset = 0);
     bool update();
     void split();

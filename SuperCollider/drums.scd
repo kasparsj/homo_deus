@@ -81,7 +81,8 @@ OSCdef(\channel_rec, {|msg|
 	(
 		type: \hd,
 		from: (in*2).asInteger,
-		length: (amp * 100).max(1).pow(3).asInteger,
+		// length: (amp * 100).max(1).pow(3).asInteger,
+		length: ((amp.exp.pow(5)*60)-60).asInteger,
 		speed: 0,
 		//color: [(mfcc[0] * 255).asInteger, 64, (mfcc[1] * 127).asInteger],
 		//color: (mfcc * 255).collect(_.asInteger),
@@ -89,7 +90,7 @@ OSCdef(\channel_rec, {|msg|
 		color: 0xff0000,
 		// colorIndex: in.asInteger * 32,
 		dur: 1,
-		behaviour: [\MIRROR],
+		behaviour: [\MIRROR, \SMOOTH_CHANGES],
 		noteId: (1+in).asInteger,
 	).play;
 }, '/channel_data');

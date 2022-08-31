@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include "Config.h"
+#include "LPRandom.h"
 
 using std::min;
 using std::max;
@@ -41,6 +42,14 @@ class EmitParams {
     static uint8_t DEFAULT_BRIGHTNESS;
     static int64_t DEFAULT_COLOR;
     static float DURATION_FPS;
+    
+    static uint16_t randomLength() {
+      return (uint16_t) (EMITTER_MIN_LENGTH + LP_RANDOM(max(EMITTER_MAX_LENGTH - EMITTER_MIN_LENGTH, 0)));
+    }
+    
+    static uint8_t randomBrightness() {
+      return LP_RANDOM(256);
+    }
 
     int8_t model = DEFAULT_MODEL;
     float speed = DEFAULT_SPEED;
@@ -48,7 +57,7 @@ class EmitParams {
     uint8_t fadeSpeed = 0;
     uint8_t fadeThresh = 0;
     uint8_t fadeEase = 0;
-    uint16_t length = 0;
+    uint16_t* length = 0;
     uint16_t trail = 0;
     ListOrder order = LIST_ORDER_SEQUENTIAL;
     ListHead head = LIST_HEAD_FRONT;
@@ -82,12 +91,37 @@ class EmitParams {
     EmitParams() : EmitParams(DEFAULT_MODEL, DEFAULT_SPEED) {
 
     }
+    
+    ~EmitParams() {
+      delete length;
+    }
+    
+    float getSpeed() const {
+        return speed >= 0 ? speed : LPRandom::randomSpeed();
+    }
 
+    uint16_t getLength() const {
+        return length != NULL ? *length : randomLength();
+    }
+    
+    void setLength(uint16_t value) {
+        if (length == NULL) length = new uint16_t;
+        *length = value;
+    }
+    
     uint16_t getSpeedTrail(float speed, uint16_t length) {
       uint16_t trail = 0;
       if (order == LIST_ORDER_SEQUENTIAL && linked && !(behaviourFlags & B_RENDER_SEGMENT)) {
         trail = min((int) (speed * max(1, length / 2)), EMITTER_MAX_LENGTH - 1);
       }
       return trail;
+    }
+    
+    uint32_t getDuration() const {
+        duration > 0 ? duration : LPRandom::randomDuration();
+    }
+    
+    uint8_t getMaxBri() const {
+        return maxBri > 0 ? maxBri : randomBrightness();
     }
 };

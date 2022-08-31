@@ -62,6 +62,7 @@ s.sync;
 	MIRROR_FLIP: 512,
 	MIRROR: 512, // alias
 	MIRROR_ROTATE: 1024,
+	SMOOTH_CHANGES: 2048,
 );
 
 ~hd[\LIST_ORDER] = (

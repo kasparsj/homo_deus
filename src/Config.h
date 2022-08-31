@@ -74,6 +74,7 @@ enum BehaviourFlags {
     B_RANDOM_COLOR = 256,
     B_MIRROR_FLIP = 512,
     B_MIRROR_ROTATE = 1024,
+    B_SMOOTH_CHANGES = 2048,
 };
 
 enum ListOrder { 

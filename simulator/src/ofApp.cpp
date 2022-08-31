@@ -93,7 +93,7 @@ void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
                 p.ease = m.getArgAsInt(j);
                 break;
             case P_LENGTH:
-                p.length = m.getArgAsInt(j);
+                p.setLength(m.getArgAsInt(j));
                 break;
             case P_TRAIL:
                 p.trail = m.getArgAsInt(j);
@@ -260,7 +260,7 @@ void ofApp::doCommand(char command) {
     case '/': { // emitSegment
       EmitParams params;
       params.behaviourFlags |= B_RENDER_SEGMENT;
-      params.length = 1;
+      params.setLength(1);
       state->emit(params);
       break;
     }
