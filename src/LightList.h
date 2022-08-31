@@ -16,7 +16,7 @@ class LightList {
     static uint16_t nextId;
   
     uint16_t id;
-    uint16_t noteId;
+    uint16_t noteId = 0;
     float speed = DEFAULT_SPEED;
     ofxeasing::function ease = ofxeasing::linear::easeNone;
     uint8_t fadeSpeed = 0;
@@ -78,7 +78,7 @@ class LightList {
     void setLeadTrail(uint16_t trail);
     void setDuration(uint32_t durMillis);
     void setColor(ColorRGB color);
-    void setupFrom(EmitParams &params, uint16_t totalLights);
+    void setupFrom(EmitParams &params);
     void initEmit(uint8_t posOffset = 0);
     bool update();
     void split();

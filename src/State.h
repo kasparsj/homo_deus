@@ -40,12 +40,13 @@ class State {
     void autoEmit(unsigned long millis);
     int8_t emit(EmitParams &params);
     int8_t getOrCreateList(EmitParams &params);
+    int8_t setupListFrom(uint8_t i, EmitParams &params);
     LPOwner* getEmitter(Model* model, Behaviour* behaviour, EmitParams& params);
     void update();
     void colorAll();
     void splitAll();
     void stopAll();
-    int8_t findList(uint8_t noteId);
+    int8_t findList(uint8_t noteId) const;
     void stopNote(uint8_t i);
     ColorRGB getPixel(uint16_t i, uint8_t maxBrightness = FULL_BRIGHTNESS);
     void debug();

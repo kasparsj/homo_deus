@@ -149,6 +149,7 @@ enum Ease {
 #define OUT_PORTS_MEMORY 3
 //#define LP_OSC_REPLY(I) OscWiFi.publish(SC_HOST, SC_PORT, "/emit", (I));
 #define RANDOM_MODEL -1
+#define RANDOM_SPEED -1
 #define RANDOM_DURATION 0
 #define RANDOM_COLOR -1
 #define INFINITE_DURATION UINT32_MAX

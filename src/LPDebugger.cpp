@@ -83,7 +83,7 @@ void LPDebugger::dumpConnections() {
 void LPDebugger::dumpIntersections() {
   LP_LOGLN("--- INTERSECTIONS ---");
   for (uint8_t i=0; i<MAX_GROUPS; i++) {
-      for (uint8_t j=0; j<object.interCount[i]; i++) {
+      for (uint8_t j=0; j<object.interCount[i]; j++) {
         LP_LOGF("Intersection%d %d\n", i, object.inter[i][j]->id);
       }
   }

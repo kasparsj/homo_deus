@@ -1,5 +1,6 @@
 #include "ofApp.h"
 #include "Globals.h"
+#include "LightList.h"
 #include "LPRandom.h"
 
 //--------------------------------------------------------------

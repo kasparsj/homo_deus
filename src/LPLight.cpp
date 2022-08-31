@@ -150,3 +150,11 @@ const Model* LPLight::getModel() const {
 const Behaviour* LPLight::getBehaviour() const {
     return list->behaviour;
 }
+
+uint16_t LPLight::getListId() const {
+    return list->id;
+}
+
+float LPLight::getFadeSpeed() const {
+    return list->fadeSpeed;
+}

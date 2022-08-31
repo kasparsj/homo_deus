@@ -20,6 +20,8 @@ class Connection : public LPOwner {
     uint16_t toPixel;
     
     Connection(Intersection *from, Intersection *to, uint8_t group);
+    
+    uint8_t getType() { return TYPE_CONNECTION; };
     inline void add(LPLight* const light) const {
         if (numLeds > 0) {
             LPOwner::add(light);

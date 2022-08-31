@@ -124,12 +124,11 @@ s.sync;
 			self[\PARAM][\FADE], ~fade.value ? 0.0,
 			self[\PARAM][\THRESH], ~thresh.value ? 0.0,
 			self[\PARAM][\FADE_EASE], if (~fadeEase.value.isNil, { 0 }, { self.getEase(~fadeEase.value) }),
-			self[\PARAM][\LENGTH], if (~length.value.isNil, { nil }, { ~length.value.asInteger }),
 			self[\PARAM][\TRAIL], ~trail.value ? 0,
 			self[\PARAM][\ORDER], ~order.value ? 0,
 			self[\PARAM][\HEAD], ~head.value ? 0,
 			self[\PARAM][\LINKED], ~linked.value ? 1,
-			self[\PARAM][\FROM], ~from.value ? -1,
+			self[\PARAM][\FROM], if (~from.value.isNil, { -1 }, { ~from.value.asInteger }),
 			self[\PARAM][\MIN_BRI], ~minBri.value ? 0,
 			self[\PARAM][\BRIGHTNESS], ~brightness.value ? self.fullBrightness,
 			self[\PARAM][\BEHAVIOUR], if (~behaviour.value.isNil, { 0 }, { self.getBehaviour(~behaviour.value) }),
@@ -139,11 +138,14 @@ s.sync;
 		];
 		var argsOff;
 		var color = self.getColor(~color.value);
+		if (~length.notNil) {
+			args = args.addAll([self[\PARAM][\LENGTH], ~length.value.asInteger]);
+		};
 		if (color.notNil) {
 			args = args.addAll([self[\PARAM][\COLOR], color]);
 		} {
 			if (~colorIndex.value.notNil) {
-				args = args.addAll([self[\PARAM][\COLOR_INDEX], ~colorIndex.value]);
+				args = args.addAll([self[\PARAM][\COLOR_INDEX], ~colorIndex.value.asInteger]);
 			};
 		};
 		if (self.useEmit) {
@@ -152,7 +154,7 @@ s.sync;
 			args[1] = "/emit";
 			args = args.addAll([self[\PARAM][\DURATION], (duration*1000).asInteger]);
 			if (~noteId.value.notNil, {
-				args = args.addAll([self[\PARAM][\NOTE_ID], ~noteId.value]);
+				args = args.addAll([self[\PARAM][\NOTE_ID], ~noteId.value.asInteger]);
 			});
 			self.sendMsgIn(*args);
 		} {

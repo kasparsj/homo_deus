@@ -49,6 +49,7 @@ class LPLight
     virtual const Behaviour* getBehaviour() const;
     virtual float getSpeed() const;
     virtual ofxeasing::function getEasing() const;
+    virtual float getFadeSpeed() const;
     virtual uint32_t getLife() const;
     virtual void setDuration(uint32_t durMillis) {}
     virtual ColorRGB getColor() const;
@@ -56,6 +57,7 @@ class LPLight
     virtual uint8_t getBrightness() const;
     virtual ColorRGB getPixelColor() const;
     uint16_t* getPixels();
+    uint16_t getListId() const;
 
   private:
     void setPixel1();

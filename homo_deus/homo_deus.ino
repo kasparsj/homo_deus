@@ -26,6 +26,7 @@
 #include <NeoPixelBus.h>
 #include "src/HeptagonStar.h"
 #include "src/Globals.h"
+#include "src/LightList.h"
 #include "src/LPRandom.h"
 
 #ifdef WIFI_SSID
@@ -189,7 +190,7 @@ void doCommand(char command) {
   switch (command) {
     case 'd': {
       EmitParams params(M_STAR, 0.5);
-      params.length = 3;
+      params.setLength(3);
       params.from = 1;
       // todo: fix, infinite duration does not work
       // params.duration = INFINITE_DURATION;
@@ -294,7 +295,7 @@ void doCommand(char command) {
     case '/': {
       EmitParams params;
       params.behaviourFlags |= B_RENDER_SEGMENT;
-      params.length = 1;
+      params.setLength(1);
       doEmit(params);
       break;
     }
@@ -351,7 +352,7 @@ void parseParams(EmitParams &p, const OscMessage &m) {
         p.ease = m.arg<uint8_t>(j);
         break;        
       case P_LENGTH:
-        p.length = m.arg<uint16_t>(j);
+        p.setLength(m.arg<uint16_t>(j));
         break;
       case P_TRAIL:
         p.trail = m.arg<uint16_t>(j);
@@ -411,7 +412,7 @@ void parseParams(EmitParams &p, const OscMessage &m) {
         break;
       case P_COLOR_CHANGE_GROUPS:
         p.colorChangeGroups = m.arg<uint8_t>(j);
-        break;        
+        break;
     }
   }
 }

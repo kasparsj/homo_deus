@@ -2,7 +2,7 @@
 #include "Model.h"
 #include "Behaviour.h"
 #include "HeptagonStar.h"
-#include "LPRandom.h"
+#include "LightList.h"
 
 #ifdef ARDUINO
 #include "Palettes.h"
@@ -34,7 +34,7 @@ ColorRGB State::paletteColor(uint8_t color) {
 
 void State::autoEmit(unsigned long ms) {
     if (autoEnabled && nextEmit <= ms) {
-        EmitParams params(EmitParams::DEFAULT_MODEL, LPRandom::randomSpeed());
+        EmitParams params(EmitParams::DEFAULT_MODEL, RANDOM_SPEED);
         emit(params);
         nextEmit = ms + randomNextEmit();
     }
@@ -48,7 +48,7 @@ int8_t State::emit(EmitParams &params) {
         lightLists[index]->model = model;
         LPOwner *emitter = getEmitter(model, lightLists[index]->behaviour, params);
         if (emitter == NULL) {
-            LP_LOGF("emit failed, no free emitter.");
+            LP_LOGF("emit failed, no free emitter %d %d.\n", params.getEmit(), params.getEmitGroups(model->emitGroups));
             return -1;
         }
         doEmit(emitter, lightLists[index], params);
@@ -56,59 +56,74 @@ int8_t State::emit(EmitParams &params) {
         LP_OSC_REPLY(i);
         #endif
     }
+    return index;
 }
 
 int8_t State::getOrCreateList(EmitParams &params) {
-    LightList* lightList = NULL;
-    try {
-        if (params.noteId > 0) {
-            int8_t listIndex = findList(params.noteId);
-            if (listIndex > -1) {
-                uint16_t prevLights = lightLists[listIndex]->numLights;
-                lightLists[listIndex]->setupFrom(params, totalLights);
-                totalLights -= prevLights;
-                totalLightLists--;
-                return listIndex;
-            }
+    if (params.noteId > 0) {
+        int8_t listIndex = findList(params.noteId);
+        if (listIndex > -1) {
+            uint16_t prevLights = lightLists[listIndex]->numLights;
+            return setupListFrom(listIndex, params);
         }
-        for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
-          if (lightLists[i] == NULL) {
-            lightList = new LightList();
-            lightList->setupFrom(params, totalLights);
-            lightLists[i] = lightList;
-            return i;
-          }
+    }
+    for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
+        if (lightLists[i] == NULL) {
+            return setupListFrom(i, params);
         }
-        LP_LOGF("emit failed: no free light lists");
+    }
+    LP_LOGF("emit failed: no free light lists (%d)\n", MAX_LIGHT_LISTS);
+    return -1;
+}
+
+int8_t State::setupListFrom(uint8_t i, EmitParams &params) {
+    LightList* lightList = lightLists[i];
+    uint16_t oldLen = (lightList != NULL ? lightList->length : 0);
+    uint16_t oldLights = (lightList != NULL ? lightList->numLights : 0);
+    uint16_t newLen = params.getLength();
+    Behaviour* newBehaviour = new Behaviour(params);
+    if (oldLen > 0 && newBehaviour->smoothChanges()) {
+        newLen = oldLen + (float(newLen - oldLen) * 0.1);
+    }
+    if (totalLights - oldLights + newLen > MAX_TOTAL_LIGHTS) {
+        LP_LOGF("emit failed, %d is over max %d lights\n", totalLights + newLen, MAX_TOTAL_LIGHTS);
         return -1;
     }
-    catch (const char * error) {
-        if (lightList != NULL) {
-            delete lightList;
-        }
-        LP_LOGF(error);
-        return -1;
+    if (lightList == NULL) {
+        lightList = new LightList();
+        lightLists[i] = lightList;
     }
+    lightList->length = newLen;
+    if (lightList->behaviour != NULL) {
+        delete lightList->behaviour;
+    }
+    lightList->behaviour = newBehaviour;
+    lightList->setupFrom(params);
+    if (oldLights > 0) {
+        totalLights -= oldLights;
+        totalLightLists--;
+    }
+    return i;
 }
 
 LPOwner* State::getEmitter(Model* model, Behaviour* behaviour, EmitParams& params) {
-    int8_t from = params.from >= 0 ? params.from : -1;
+    int8_t from = params.getEmit();
     if (behaviour->emitFromConnection()) {
         from = from >= 0 ? from : LP_RANDOM(object.countConnections(params.emitGroups));
         return object.getConnection(from, params.emitGroups);
     }
     else {
-        uint8_t emitGroups = params.emitGroups > 0 ? params.emitGroups : model->emitGroups;
+        uint8_t emitGroups = params.getEmitGroups(model->emitGroups);
         from = from >= 0 ? from : LP_RANDOM(object.countIntersections(emitGroups));
         return object.getIntersection(from, emitGroups);
     }
 }
 
 void State::doEmit(LPOwner* from, LightList *lightList, EmitParams& params) {
-  lightList->initEmit(params.emitOffset);
-  lightList->emitter = from;
-  totalLights += lightList->numLights;
-  totalLightLists++;
+    lightList->initEmit(params.emitOffset);
+    lightList->emitter = from;
+    totalLights += lightList->numLights;
+    totalLightLists++;
 }
 
 void State::update() {
@@ -205,7 +220,7 @@ void State::stopAll() {
   }
 }
 
-int8_t State::findList(uint8_t noteId) {
+int8_t State::findList(uint8_t noteId) const {
     for (uint8_t i=0; i<MAX_LIGHT_LISTS; i++) {
       if (lightLists[i] == NULL) continue;
       if (lightLists[i]->noteId == noteId) {

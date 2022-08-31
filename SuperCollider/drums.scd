@@ -77,21 +77,21 @@ OSCdef(\channel_rec, {|msg|
 			behaviour: [\EXPIRE_IMMEDIATE, \MIRROR],
 		).play;*/
 	});
-	// not working very well
+	// too many packets
 	(
 		type: \hd,
-		from: (in*2).asInteger,
+		from: (in*2),
+		emit: 0,
 		// length: (amp * 100).max(1).pow(3).asInteger,
-		length: ((amp.exp.pow(5)*60)-60).asInteger,
+		length: ((amp.exp.pow(5)*60)-60),
 		speed: 0,
 		//color: [(mfcc[0] * 255).asInteger, 64, (mfcc[1] * 127).asInteger],
 		//color: (mfcc * 255).collect(_.asInteger),
-		//color: 0xffffff,
 		color: 0xff0000,
 		// colorIndex: in.asInteger * 32,
 		dur: 1,
 		behaviour: [\MIRROR, \SMOOTH_CHANGES],
-		noteId: (1+in).asInteger,
+		noteId: (1+in),
 	).play;
 }, '/channel_data');
 )

@@ -93,7 +93,9 @@ class EmitParams {
     }
     
     ~EmitParams() {
-      delete length;
+        if (length != NULL) {
+            delete length;
+        }
     }
     
     float getSpeed() const {
@@ -118,10 +120,18 @@ class EmitParams {
     }
     
     uint32_t getDuration() const {
-        duration > 0 ? duration : LPRandom::randomDuration();
+        return duration > 0 ? duration : LPRandom::randomDuration();
     }
     
     uint8_t getMaxBri() const {
         return maxBri > 0 ? maxBri : randomBrightness();
+    }
+    
+    int8_t getEmit() const {
+        return from >= 0 ? from : -1;
+    }
+    
+    uint8_t getEmitGroups(uint8_t defaultValue = 0) const {
+        return emitGroups > 0 ? emitGroups : defaultValue;
     }
 };

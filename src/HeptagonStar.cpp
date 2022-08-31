@@ -88,16 +88,13 @@ uint16_t* HeptagonStar::getMirroredPixels(uint16_t pixel, LPOwner* mirrorFlipEmi
     uint8_t i = 1;
     mirrorPixels[0] = 0;
     if (mirrorFlipEmitter != NULL) {
-        try {
+        if (mirrorFlipEmitter->getType() == LPOwner::TYPE_INTERSECTION) {
             uint8_t emitterIndex = static_cast<Intersection*>(mirrorFlipEmitter)->id / 2;
             if (emitterIndex < 7) {
                 uint8_t mirrorIndex = ((emitterIndex + (emitterIndex - pathIndex) + 11) % 7);
                 mirrorPixels[i++] = getPixelOnStarSegment(mirrorIndex, 1.0 - progress);
                 mirrorPixels[0] += 1;
             }
-        }
-        catch (...) {
-            
         }
     }
     if (mirrorRotate) {

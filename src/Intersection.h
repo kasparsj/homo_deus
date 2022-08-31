@@ -28,6 +28,7 @@ class Intersection : public LPOwner {
       delete[] ports;
     }
     
+    uint8_t getType() { return TYPE_INTERSECTION; };
     void addPort(Port *p);
     void emit(LPLight* const light) const;
     void update(LPLight* const light) const;
