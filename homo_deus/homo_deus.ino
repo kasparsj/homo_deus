@@ -118,6 +118,7 @@ void setupComms() {
   OscWiFi.subscribe(OSC_PORT, "/emit", onEmit);
   OscWiFi.subscribe(OSC_PORT, "/note_on", onNoteOn);
   OscWiFi.subscribe(OSC_PORT, "/note_off", onNoteOff);
+  OscWiFi.subscribe(OSC_PORT, "/notes_set", onNotesSet);
   OscWiFi.subscribe(OSC_PORT, "/palette", onPalette);
   OscWiFi.subscribe(OSC_PORT, "/color", onColor);
   OscWiFi.subscribe(OSC_PORT, "/split", onSplit);
@@ -201,10 +202,6 @@ void doCommand(char command) {
     case 'r':
       ESP.restart();
       break;
-    case 'e':
-      state->autoEnabled = !state->autoEnabled;
-      Serial.printf("AutoEmitter is %s\n", state->autoEnabled ? "enabled" : "disabled");
-      break;
     case '.':
       state->stopAll();
       break;
@@ -220,6 +217,9 @@ void doCommand(char command) {
     #ifdef HD_DEBUGGER
     case 'f':
       Serial.printf("FPS: %f (%d)\n", debugger->getFPS(), state->totalLights);
+      break;
+    case 'e':
+      Serial.printf("Emits per frame: %f\n", debugger->getNumEmits());
       break;
     case 'a':
       showAll = !showAll;
@@ -245,6 +245,10 @@ void doCommand(char command) {
     case 'l':
       Serial.printf("Total %d lights\n", state->totalLights);
       break;
+    case 'E':
+      state->autoEnabled = !state->autoEnabled;
+      Serial.printf("AutoEmitter is %s\n", state->autoEnabled ? "enabled" : "disabled");
+      break;      
     case 'L':
       state->debug();
       break;
@@ -317,6 +321,10 @@ void doCommand(char command) {
 
 void doEmit(EmitParams &params) {
   int8_t i = state->emit(params);
+  #ifdef HD_DEBUGGER
+  debugger->countEmit();
+  #endif
+  // todo: I think HD_DEBUG does not exist anymore
   #ifdef HD_DEBUG
   LP_LOGF("emitting %d %s lights (%d/%.1f/%d/%d/%d/%d), total: %d (%d)\n",
     state->lightLists[i]->numLights, 
@@ -337,7 +345,12 @@ void parseParams(EmitParams &p, const OscMessage &m) {
   for (uint8_t i=0; i<m.size() / 2; i++) {
     EmitParam param = static_cast<EmitParam>(m.arg<uint8_t>(i*2));
     uint8_t j = i*2+1;
-    switch (param) {
+    parseParam(p, m, param, j);
+  }
+}
+
+void parseParam(EmitParams &p, const OscMessage &m, EmitParam &param, uint8_t j) {
+  switch (param) {
       case P_MODEL: {
         int8_t model = m.arg<int8_t>(j);
         if (model >= HeptagonStarModel::M_FIRST && model <= HeptagonStarModel::M_LAST) {
@@ -414,7 +427,6 @@ void parseParams(EmitParams &p, const OscMessage &m) {
         p.colorChangeGroups = m.arg<uint8_t>(j);
         break;
     }
-  }
 }
 
 void onCommand(const OscMessage& m) {
@@ -444,6 +456,28 @@ void onNoteOff(const OscMessage& m) {
   }
   else {
     state->stopAll();
+  }
+}
+
+void onNotesSet(const OscMessage& m) {
+  EmitParams notesSet[MAX_NOTES_SET];
+  for (uint8_t i=0; i<m.size() / 3; i++) {
+    uint16_t noteId = m.arg<uint16_t>(i*3);
+    uint8_t k = 0;
+    for (k; k<MAX_NOTES_SET; k++) {
+      if (notesSet[k].noteId == 0 || notesSet[k].noteId == noteId) {
+        notesSet[k].noteId = noteId;
+        break;
+      }
+    }
+    EmitParam param = static_cast<EmitParam>(m.arg<uint8_t>(i*3+1));
+    uint8_t j = i*3+2;
+    parseParam(notesSet[k], m, param, j);
+  }
+  for (uint8_t i=0; i<MAX_NOTES_SET; i++) {
+    if (notesSet[i].noteId > 0) {
+      doEmit(notesSet[i]);      
+    }
   }
 }
 

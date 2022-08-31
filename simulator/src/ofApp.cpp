@@ -35,6 +35,9 @@ void ofApp::updateOsc(){
         else if (m.getAddress() == "/note_off"){
             onNoteOff(m);
         }
+        else if (m.getAddress() == "/notes_set"){
+            onNotesSet(m);
+        }
         else if (m.getAddress() == "/auto"){
             onAuto(m);
         }
@@ -75,6 +78,28 @@ void ofApp::onNoteOff(const ofxOscMessage& m) {
   }
 }
 
+void ofApp::onNotesSet(const ofxOscMessage& m) {
+    EmitParams notesSet[MAX_NOTES_SET];
+    for (uint8_t i=0; i<m.getNumArgs() / 3; i++) {
+        uint16_t noteId = m.getArgAsInt(i*3);
+        uint8_t k = 0;
+        for (k; k<MAX_NOTES_SET; k++) {
+          if (notesSet[k].noteId == 0 || notesSet[k].noteId == noteId) {
+            notesSet[k].noteId = noteId;
+            break;
+          }
+        }
+        EmitParam param = static_cast<EmitParam>(m.getArgAsInt(i*3+1));
+        uint8_t j = i*3+2;
+        parseParam(notesSet[k], m, param, j);
+    }
+    for (uint8_t i=0; i<MAX_NOTES_SET; i++) {
+        if (notesSet[i].noteId > 0) {
+            doEmit(notesSet[i]);
+        }
+    }
+}
+
 void ofApp::onAuto(const ofxOscMessage &m) {
   state->autoEnabled = !state->autoEnabled;
 }
@@ -83,84 +108,88 @@ void ofApp::parseParams(EmitParams &p, const ofxOscMessage &m) {
     for (uint8_t i=0; i<m.getNumArgs() / 2; i++) {
         EmitParam param = static_cast<EmitParam>(m.getArgAsInt(i*2));
         uint8_t j = i*2+1;
-        switch (param) {
-            case P_MODEL:
-                p.model = m.getArgAsInt(j);
-                break;
-            case P_SPEED:
-                p.speed = m.getArgAsFloat(j);
-                break;
-            case P_EASE:
-                p.ease = m.getArgAsInt(j);
-                break;
-            case P_LENGTH:
-                p.setLength(m.getArgAsInt(j));
-                break;
-            case P_TRAIL:
-                p.trail = m.getArgAsInt(j);
-                break;
-            case P_FADE:
-                p.fadeSpeed = m.getArgAsInt(j);
-                break;
-            case P_FADE_THRESH:
-                p.fadeThresh = m.getArgAsInt(j);
-                break;
-            case P_FADE_EASE:
-                p.fadeEase = m.getArgAsInt(j);
-                break;
-            case P_ORDER:
-                p.order = static_cast<ListOrder>(m.getArgAsInt(j));
-                break;
-            case P_HEAD:
-                p.head = static_cast<ListHead>(m.getArgAsInt(j));
-                break;
-            case P_LINKED:
-                p.linked = m.getArgAsInt(j) > 0;
-                break;
-            case P_FROM:
-                p.from = m.getArgAsInt(j);
-                break;
-            case P_DURATION_MS:
-                p.duration = m.getArgAsInt(j);
-                break;
-            case P_DURATION_FRAMES:
-                p.duration = m.getArgAsInt(j) * EmitParams::frameMs();
-                break;
-            case P_COLOR:
-                p.color = ColorRGB(m.getArgAsInt(j));
-                break;
-            case P_COLOR_INDEX: {
-                int16_t index = m.getArgAsInt(j);
-                if (index == RANDOM_COLOR) {
-                  p.color.setRandom();
-                }
-                else {
-                  p.color = state->paletteColor(index);
-                }
-                break;
+        parseParam(p, m, param, j);
+    }
+}
+
+void ofApp::parseParam(EmitParams &p, const ofxOscMessage &m, EmitParam &param, uint8_t j) {
+    switch (param) {
+        case P_MODEL:
+            p.model = m.getArgAsInt(j);
+            break;
+        case P_SPEED:
+            p.speed = m.getArgAsFloat(j);
+            break;
+        case P_EASE:
+            p.ease = m.getArgAsInt(j);
+            break;
+        case P_LENGTH:
+            p.setLength(m.getArgAsInt(j));
+            break;
+        case P_TRAIL:
+            p.trail = m.getArgAsInt(j);
+            break;
+        case P_FADE:
+            p.fadeSpeed = m.getArgAsInt(j);
+            break;
+        case P_FADE_THRESH:
+            p.fadeThresh = m.getArgAsInt(j);
+            break;
+        case P_FADE_EASE:
+            p.fadeEase = m.getArgAsInt(j);
+            break;
+        case P_ORDER:
+            p.order = static_cast<ListOrder>(m.getArgAsInt(j));
+            break;
+        case P_HEAD:
+            p.head = static_cast<ListHead>(m.getArgAsInt(j));
+            break;
+        case P_LINKED:
+            p.linked = m.getArgAsInt(j) > 0;
+            break;
+        case P_FROM:
+            p.from = m.getArgAsInt(j);
+            break;
+        case P_DURATION_MS:
+            p.duration = m.getArgAsInt(j);
+            break;
+        case P_DURATION_FRAMES:
+            p.duration = m.getArgAsInt(j) * EmitParams::frameMs();
+            break;
+        case P_COLOR:
+            p.color = ColorRGB(m.getArgAsInt(j));
+            break;
+        case P_COLOR_INDEX: {
+            int16_t index = m.getArgAsInt(j);
+            if (index == RANDOM_COLOR) {
+              p.color.setRandom();
             }
-            case P_NOTE_ID:
-                p.noteId = m.getArgAsInt(j);
-                break;
-            case P_MIN_BRI:
-                p.minBri = m.getArgAsInt(j);
-                break;
-            case P_MAX_BRI:
-                p.maxBri = m.getArgAsInt(j);
-                break;
-            case P_BEHAVIOUR:
-                p.behaviourFlags = m.getArgAsInt(j);
-                break;
-            case P_EMIT_GROUPS:
-                p.emitGroups = m.getArgAsInt(j);
-                break;
-            case P_EMIT_OFFSET:
-                p.emitOffset = m.getArgAsInt(j);
-                break;
-            case P_COLOR_CHANGE_GROUPS:
-                p.colorChangeGroups = m.getArgAsInt(j);
-                break;
+            else {
+              p.color = state->paletteColor(index);
+            }
+            break;
         }
+        case P_NOTE_ID:
+            p.noteId = m.getArgAsInt(j);
+            break;
+        case P_MIN_BRI:
+            p.minBri = m.getArgAsInt(j);
+            break;
+        case P_MAX_BRI:
+            p.maxBri = m.getArgAsInt(j);
+            break;
+        case P_BEHAVIOUR:
+            p.behaviourFlags = m.getArgAsInt(j);
+            break;
+        case P_EMIT_GROUPS:
+            p.emitGroups = m.getArgAsInt(j);
+            break;
+        case P_EMIT_OFFSET:
+            p.emitOffset = m.getArgAsInt(j);
+            break;
+        case P_COLOR_CHANGE_GROUPS:
+            p.colorChangeGroups = m.getArgAsInt(j);
+            break;
     }
 }
 

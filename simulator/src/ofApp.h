@@ -41,8 +41,10 @@ public:
     void onEmit(const ofxOscMessage& m);
     void onNoteOn(const ofxOscMessage& m);
     void onNoteOff(const ofxOscMessage& m);
+    void onNotesSet(const ofxOscMessage& m);
     void onAuto(const ofxOscMessage& m);
     void parseParams(EmitParams &p, const ofxOscMessage &m);
+    void parseParam(EmitParams &p, const ofxOscMessage &m, EmitParam &param, uint8_t j);
     void doCommand(char command);
     glm::vec2 intersectionPos(Intersection* intersection, int8_t j = -1);
     ofColor getColor(uint16_t i);

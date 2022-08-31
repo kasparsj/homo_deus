@@ -83,7 +83,7 @@ int8_t State::setupListFrom(uint8_t i, EmitParams &params) {
     uint16_t newLen = params.getLength();
     Behaviour* newBehaviour = new Behaviour(params);
     if (oldLen > 0 && newBehaviour->smoothChanges()) {
-        newLen = oldLen + (float(newLen - oldLen) * 0.1);
+        newLen = oldLen + (int) round((float)(newLen - oldLen) * 0.1f);
     }
     if (totalLights - oldLights + newLen > MAX_TOTAL_LIGHTS) {
         LP_LOGF("emit failed, %d is over max %d lights\n", totalLights + newLen, MAX_TOTAL_LIGHTS);

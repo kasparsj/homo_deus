@@ -38,16 +38,23 @@ s.sync;
 	LIFE: 13,
 	COLOR: 14,
 	COLOR_INDEX: 15,
+	COLORINDEX: 15,
 	NOTE_ID: 16,
+	NOTEID: 16,
 	MIN_BRI: 17,
 	MAX_BRI: 18,
 	BRIGHTNESS: 18, // alias
 	BEHAVIOUR: 19,
+	EMIT: 20,
 	EMIT_GROUPS: 20,
 	EMIT_OFFSET: 21,
 	OFFSET: 21, // alias
 	COLOR_CHANGE_GROUPS: 22,
 );
+
+~hd[\INT_PARAM] = [\LENGTH, \MODEL, \FADE, \THRESH, \TRAIL, \ORDER, \HEAD, \LINKED, \FROM, \MIN_BRI, \BRIGHTNESS, \EMIT_OFFSET];
+~hd[\FLOAT_PARAM] = [\SPEED];
+~hd[\CUSTOM_PARAM] = (EASE: \getEase, FADE_EASE: \getEase, BEHAVIOUR: \getBehaviour, EMIT: \getGroups, EMIT_GROUPS: \getGroups, COLOR_CHANGE_GROUPS: \getGroups);
 
 ~hd[\BEHAVIOUR] = (
 	POS_CHANGE_FADE: 1,
@@ -117,54 +124,41 @@ s.sync;
 		var serverLatency = ~latency.value ? (server.latency ? 0);
 		var emitLatency = (thisThread.clock.tempo.reciprocal*timingOffset)+lag+serverLatency;
 		var dur = (sustain+timingOffset);
-		var args = [emitLatency, "/emit",
-			self[\PARAM][\MODEL], ~model.value,
-			self[\PARAM][\SPEED], ~speed.value ? -1.0,
-			self[\PARAM][\EASE], if (~ease.value.isNil, { 0 }, { self.getEase(~ease.value) }),
-			self[\PARAM][\FADE], ~fade.value ? 0.0,
-			self[\PARAM][\THRESH], ~thresh.value ? 0.0,
-			self[\PARAM][\FADE_EASE], if (~fadeEase.value.isNil, { 0 }, { self.getEase(~fadeEase.value) }),
-			self[\PARAM][\TRAIL], ~trail.value ? 0,
-			self[\PARAM][\ORDER], ~order.value ? 0,
-			self[\PARAM][\HEAD], ~head.value ? 0,
-			self[\PARAM][\LINKED], ~linked.value ? 1,
-			self[\PARAM][\FROM], if (~from.value.isNil, { -1 }, { ~from.value.asInteger }),
-			self[\PARAM][\MIN_BRI], ~minBri.value ? 0,
-			self[\PARAM][\BRIGHTNESS], ~brightness.value ? self.fullBrightness,
-			self[\PARAM][\BEHAVIOUR], if (~behaviour.value.isNil, { 0 }, { self.getBehaviour(~behaviour.value) }),
-			self[\PARAM][\EMIT_GROUPS], if (~emit.value.isNil, { 0 }, { self.getGroups(~emit.value) }),
-			self[\PARAM][\EMIT_OFFSET], ~offset.value ? 0,
-			self[\PARAM][\COLOR_CHANGE_GROUPS], if (~colorChange.value.isNil, { 0 }, { self.getGroups(~colorChange.value) }),
-		];
-		var argsOff;
+		var duration = dur+lag+serverLatency;
+		var args = List.newUsing([emitLatency, "/emit"]);
 		var color = self.getColor(~color.value);
-		if (~length.notNil) {
-			args = args.addAll([self[\PARAM][\LENGTH], ~length.value.asInteger]);
+		var keys = currentEnvironment.keys.reject({|key| Set[\COLOR, \COLORINDEX, \COLOR_INDEX, \DURATION].includes(key.asString.toUpper.asSymbol) });
+		var paramKeys = self[\PARAM].keys;
+		keys.do { |key|
+			var param = key.asString.toUpper.asSymbol;
+			if (paramKeys.includes(param), {
+				var value = currentEnvironment[key].value;
+				if (self[\INT_PARAM].includes(param), { value = value.asInteger; });
+				if (self[\FLOAT_PARAM].includes(param), { value = value.asFloat; });
+				if (self[\CUSTOM_PARAM][param].notNil, { value = self.perform(self[\CUSTOM_PARAM][param], value); });
+				args.addAll([self[\PARAM][param], value]);
+			});
 		};
 		if (color.notNil) {
-			args = args.addAll([self[\PARAM][\COLOR], color]);
+			args.addAll([self[\PARAM][\COLOR], color]);
 		} {
 			if (~colorIndex.value.notNil) {
-				args = args.addAll([self[\PARAM][\COLOR_INDEX], ~colorIndex.value.asInteger]);
+				args.addAll([self[\PARAM][\COLOR_INDEX], ~colorIndex.value.asInteger]);
 			};
 		};
 		if (self.useEmit) {
-			// emit (with duration)
-			var duration = dur+lag+serverLatency;
 			args[1] = "/emit";
-			args = args.addAll([self[\PARAM][\DURATION], (duration*1000).asInteger]);
-			if (~noteId.value.notNil, {
-				args = args.addAll([self[\PARAM][\NOTE_ID], ~noteId.value.asInteger]);
-			});
+			// emit (with duration)
+			args.addAll([self[\PARAM][\DURATION], (duration*1000).asInteger]);
 			self.sendMsgIn(*args);
 		} {
 			// note_on + note_off
-			var noteId = ~noteId.value ? self.getNoteId();
+			var argsOff;
 			var offTime = (thisThread.clock.tempo.reciprocal*dur)+lag+serverLatency;
-			args = args.addAll([self[\PARAM][\NOTE_ID], noteId]);
+			var noteId = ~noteId.value ? self.getNoteId();
 			args[1] = "/note_on";
 			self.sendMsgIn(*args);
-			argsOff = [offTime, "/note_off", noteId];
+			argsOff = [offTime, "/note_off", noteId.asInteger];
 			self.sendMsgIn(*argsOff);
 		};
 	}, (legato: 1.0));
@@ -172,6 +166,41 @@ s.sync;
 		~eventTypes[\hd].value(server);
 		~eventTypes[\note].value(server);
 	}, (legato: 1.0));
+	Event.addEventType(\hd_setn, { |server|
+		var timingOffset = ~timingOffset.value;
+		var lag = ~lag.value;
+		var sustain = ~sustain.value;
+		var serverLatency = ~latency.value ? (server.latency ? 0);
+		var emitLatency = (thisThread.clock.tempo.reciprocal*timingOffset)+lag+serverLatency;
+		var dur = (sustain+timingOffset);
+		var duration = dur+lag+serverLatency;
+		var args = List.newUsing([emitLatency, "/notes_set"]);
+		var noteIds = ~noteId.value;
+		if (noteIds.notNil, {
+			if (noteIds.isSequenceableCollection.not, {
+				noteIds = [noteIds];
+			});
+			noteIds.do { |noteId, i|
+				var keys = currentEnvironment.keys.reject({|key| Set[\NOTEID, \DURATION].includes(key.asString.toUpper.asSymbol) });
+				var paramKeys = self[\PARAM].keys;
+				keys.do { |key|
+					var param = key.asString.toUpper.asSymbol;
+					if (paramKeys.includes(param), {
+						var value = currentEnvironment[key].value;
+						if (self[\INT_PARAM].includes(param), { value = value.asInteger; });
+						if (self[\FLOAT_PARAM].includes(param), { value = value.asFloat; });
+						if (self[\CUSTOM_PARAM][param].notNil, { value = self.perform(self[\CUSTOM_PARAM][param], value); });
+						if (value.isArray, {
+							value = value[i];
+						});
+						args.addAll([noteId, self[\PARAM][param], value]);
+					});
+				};
+				args.addAll([noteId, self[\PARAM][\DURATION], (duration*1000).asInteger])
+			};
+			self.sendMsgIn(*args);
+		});
+	});
 	CmdPeriod.add {
 		self.stopAll();
 	};
