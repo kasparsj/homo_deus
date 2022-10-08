@@ -7,6 +7,7 @@ MainFX.clear;
 ~hdMaster.add(\moogVcf, 0.5);
 //~hdMaster.add(\lpf, 0.45);
 ~hdMaster.add(\gverb, 0.03);
+// ~hdMaster.add(\limiter, 0, 0);
 
 // [\add, \remove].do { |method|
 // 	OSCdef(("phi8MasterFilter" ++ method).asSymbol, { |msg|

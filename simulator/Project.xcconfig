@@ -1,9 +1,13 @@
 //THE PATH TO THE ROOT OF OUR OF PATH RELATIVE TO THIS PROJECT.
 //THIS NEEDS TO BE DEFINED BEFORE CoreOF.xcconfig IS INCLUDED
-OF_PATH = ../../of_v0.11.0
+OF_PATH = ../../openframeworks
 
 //THIS HAS ALL THE HEADER AND LIBS FOR OF CORE
-#include "../../of_v0.11.0/libs/openFrameworksCompiled/project/osx/CoreOF.xcconfig"
+#include "../../openframeworks/libs/openFrameworksCompiled/project/osx/CoreOF.xcconfig"
+
+//UNCOMMENT BELOW TO ENABLE C++ 17 and std::filesystem
+CLANG_CXX_LANGUAGE_STANDARD = c++17
+MACOSX_DEPLOYMENT_TARGET = 10.15
 
 //ICONS - NEW IN 0072 
 ICON_NAME_DEBUG = icon-debug.icns

@@ -1,6 +1,8 @@
 (
 var hd = ~hd;
 var hdP = ~hdP;
+var openFrameworks = NetAddr("127.0.0.1", 12345);
+
 ~dirt.addModule(\hd, { |dirtEvent|
 	(
 		type: \hd,
@@ -26,6 +28,7 @@ var hdP = ~hdP;
 		color: ~hdcolor,
 	).play;
 }, {~hdmodel.notNil or: { ~hdlength.notNil } or: { ~hdspeed.notNil } or: { ~hdorder.notNil } or: { ~hdbehaviour.notNil }});
+
 ~dirt.soundLibrary.addSynth(\hd_drone, (play: {
 	~freq = (~freq ? 51);
 	hdP.drone(
@@ -37,6 +40,7 @@ var hdP = ~hdP;
 		\amp, ~amp * ~gain,
 	).play;
 }));
+
 ~dirt.soundLibrary.addSynth(\hd_harpsi, (play: {
 	hdP.harpsi(
 		\freq, ~freq,
@@ -46,6 +50,7 @@ var hdP = ~hdP;
 		\color, ~hdcolor ? -1,
 	).play;
 }));
+
 ~dirt.soundLibrary.addSynth(\hd_crickets, (play: {
 	if (~gain > 0) {
 		hdP.startCrickets(
@@ -53,7 +58,7 @@ var hdP = ~hdP;
 			//\pan, ~pan,
 			// \dur, Pseq([~sustain], 1),
 			\dur, Pwhite(1, 4, inf),
-			\color, ~hdcolor,
+			\color, ~hdcolor ? [0, 255, 0],
 			\behaviour, Prand([[\FILL_EASE], [\FILL_EASE, ~hdbehaviour ? 0]], inf),
 			\brightness, ~hdbrightness ? hd[\fullBrightness],
 		);
@@ -61,6 +66,7 @@ var hdP = ~hdP;
 		hdP.stopCrickets(~fade);
 	};
 }));
+
 ~dirt.soundLibrary.addSynth(\hd_wind, (play: {
 	if (~gain > 0) {
 		hdP.startWind(~windchange, ~windrq, ~gain);
@@ -68,4 +74,31 @@ var hdP = ~hdP;
 		hdP.stopWind(~fade);
 	}
 }));
+
+~dirt.addModule('videosync', { |dirtEvent|
+	openFrameworks.sendMsg("/swap_buffers");
+}, {~videosync.notNil});
+
+~dirt.addModule('pg', { |dirtEvent|
+	var pg = ~pg; // toggle
+	var pgon = ~pgon; // turn on
+	var pgoff = ~pgoff; // turn off
+	if (pg.notNil, {
+		openFrameworks.sendMsg("/toggle_glitch", pg);
+		if (~sustain.notNil, {
+			SystemClock.sched(~sustain, {
+				openFrameworks.sendMsg("/toggle_glitch", pg);
+				nil;
+			});
+		});
+	}, {
+		if (pgon.notNil, {
+			openFrameworks.sendMsg("/set_glitch", pgon, true);
+		});
+		if (pgoff.notNil, {
+			openFrameworks.sendMsg("/set_glitch", pgoff, false);
+		});
+	});
+}, {~pg.notNil or: { ~pgon.notNil } or: { ~pgoff.notNil }});
+
 )
