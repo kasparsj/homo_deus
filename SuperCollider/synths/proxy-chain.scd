@@ -42,6 +42,9 @@ ProxyChain.add(*[
     \limiter, \filter -> { |in, drive=1, ampLimit=1|
         Limiter.ar(in * drive, ampLimit);
     },
+	\volume, \filter -> {|in, vol=1|
+		in * vol;
+	},
 ]);
 
 )

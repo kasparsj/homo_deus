@@ -79,6 +79,10 @@ var openFrameworks = NetAddr("127.0.0.1", 12345);
 	openFrameworks.sendMsg("/swap_buffers");
 }, {~videosync.notNil});
 
+~dirt.addModule('videospeed', { |dirtEvent|
+	openFrameworks.sendMsg("/set_speed", ~videospeed);
+}, {~videospeed.notNil});
+
 ~dirt.addModule('pg', { |dirtEvent|
 	var pg = ~pg; // toggle
 	var pgon = ~pgon; // turn on

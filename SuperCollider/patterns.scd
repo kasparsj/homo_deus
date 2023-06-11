@@ -7,6 +7,7 @@
 		\phase, [2pi.rand, 2pi.rand, 2pi.rand],
 		\model, Pfunc{ [1, 2, 4, 5].choose },
 		//\from, -1,
+		\brightness, 255,
 		\length, 100,
 		\amp, 0.05,
 		\modFreq, rrand(0.09, 0.5),
@@ -20,9 +21,12 @@
 			// col[i] = 255;
 			// col;
 			switch (event[\instrument],
-				\SineDrone,   { [0, 0, 255] },
-				\PulseDrone, { [255, 0, 0] },
-				\SawDrone, { [255, 255, 255] },
+				//\SineDrone,   { [0, 0, 255] },
+				//\PulseDrone, { [255, 0, 0] },
+				//\SawDrone, { [255, 0, 255] },
+				\SineDrone,   { [0, 87, 183] },
+				\PulseDrone, { [255, 215, 0] },
+				\SawDrone, { [255, 215, 0] },
 			);
 		},
 	]);
@@ -32,14 +36,14 @@
 ~hdP.harpsi = { |self ... args|
 	var pArgs = [
 		\type, \hd_note,
-		\model, (2..5).choose,
+		\model, Pfunc{ [2, 3, 4, 5].choose },
 		\behaviour, \RENDER_SEGMENT,
 		\instrument, \harpsi,
 		\ffreq, ((1..2) ++ (3..1)).choose,
 		\release, [5,6,7,8].choose,
 	].addAll(args).addAll([
 		\brightness, Pfunc{ |event|
-			event[\amp] * 127.0;
+			(event[\amp] * 255).min(255);
 		},
 		\length, Pfunc{ |event|
 			((event[\release] + event[\dur]) * 2).asInteger;
@@ -47,9 +51,10 @@
 		\speed, Pfunc{ |event|
 			(event[\release] + event[\dur]) / 5.0;
 		},
-		\emit, Pfunc{|event|
-			if (event[\model] == 2, {0}, {2});
-		},
+		// todo: fix or delete
+		// \emit, Pfunc{|event|
+		// 	if (event[\model] == 2, {0}, {2});
+		// },
 	]);
 	Pbind(*pArgs);
 };
@@ -60,24 +65,24 @@
 ~hdP.c1 = Pmono(\cricket1,
 	\amp, ~hdP.cricketsBus.asMap,
 	\pan, PSinOsc(1/5),
-	\mod, PSinOsc(1/5, 0, mul: 0.75),
+	\mod, PSinOsc(1/5, 0, mul: 0.1),
 );
 ~hdP.c2 = Pmono(\cricket2,
 	\amp, ~hdP.cricketsBus.asMap,
 	\pan, PSinOsc(1/7),
-	\mod, PSinOsc(1/7, 2pi*1/3, mul: 0.75),
+	\mod, PSinOsc(1/7, 2pi*1/3, mul: 0.1),
 );
 ~hdP.c31 = Pmono(\cricket3,
 	\amp, ~hdP.cricketsBus.asMap,
 	\trigFreq, 2,
 	\pan, PSinOsc(1/22),
-	\mod, PSinOsc(1/22, 2pi*2/3, mul: 0.75),
+	\mod, PSinOsc(1/22, 2pi*2/3, mul: 0.1),
 );
 ~hdP.c32 = Pmono(\cricket3,
 	\amp, ~hdP.cricketsBus.asMap,
 	\trigFreq, 0.5,
 	\pan, PSinOsc(1/22),
-	\mod, PSinOsc(1/22, 2pi*2/3, mul: 0.75),
+	\mod, PSinOsc(1/22, 2pi*2/3, mul: 0.1),
 );
 
 ~hdP.startCrickets = { |self ... args|
@@ -85,7 +90,8 @@
 		\type, \hd,
 		\amp, 0,
 		\model, Pfunc{ [0, 2, 3].wchoose([0.75, 0.1, 0.15]) },
-		\speed, Pfunc{ 0.5.exprand(10.0) },
+		// \speed, Pfunc{ 0.5.exprand(10.0) },
+		\speed, Pfunc{ 0.1.exprand(1.0) },
 		\ease, \EXPONENTIAL_INOUT,
 	].addAll(args).addAll([
 		\crickets, Pfunc{ |event|
@@ -166,16 +172,16 @@ Ndef(\wind, { |change=0.01, rq=0.8, amp = 0.1|
 ~hdP.wind = Ndef(\wind);
 ~hdP.restartWind = true;
 ~hdP.startWind = { |self, change, rq, gain|
-	change = change ? change ? rrand(0.001, 0.01);
+	change = change ? change ? rrand(0.001, 0.15);
 	rq = rq ? rq ? rrand(0.1, 1.5);
 	gain = gain ? 1.0;
-	self.wind.xset(\change, change, \rq, rq, \amp, gain * 0.1);
+	self.wind.xset(\change, change, \rq, rq, \amp, gain * 0.15);
 	if (self.restartWind or: { self.wind.isPlaying.not }) {
 		self.restartWind = false;
 		self.wind.play(fadeTime: 10);
-		"wind started % % %".format(change, rq, gain).postln;
+		//"wind started % % %".format(change, rq, gain).postln;
 	} {
-		"wind changed % % %".format(change, rq, gain).postln;
+		//"wind changed % % %".format(change, rq, gain).postln;
 	};
 };
 ~hdP.stopWind = { |self, fadeTime|
@@ -199,7 +205,13 @@ Ndef(\wind, { |change=0.01, rq=0.8, amp = 0.1|
 						\instrument, [\SineDrone, \SineDrone, \PulseDrone].choose,
 						\freq, (51..53).scramble,
 						\pan, [-1, 1].scramble,
-						\amp, 0.1,
+						\amp, Pfunc{|event|
+							if (event[\instrument] == \SineDrone) {
+								0.05
+							} {
+								0.025
+							}
+						},
 						\dur, Pwhite(15, 30, 1),
 					);
 				},
@@ -213,23 +225,25 @@ Ndef(\wind, { |change=0.01, rq=0.8, amp = 0.1|
 						].choose,
 						\scale, Pstutter(7, Scale.choose),
 						\dur, ((1..8)/4).choose,
-						\amp, (((1..8)/8)+1).choose,
+						\amp, (((2..4)/2)).choose,
 						\color, Pfunc{ |event|
-							var col = [127,255,0];
-							if (event[\root].isNil) {
-								if (event[\freq] > 250) { col = [255,255,0]; }; // ~C4
-								if (event[\freq] > 500) { col = [255,255,255]; }; // ~C5
-							} {
-								if (event[\root] == -12) { [255,255,0] };
-								if (event[\root] == 12) { [255,255,255] };
-							};
-							col;
+							[255, 215, 0];
+							//[[0, 87, 183], [255, 215, 0]].choose;
+							// var col = [127,255,0];
+							// if (event[\root].isNil) {
+							// 	if (event[\freq] > 250) { col = [255,255,0]; }; // ~C4
+							// 	if (event[\freq] > 500) { col = [255,255,255]; }; // ~C5
+							// } {
+							// 	if (event[\root] == -12) { [255,255,0] };
+							// 	if (event[\root] == 12) { [255,255,255] };
+							// };
+							// col;
 						},
 					);
 				},
 			);
 		},
-		\delta, Pwhite(45, 90),
+		\delta, Pwhite(10, 45),
 		\method, \par,
 	)).play;
 };

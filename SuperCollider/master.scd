@@ -1,12 +1,13 @@
 (
 
-var filterKeys = [\lpf, \moogVcf, \delay, \comb, \reverb, \gverb, \tanh, \limiter];
+var filterKeys = [\lpf, \moogVcf, \delay, \comb, \reverb, \gverb, \tanh, \limiter, \volume];
 
 MainFX.clear;
 ~hdMaster = MainFX(Server.default, 2, filterKeys);
 ~hdMaster.add(\moogVcf, 0.5);
 //~hdMaster.add(\lpf, 0.45);
 ~hdMaster.add(\gverb, 0.03);
+~hdMaster.add(\volume, 1.0);
 // ~hdMaster.add(\limiter, 0, 0);
 
 // [\add, \remove].do { |method|
