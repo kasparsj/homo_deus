@@ -122,7 +122,8 @@ s.sync;
 		var lag = ~lag.value;
 		var sustain = ~sustain.value;
 		var serverLatency = ~latency.value ? (server.latency ? 0);
-		var emitLatency = (thisThread.clock.tempo.reciprocal*timingOffset)+lag+serverLatency;
+		//var emitLatency = (thisThread.clock.tempo.reciprocal*timingOffset)+lag+serverLatency;
+		var emitLatency = (1*timingOffset)+lag+serverLatency;
 		var dur = (sustain+timingOffset);
 		var duration = dur+lag+serverLatency;
 		var args = List.newUsing([emitLatency, "/emit"]);
@@ -154,7 +155,8 @@ s.sync;
 		} {
 			// note_on + note_off
 			var argsOff;
-			var offTime = (thisThread.clock.tempo.reciprocal*dur)+lag+serverLatency;
+			//var offTime = (thisThread.clock.tempo.reciprocal*dur)+lag+serverLatency;
+			var offTime = (1*dur)+lag+serverLatency;
 			var noteId = ~noteId.value ? self.getNoteId();
 			args[1] = "/note_on";
 			self.sendMsgIn(*args);
@@ -172,6 +174,7 @@ s.sync;
 		var sustain = ~sustain.value;
 		var serverLatency = ~latency.value ? (server.latency ? 0);
 		var emitLatency = (thisThread.clock.tempo.reciprocal*timingOffset)+lag+serverLatency;
+		//var emitLatency = (1*timingOffset)+lag+serverLatency;
 		var dur = (sustain+timingOffset);
 		var duration = dur+lag+serverLatency;
 		var args = List.newUsing([emitLatency, "/notes_set"]);
