@@ -86,6 +86,7 @@ int8_t State::setupListFrom(uint8_t i, EmitParams &params) {
         newLen = oldLen + (int) round((float)(newLen - oldLen) * 0.1f);
     }
     if (totalLights - oldLights + newLen > MAX_TOTAL_LIGHTS) {
+        // todo: if it's a change, maybe emit max possible?
         LP_LOGF("emit failed, %d is over max %d lights\n", totalLights + newLen, MAX_TOTAL_LIGHTS);
         return -1;
     }

@@ -7,8 +7,10 @@
 // #define WIFI_PASS "letmeinplease"
 //#define WIFI_SSID "Redmi"
 //#define WIFI_PASS "kaspars123"
-#define WIFI_SSID "VA37-3"
-#define WIFI_PASS "fdsa4321"
+// #define WIFI_SSID "VA37-3"
+// #define WIFI_PASS "fdsa4321"
+#define WIFI_SSID "MPLAB"
+#define WIFI_PASS ""
 #define HD_OSC
 #define HD_SERIAL
 #define HD_DEBUGGER
@@ -19,7 +21,8 @@
 #define PIXEL_COUNT2 395
 #define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2)
 #define OSC_PORT 54321
-#define MAX_BRIGHTNESS 192
+//#define MAX_BRIGHTNESS 192
+#define MAX_BRIGHTNESS 255
 
 #include "BluetoothSerial.h"
 #include "esp_bt.h"

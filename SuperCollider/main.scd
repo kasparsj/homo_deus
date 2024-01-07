@@ -15,12 +15,12 @@ s.waitForBoot {
 		"superdirt.scd".loadRelative;
 	});
 
-	// ~hd.net = NetAddr("homo-deus", 54321);
+	~hd.net = NetAddr("homo-deus", 54321);
 	// ~hd.net = NetAddr("127.0.0.1", 54321);
-	~hd.net = NetAddr("192.168.1.100", 54321);
+	// ~hd.net = NetAddr("192.168.35.181", 54321);
 	//~hd.net.disconnect;
 
-	~playAuto = true;
+	~playAuto = false;
 	~soundInterval = 1200;
 	~lastWindChange = 0;
 
