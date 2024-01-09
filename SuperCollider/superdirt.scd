@@ -4,29 +4,31 @@ var hdP = ~hdP;
 var openFrameworks = NetAddr("127.0.0.1", 12345);
 
 ~dirt.addModule(\hd, { |dirtEvent|
-	(
-		type: \hd,
-		sustain: ~hdsustain ? ~sustain,
-		model: ~hdmodel,
-		speed: ~hdspeed,
-		ease: ~hdease,
-		fade: ~hdfade,
-		thresh: ~hdthresh,
-		fadeEase: ~hdfadease,
-		length: ~hdlength,
-		trail: ~hdtrail,
-		order: ~hdorder,
-		head: ~hdhead,
-		linked: ~hdlinked,
-		from: ~hdfrom,
-		minBri: ~hdminbri,
-		brightness: ~hdbrightness,
-		behaviour: ~hdbehaviour,
-		emit: ~hdemit,
-		offset: ~hdoffset,
-		colorChange: ~hdcolorchange,
-		color: ~hdcolor,
-	).play;
+	if (dirtEvent.event.gain > 0) {
+		(
+			type: \hd,
+			sustain: ~hdsustain ? ~sustain,
+			model: ~hdmodel,
+			speed: ~hdspeed,
+			ease: ~hdease,
+			fade: ~hdfade,
+			thresh: ~hdthresh,
+			fadeEase: ~hdfadease,
+			length: ~hdlength,
+			trail: ~hdtrail,
+			order: ~hdorder,
+			head: ~hdhead,
+			linked: ~hdlinked,
+			from: if (~hdfrom.notNil, { ~hdfrom.asInteger }, nil),
+			minBri: ~hdminbri,
+			brightness: ~hdbrightness,
+			behaviour: ~hdbehaviour,
+			emit: ~hdemit,
+			offset: ~hdoffset,
+			colorChange: ~hdcolorchange,
+			color: ~hdcolor,
+		).play;
+	};
 }, {~hdmodel.notNil or: { ~hdlength.notNil } or: { ~hdspeed.notNil } or: { ~hdorder.notNil } or: { ~hdbehaviour.notNil }});
 
 ~dirt.soundLibrary.addSynth(\hd_drone, (play: {
