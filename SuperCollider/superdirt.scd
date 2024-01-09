@@ -4,7 +4,7 @@ var hdP = ~hdP;
 var openFrameworks = NetAddr("127.0.0.1", 12345);
 
 ~dirt.addModule(\hd, { |dirtEvent|
-	if (dirtEvent.event.gain > 0) {
+	if (dirtEvent.event.gain > 0 or: { ~hdforce.notNil }) {
 		(
 			type: \hd,
 			sustain: ~hdsustain ? ~sustain,
@@ -32,25 +32,31 @@ var openFrameworks = NetAddr("127.0.0.1", 12345);
 }, {~hdmodel.notNil or: { ~hdlength.notNil } or: { ~hdspeed.notNil } or: { ~hdorder.notNil } or: { ~hdbehaviour.notNil }});
 
 ~dirt.soundLibrary.addSynth(\hd_drone, (play: {
+	var args;
 	~freq = (~freq ? 51);
-	hdP.drone(
+	// todo: support all hd params
+	args = [
 		\instrument, if (~synth.notNil, { ~synth.asSymbol }, { [\SineDrone, \SineDrone, \PulseDrone].choose }),
 		\freq, (~freq..(~freq+2)).scramble,
 		\pan, ~pan ? [-1, 1].scramble,
 		\dur, Pseq([~sustain], 1),
 		\sustain, ~hdsustain ? ~sustain,
 		\amp, ~amp * ~gain,
-	).play;
+	];
+	hdP.drone(*args).play;
 }));
 
 ~dirt.soundLibrary.addSynth(\hd_harpsi, (play: {
-	hdP.harpsi(
+	var args;
+	// todo: support all hd params
+	args = [
 		\freq, ~freq,
 		\pan, ~pan,
 		\dur, Pseq([~sustain], 1),
 		\amp, ~amp * ~gain,
 		\color, ~hdcolor ? -1,
-	).play;
+	];
+	hdP.harpsi(*args).play;
 }));
 
 ~dirt.soundLibrary.addSynth(\hd_crickets, (play: {
