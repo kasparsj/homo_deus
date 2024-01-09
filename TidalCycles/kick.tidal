@@ -1,0 +1,36 @@
+setcps(130/60)
+
+d2 $ stack [
+  -- slow/fast does not work with sc-grids (can't detect current beat)
+  -- slow 4
+  -- drumFrom "rolandtr808" "bd*4"
+  drumFrom "rolandtr808" "bd*32"
+  # gridsinst "kick"
+  # gridsx 0.5
+  # gridsy 0.5
+  # gridsmin 0
+  # gridsbias 0
+]
+
+d2 $ stack [
+  slow 4
+  -- $ drumFrom "rolandtr808" "~*2 bd ~"
+  -- $ drumFrom "rolandtr808" "[~*2 bd ~] bd!3"
+  -- $ drumFrom "rolandtr808" "[bd!3 ~] bd!3"
+  -- $ drumFrom "rolandtr808" "[bd!3 ~] [[bd ~]!2] bd!2"
+  -- $ drumFrom "rolandtr808" "[~ bd] [bd!3 ~] [bd]!2"
+  $ drumFrom "rolandtr808" "[~ bd] [bd!3 ~] [[bd ~]!2] bd"
+  -- $ drumFrom "rolandtr808" "bd*4"
+  -- $ drumFrom "rolandtr808" "[~*2 bd*2] ~"
+  # gain 0.7
+  -- # gain "0.85 0.4 0.7"
+  -- , slow 4
+  -- $ s "cb"
+  -- # gain 0.7
+]
+
+d2
+  $ slow 14
+  $ s "bd*14"
+  # hdmodel 0
+  # hdfrom (range (-0.5) 13.5 $ saw)

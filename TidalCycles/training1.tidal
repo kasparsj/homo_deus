@@ -1,0 +1,134 @@
+setcps(130/60)
+
+once
+  $ s "hd_wind"
+  # gain 0
+  # windchange (rsinf 0.1 1 0.001)
+  # windrq 0.1
+  -- # windrq (sin*2)
+
+once
+  $ s "hd_crickets"
+  # gain 1
+  # fade 3
+  # hdcolor green
+  # hdbehaviour b_random_color
+
+d1 $ slow 16 $ s "hd_drone"
+# freq "[51,52,53]"
+-- # pan "[-1,0,1]"
+-- # pan "[0, 0, 0]"
+# gain 0.05
+
+d1 silence
+
+d2 $ stack [
+  slow 1
+  $ drumFrom "doepferms404" "bd"
+  -- $ drumFrom "rolandtr808" "bd"
+  -- # gain "0.85 0.4 0.7"
+  # gain 1
+  -- # gain 0
+  # note "0 -12"
+  # size 0.5
+  # room 0.5
+  # lpf (rsinf 100 1000 0.1)
+  -- # lesscrackle 0.1
+  # hdmodel 0
+  # hdsustain 0.1
+  # hdlength 10
+  # hdcolor white
+  -- # hdbehaviour b_render_segment
+  # hdfrom (slow 14 $ range (-0.5) 13.5 $ saw)
+  , slow 8
+  $ stut 2 0.8 (1/16)
+  $ drumFrom "rolandtr808" "cp"
+  # gain (slow 14 $ rrand 0.5 1.0)
+  -- # gain 0
+  -- # speed 0.5
+  -- # crackleamclip 0.1
+  , drumFrom "rolandtr808" "sh*4"
+  -- # gain (rrand 0.3 0.9)
+  # gain "0.3 0.5 0.9 0.3"
+  -- , drumFrom "viscospacedrum" "hh*4"
+  -- # gain 0.6
+  , drumFrom "rolandtr808" "~ sd"
+  -- , drumFrom "rhodespolaris" "~ sd"
+  # gain 0.9
+  -- # gain 0
+  # speed 10
+  # n (irand 4)
+  # room (rrand 0.5 1.0)
+  # size (rrand 0.1 0.4)
+  -- # lesscrackle 0.1
+  , s "cb"
+  # gain (rrand 0.2 0.9)
+]
+
+d3 silence
+
+d4 silence
+
+d2 silence
+
+d3
+  $ slow 2
+  $ every 3 (slow 8)
+  $ every 2 (slow 4)
+  -- $ fast 32
+  $ degrade
+  $ every 3 (jux rev) . (|- 12)
+  $ note (scale "minPent" "<[0 4 5] [0 4 5 4] [5 3 1/2]>")
+  # s "braids"
+  # octave (4+irand 2)
+  -- # model 4
+  # model (choose[4,9,12,15])
+  # color (rrand 0.2 0.8)
+  # timbre (rrand 0 0.5)
+  -- # s "plaits"
+  -- # engine (choose[3,4,5] +10)
+  # gain 1.2
+  # octave (2+(irand 3))
+  # room 0.7
+  # size 0.95
+  -- # gain 0.7
+  -- # distort (rsinf 0 0.6 0.13)
+  -- # shape (rsinf 0 0.6 0.33)
+  # hpf (rsinf 500 2000 0.07)
+  # lpf (rsinf 500 2000 0.33)
+  # legato 2.0
+  # pan (rrand 0.3 0.7)
+  -- # lesscrackle 0.1
+  # mu 1.0
+  # hdmodel 1
+  # hdcolor ukr_yellow
+  # hdlength 10
+
+d3 silence
+
+d4
+  $ slow 16
+  $ every 16 (# note (scale "minPent" "[0,2,4]" + (irand 7))) . (|+ octave "-1") . (|* gain 1.1)
+  -- $ slow (irand 32)
+  -- $ fast 1
+  -- $ degrade
+  $ s "juno"
+  -- # n (irand 12)
+  # n 11
+  # speed 0.5
+  # gain 1.2
+  # legato 2.5
+  # note (scale "minPent" (irand 7))
+  -- # note (scale "phrygian" "1 5 0")
+  # octave 5
+  -- # octave (irand "2/4 5/4" +5)
+  # room 0.2
+  # size 0.9
+  # mu 1
+  -- # crackleamclip 0.1
+  # hdmodel 2
+  # hdcolor ukr_blue
+  # hdlength 20
+  # u (rand)
+
+d4 silence
