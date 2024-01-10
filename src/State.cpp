@@ -4,7 +4,7 @@
 #include "HeptagonStar.h"
 #include "LightList.h"
 
-#ifdef ARDUINO
+#ifdef USE_FASTLED
 #include "Palettes.h"
 #endif
 
@@ -21,7 +21,7 @@ uint16_t State::randomNextEmit() {
 }
 
 ColorRGB State::paletteColor(uint8_t color) {
-  #ifdef ARDUINO
+  #ifdef USE_FASTLED
   const CRGBPalette16& palette = gGradientPalettes[currentPalette];
   CRGB crgb = ColorFromPalette(palette, color);
   return ColorRGB(crgb.r, crgb.g, crgb.b);  

@@ -156,3 +156,10 @@ enum Ease {
 #define INFINITE_DURATION UINT32_MAX
 #define DEFAULT_SPEED 1.0
 #define FULL_BRIGHTNESS 255
+
+#if defined (ARDUINO)
+
+// todo: FastLED is currently broken (probably was working with an earlier version than 3.5.0)
+//#define USE_FASTLED
+
+#endif
