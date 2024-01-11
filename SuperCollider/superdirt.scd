@@ -4,7 +4,7 @@ var hdP = ~hdP;
 var openFrameworks = NetAddr("127.0.0.1", 12345);
 
 ~dirt.addModule(\hd, { |dirtEvent|
-	if (dirtEvent.event.gain > 0 and: { ~hd.isNil or: { ~hd > 0 } }) {
+	if (dirtEvent.event.gain > 0 and: { ~hdon.isNil } or: { ~hdon.notNil and: { ~hdon > 0 } }) {
 		(
 			type: \hd,
 			sustain: ~hdsustain ? ~sustain,
