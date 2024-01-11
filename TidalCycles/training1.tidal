@@ -39,7 +39,7 @@ d2 $ stack [
   # hdlength 10
   # hdcolor white
   -- # hdbehaviour b_render_segment
-  # hdfrom (slow 14 $ range (-0.5) 13.5 $ saw)
+  # hdfrom (slow 14 $ range 0 14 $ saw)
   , slow 8
   $ stut 2 0.8 (1/16)
   $ drumFrom "rolandtr808" "cp"

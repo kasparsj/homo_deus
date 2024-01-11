@@ -1,0 +1,19 @@
+d4
+  -- $ slow 32
+  $ slow 16
+  -- $ slow 8
+  $ s "juno"
+  # n 11
+  # note (scale "minPent" (irand 7))
+  # speed 0.5
+  # gain 1.2
+  -- # gain 0.4
+  # legato 2.5
+  # octave 5
+  # room 0.2
+  # size 0.9
+  -- # mu 1.0
+  # hdmodel 3
+  # hdcolor ukr_blue
+  -- # lesscrackle 0.1
+  -- # u (rand)

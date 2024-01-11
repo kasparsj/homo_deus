@@ -1,15 +1,21 @@
 setcps(130/60)
 
 d2 $ stack [
-  -- slow/fast does not work with sc-grids (can't detect current beat)
-  -- slow 4
-  -- drumFrom "rolandtr808" "bd*4"
-  drumFrom "rolandtr808" "bd*32"
+  fast 4
+  -- $ drumFrom "rolandtr808" "bd*4"
+  $ drumFrom "doepferms404" "bd"
   # gridsinst "kick"
-  # gridsx 0.5
-  # gridsy 0.5
-  # gridsmin 0
+  # gridsx 0.75
+  # gridsy 0.2
+  # gridsmin 0.25
   # gridsbias 0
+  # gridsscale 4
+  # hdmodel 0
+  # hdlength 10
+  # hdfrom (slow (14*4) $ range 0 14 $ saw)
+  # hdcolor white
+  # hdsustain 0.01
+  # hdbehaviour b_render_segment
 ]
 
 d2 $ stack [
@@ -33,4 +39,4 @@ d2
   $ slow 14
   $ s "bd*14"
   # hdmodel 0
-  # hdfrom (range (-0.5) 13.5 $ saw)
+  # hdfrom (range 0 14 $ saw)

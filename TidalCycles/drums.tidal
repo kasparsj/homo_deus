@@ -1,0 +1,67 @@
+d2 $ stack [
+  slow 1
+  -- $ drumFrom "doepferms404" "bd"
+  -- $ drumFrom "doepferms404" "<bd bd*2 ~>"
+  $ drumFrom "rolandtr808" "bd"
+  -- # gain "0.85 0.4 0.7"
+  # gain 1
+  -- # note "0 -12"
+  -- # room 0.5
+  -- # size 0.5
+  -- # lpf (rsinf 100 1000 0.1)
+  -- # lesscrackle 0.1
+  # hdmodel 0
+  # hdspeed 0
+  # hdsustain 0.1
+  # hdlength 10
+  # hdcolor white
+  -- # hdbehaviour b_render_segment
+  # hdfrom (slow 14 $ range 0 14 $ saw)
+  -- CB
+  -- , s "cb"
+  -- # gain (rrand 0.2 0.9)
+  -- CLAP
+  , slow 16
+  -- , slow 8
+  $ stut 2 0.8 (1/16)
+  $ drumFrom "rolandtr808" "cp"
+  # gain 0.7
+  -- # gain (slow 14 $ rrand 0.5 1.0)
+  # note 12
+  -- # speed 0.5
+  # hdmodel m_splatter
+  # hdlinked 0
+  # hdsustain 0.1
+  # hdspeed 10
+  # hdlength (2+ irand 20)
+  # hdcolor ukr_blue
+  -- # crackleamclip 0.1
+  -- HATS
+  , drumFrom "rolandtr808" "sh*4"
+  -- # gain (rrand 0.3 0.9)
+  # gain "0.3 0.5 0.9 0.3"
+  -- , drumFrom "viscospacedrum" "hh*4"
+  -- # gain 0.6
+  # hdlength 1
+  # hdspeed 0
+  # hdcolor ukr_yellow
+  # hdmodel 3
+  -- , drumFrom "viscospacedrum" "[~ oh]"
+  -- # gain 0.6
+  -- SNARE
+  , drumFrom "rolandtr808" "~ sd"
+  -- # n (irand 4)
+  -- , drumFrom "rhodespolaris" "~ sd"
+  -- , drumFrom "viscospacedrum" "[[~ sd ~ ~] [~*4] [~*4] [~*3 sd]]"
+  -- # n 1
+  # gain 0.9
+  -- # gain 0.
+  # speed 10
+  -- # room 0.02
+  -- # size 0.7
+  -- # room (rrand 0.5 1.0)
+  -- # size (rrand 0.1 0.4)
+  -- # delay 0.7
+  -- # hpf 100
+  -- # lesscrackle 0.1
+]

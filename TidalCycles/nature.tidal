@@ -1,0 +1,38 @@
+do
+  once
+    $ s "hd_crickets"
+    # gain 1
+    -- # gain 0
+    # fade 20
+    # hdcolor green
+    # hdbehaviour b_random_color
+  once
+    $ s "hd_wind"
+    -- # gain 0.7
+    -- # gain (rsawf 0 1 0.01)
+    # gain (rsawf 0 10 0.01) -- brutal
+    -- # gain 0
+    # fade 30
+    -- # windchange 0.001 -- background
+    # windchange 0.01
+    -- # windchange 0.1 -- fast gusts
+    -- # windchange 10 -- heli
+    -- # windrq 0.1
+    # windrq (sin*2) -- dynamic / changing
+    -- # windrq 1.5 -- heli
+
+d1
+  -- $ slow 16
+  $ slow 4
+  $ s "hd_drone"
+  -- # synth "SineDrone"
+  -- # synth "PulseDrone"
+  -- # freq 51
+  # freq "[51,52]"
+  -- # freq (["51" + irand 2, "53" + irand 2])
+  -- # freq "[51,52,53]"
+  -- # freq "[101,102,103]"
+  -- # freq "[200,201,202]"
+  -- # gain 0.1
+  # gain 0
+  # synth "SineDrone"
