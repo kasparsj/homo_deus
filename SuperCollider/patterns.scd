@@ -25,8 +25,8 @@
 				//\PulseDrone, { [255, 0, 0] },
 				//\SawDrone, { [255, 0, 255] },
 				\SineDrone,   { [0, 87, 183] },
-				\PulseDrone, { [255, 215, 0] },
-				\SawDrone, { [255, 215, 0] },
+				\PulseDrone, { [157, 34, 53] },
+				\SawDrone, { [157, 34, 53] },
 			);
 		},
 	]);
@@ -85,7 +85,7 @@
 	\mod, PSinOsc(1/22, 2pi*2/3, mul: 0.1),
 );
 
-~hdP.startCrickets = { |self ... args|
+~hdP.startCrickets = { |self, args, vol, fadeTime|
 	var pArgs = [
 		\type, \hd,
 		\amp, 0,
@@ -93,10 +93,15 @@
 		// \speed, Pfunc{ 0.5.exprand(10.0) },
 		\speed, Pfunc{ 0.1.exprand(1.0) },
 		\ease, \EXPONENTIAL_INOUT,
-	].addAll(args).addAll([
+	].addAll(args);
+	fadeTime = fadeTime ? 0;
+	pArgs = pArgs.addAll([
 		\crickets, Pfunc{ |event|
 			if (event[\type] == \hd) {
-				self.unmuteCrickets;
+				self.playCrickets;
+				if (fadeTime == 0) {
+					self.unmuteCrickets;
+				};
 			} {
 				self.muteCrickets;
 			};
@@ -108,18 +113,23 @@
 		self.cricketsP.stop;
 	};
 	self.cricketsP = Pdef(\hd_crickets, Pbind(*pArgs)).play;
+	if (fadeTime > 0) {
+		self.fadeCrickets(fadeTime, vol);
+	};
 };
 ~hdP.muteCrickets = { |self|
 	self.cricketsBus.set(0);
 };
-~hdP.unmuteCrickets = { |self|
+~hdP.playCrickets = { |self|
 	if (self.c1p.isNil or: { self.c1p.isPlaying.not }) {
 		self.c1p = self.c1.play;
 		self.c2p = self.c2.play;
 		self.c31p = self.c31.play;
 		self.c32p = self.c32.play;
 	};
-	self.cricketsBus.set(1.0);
+};
+~hdP.unmuteCrickets = { |self, vol|
+	self.cricketsBus.set(vol ? 1.0);
 };
 ~hdP.stopCrickets = { |self, fadeTime|
 	var stopAndMute = {
@@ -129,25 +139,29 @@
 		self.c32p.stop;
 		self.muteCrickets;
 	};
-	var currentValue = self.cricketsBus.getSynchronous;
-	var numSteps = 10;
-	var deltaValue = currentValue / 10;
-	fadeTime = fadeTime ? 0;
 	self.cricketsP.stop;
+	fadeTime = fadeTime ? 0;
 	if (fadeTime > 0) {
-		AppClock.sched(fadeTime / numSteps, {
-			if (currentValue > 0) {
-				currentValue = currentValue - deltaValue;
-				self.cricketsBus.set(currentValue);
-				fadeTime / numSteps;
-			} {
-				stopAndMute.value;
-				nil;
-			}
-		});
+		self.fadeCrickets(fadeTime, 0, stopAndMute);
 	} {
 		stopAndMute.value;
 	};
+};
+
+~hdP.fadeCrickets = { |self, fadeTime, value, callback|
+	var currentValue = self.cricketsBus.getSynchronous;
+	var numSteps = 10;
+	var deltaValue = (value - currentValue) / 10;
+	AppClock.sched(fadeTime / numSteps, {
+		if (deltaValue < 0 and: { currentValue > value } or: { deltaValue > 0 and: { currentValue < value } }) {
+			currentValue = currentValue + deltaValue;
+			self.cricketsBus.set(currentValue);
+			fadeTime / numSteps;
+		} {
+			callback.value;
+			nil;
+		}
+	});
 };
 
 Ndef(\wind).clear;

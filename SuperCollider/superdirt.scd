@@ -61,7 +61,7 @@ var openFrameworks = NetAddr("127.0.0.1", 12345);
 
 ~dirt.soundLibrary.addSynth(\hd_crickets, (play: {
 	if (~gain > 0) {
-		hdP.startCrickets(
+		var args = [
 			//\freq, ~freq,
 			//\pan, ~pan,
 			// \dur, Pseq([~sustain], 1),
@@ -69,7 +69,8 @@ var openFrameworks = NetAddr("127.0.0.1", 12345);
 			\color, ~hdcolor ? [0, 255, 0],
 			\behaviour, Prand([[\FILL_EASE], [\FILL_EASE, ~hdbehaviour ? 0]], inf),
 			\brightness, ~hdbrightness ? hd[\fullBrightness],
-		);
+		];
+		hdP.startCrickets(args, ~gain, ~fade);
 	} {
 		hdP.stopCrickets(~fade);
 	};
