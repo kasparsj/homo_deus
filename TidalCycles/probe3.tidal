@@ -25,6 +25,7 @@ d1
   -- # hdmodel 3
   # hdmodel (choose [0,3])
   # hdhueoff 0.4
+  -- # hdlenmul 20
   -- # hdcolor magenta
   -- # hdcolor white
   -- # hdcolor (choose [cyan, red, white])
@@ -55,3 +56,120 @@ do
     -- # windrq 0.1
     # windrq (sin*2) -- dynamic / changing
     -- # windrq 1.5 -- heli
+
+d1
+  $ slow 16
+  -- $ slow 4
+  $ s "hd_drone"
+  # synth "SineDrone"
+  -- # synth "PulseDrone"
+  # freq 51
+  -- # freq "[51,52]"
+  -- # freq (["51" + irand 2, "53" + irand 2])
+  -- # freq "[51,52,53]"
+  -- # freq "[101,102,103]"
+  -- # freq "[200,201,202]"
+  # gain 0.1
+
+-- xfadeIn 2 4
+d2
+  $ stack [
+  fast 1
+  -- $ fast 16
+  -- fast 4
+  -- $ drumFrom "rolandtr808" "bd"
+  $ drumFrom "doepferms404" "bd"
+  -- $ drumFrom "doepferms404" "<bd bd*2 ~>"
+  # gain 0.8
+  -- # gain 1
+  -- # gain 0
+  # note "0 -12"
+  -- # room 0.5
+  -- # gridsinst "kick"
+  -- # gridsx 0.25
+  -- # gridsy 0.25
+  -- # gridsmin 0.25
+  -- # gridsbias 0
+  -- # gridsscale 16
+  # hdmodel 0
+  # hdspeed 0
+  # hdsustain 0.1
+  # hdlength (-1)
+  # hdcolor white
+  -- # hdcolor yellow
+  # hdbehaviour b_render_segment
+  # hdfrom (slow 14 $ range 0 14 $ saw)
+  , slow 4
+  -- $ fast 16
+  $ s "~ sd"
+  # n (irand 4)
+  # gain 1.2
+  -- # gain 0
+  -- # lesscrackle 0.1
+  -- # gridsinst "snare"
+  -- # gridsx 0.5
+  -- # gridsy 0.1
+  -- # gridsmin 1
+  -- # gridsbias 0
+  -- # gridsscale 16
+  # hdmodel 1
+  # hdlength (10 + irand 10)
+  -- # hdsustain 0.1
+  # hdcolor yellow
+  # hdbehaviour b_render_segment
+  # hdspeed 0
+  , fast 1
+  $ slow 16
+  $ fast 16
+  $ stut 3 0.8 (1/16)
+  $ drumFrom "rolandtr808" "cp"
+  # gain 0
+  -- # gain 1
+  -- # gain (slow 14 $ rrand 0.5 1.0)
+  # room 0.5
+  # note 12
+  # gridsinst "hihat"
+  # gridsx 0.2
+  # gridsy 0.2
+  # gridsmin 0.1
+  # gridsbias 0
+  # gridsscale 16
+  # hdmodel m_splatter
+  # hdlinked 0
+  # hdsustain 0.1
+  -- # hdspeed 10
+  # hdlength (10+ irand 10)
+  -- # hdcolor white
+  # hdcolor cyan
+  -- # hdcolor lat_red
+  -- # lesscrackle 0.1
+  , fast 1
+  -- $ fast 8
+  $ drumFrom "rolandtr808" "sh*4"
+  # gain "0.3 0.5 0.9 0.3"
+  -- # gain 0.7
+  # gain 0
+  -- # gridsinst "hihat"
+  -- # gridsx 0.2
+  -- # gridsy 0.2
+  -- # gridsmin 0.5
+  -- # gridsbias 0
+  -- # gridsscale 8
+  # hdmodel m_splatter
+  # hdlength 3
+  # hdsustain 0.2
+  # hdlinked 0
+  # hdspeed 0
+  # hdcolor magenta
+  , fast 8
+  $ drumFrom "rolandtr808" "hh"
+  # gain 0
+  # gridsinst "hihat"
+  # gridsx 0.23
+  # gridsy 0.23
+  # gridsmin 0
+  # gridsbias 0
+  # gridsscale 8
+]
+
+d2 $ silence

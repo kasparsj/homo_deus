@@ -128,7 +128,8 @@ s.sync;
 		var duration = dur+lag+serverLatency;
 		var args = List.newUsing([emitLatency, "/emit"]);
 		var color = self.getColor(~color.value);
-		var keys = currentEnvironment.keys.reject({|key| Set[\COLOR, \COLORINDEX, \COLOR_INDEX, \DURATION].includes(key.asString.toUpper.asSymbol) });
+		var length = if (~length.notNil, { if (~length.value < 0, nil, ~length.value.asInteger) }, nil);
+		var keys = currentEnvironment.keys.reject({|key| Set[\COLOR, \COLORINDEX, \COLOR_INDEX, \DURATION, \LENGTH].includes(key.asString.toUpper.asSymbol) });
 		var paramKeys = self[\PARAM].keys;
 		keys.do { |key|
 			var param = key.asString.toUpper.asSymbol;
@@ -146,6 +147,9 @@ s.sync;
 			if (~colorIndex.value.notNil) {
 				args.addAll([self[\PARAM][\COLOR_INDEX], ~colorIndex.value.asInteger]);
 			};
+		};
+		if (length.notNil) {
+			args.addAll([self[\PARAM][\LENGTH], length]);
 		};
 		if (self.useEmit) {
 			args[1] = "/emit";
