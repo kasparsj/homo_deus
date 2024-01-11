@@ -181,4 +181,4 @@ xfadeIn 3 8
     # mu 1.0
     -- # pg (10 + irand 6)
     # hdmodel 1
-    # hdcolor ukr_yellow
+    # hdcolor ukr_blue

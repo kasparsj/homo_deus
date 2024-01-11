@@ -6,10 +6,12 @@
 -- 808bd + wind3
 -- wind4 + drone (sine,saw)
 -- bd1 + drone (sine)
+-- bd1 + sh + sd + drone (sine) + juno
 
 -- juno 32 + tides 4
 -- juno 32 + tides 4 + plaits 4
 -- juno 32 + tides 4 + braids 4
+
 -- juno 32 + drone + bd2 + sh + sd
 -- juno 32 + drone + bd2 + cp 2 + sd
 -- juno 32 + drone + bd2 + cp 2 + sd + lesscrackle

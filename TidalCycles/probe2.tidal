@@ -1,0 +1,352 @@
+setcps(130/60)
+
+d1
+-- xfadeIn 1 64
+-- xfade 1
+  $ degradeBy 0.1
+  -- $ degrade
+  $ every 3 (# octave 5)
+  $ every 4 (# speed 0.5)
+  $ slow 4
+  $ note (scale "phrygian" (fmap ([0,3,5,7]!!)
+  -- $ note (scale "minPent" (fmap ([0,4,5,1]!!)
+  -- $ note (unwrap (fmap ([0, 4, 11, "~"]!!)
+  $ markovPat 8 1 [[3,5,2,1], [4,4,2,1], [0,1,0,1], [1,1,1,1]]))
+  # s "tides"
+  # slope (slow 32 $ range 0 0.5 sin)
+  # tidesshape (slow 48 $ range 0 0.5 saw)
+  # tidessmooth 0.7
+  # model (10 + irand 2)
+  # gain 0.6
+  -- # gain (rsinf 0.4 0.7 0.03)
+  # octave (slow 32 $ floor <$> range 3 5 saw)
+  # hpf 300
+  # sustain (slow 8 $ range 1 2 sine)
+  # legato (slow 16 $ range 1 2 saw)
+  # pan (rand)
+  # verbwet (rsinf 0.8 0.95 0.67)
+  # verbtime (rsinf 0.4 1.0 0.2)
+  # verbdamp 0.7
+  # verbhp 0.05
+  # verbgain 0.9
+  # hdmodel 3
+  -- # hdmodel 0
+  # hdcolor magenta
+  -- # hdcolor (choose [cyan, red, white])
+  -- # hdlength 20
+  # hdbehaviour b_bri_const_noise
+  # hd 1
+  -- # mu (rand*0.2)
+
+do
+  once
+    $ s "hd_crickets"
+    # gain 1
+    -- # gain 0
+    # fade 20
+    # hdcolor green
+    # hdbehaviour b_random_color
+  once
+    $ s "hd_wind"
+    # gain 0.7
+    -- # gain (rsawf 0 1 0.01)
+    -- # gain (rsawf 0 10 (1/64)) -- brutal
+    -- # gain 0
+    # fade 30
+    # windchange 0.001 -- background
+    -- # windchange 0.01
+    -- # windchange 0.1 -- fast gusts
+    -- # windchange 10 -- heli
+    # windrq 0.1
+    -- # windrq (sin*2) -- dynamic / changing
+    -- # windrq 1.5 -- heli
+
+d1
+  $ slow 16
+  -- $ slow 4
+  $ s "hd_drone"
+  -- # synth "SineDrone"
+  -- # synth "PulseDrone"
+  -- # freq 51
+  # freq "[51,52]"
+  -- # freq (["51" + irand 2, "53" + irand 2])
+  -- # freq "[51,52,53]"
+  -- # freq "[101,102,103]"
+  -- # freq "[200,201,202]"
+  # gain 0.1
+  -- # gain 0
+
+-- xfadeIn 2 16
+d2
+  $ stack [
+  fast 1
+  -- fast 4
+  -- $ drumFrom "rolandtr808" "bd"
+  $ drumFrom "doepferms404" "bd"
+  -- $ drumFrom "doepferms404" "<bd bd*2 ~>"
+  -- # gain 0.8
+  # gain 1
+  -- # gain 0
+  -- # note "0 -12"
+  -- # room 0.5
+  -- # gridsinst "kick"
+  -- # gridsx 0.5
+  -- # gridsy 0.5
+  -- # gridsmin 0.5
+  -- # gridsbias 0
+  -- # gridsscale 16
+  # hdmodel 0
+  # hdspeed 0
+  # hdsustain 0.1
+  -- # hdlength 10
+  # hdcolor white
+  -- # hdcolor yellow
+  # hdbehaviour b_render_segment
+  # hdfrom (slow 14 $  range 0 14 $ saw)
+  , fast 1
+  -- fast 4
+  $ s "~ sd"
+  # n (irand 4)
+  # gain 0.9
+  -- # gain 0
+  -- # lesscrackle 0.1
+  -- # gridsinst "snare"
+  -- # gridsx 0.5
+  -- # gridsy 0.4
+  -- # gridsmin 0.5
+  -- # gridsbias 0
+  -- # gridsscale 4
+  # hdmodel 3
+  # hdlength (irand 20)
+  -- # hdsustain 0.1
+  # hdcolor yellow
+  # hdbehaviour b_render_segment
+  # hdspeed 0
+  , fast 1
+  $ slow 16
+  -- $ fast 8
+  $ stut 2 0.8 (1/16)
+  $ drumFrom "rolandtr808" "cp"
+  -- # gain 0
+  # gain 0.7
+  -- # gain (slow 14 $ rrand 0.5 1.0)
+  -- # room 0.5
+  -- # note 12
+  -- # gridsinst "hihat"
+  -- # gridsx 0.2
+  -- # gridsy 0.2
+  -- # gridsmin 0
+  -- # gridsbias 0
+  -- # gridsscale 8
+  # hdmodel m_splatter
+  # hdlinked 0
+  # hdsustain 0.1
+  -- # hdspeed 10
+  # hdlength (10+ irand 10)
+  -- # hdcolor white
+  # hdcolor cyan
+  -- # hdcolor lat_red
+  -- # lesscrackle 0.1
+  , fast 1
+  -- $ fast 8
+  $ drumFrom "rolandtr808" "sh*4"
+  # gain 0.7
+  -- # gain 0
+  -- # gridsinst "hihat"
+  -- # gridsx 0.2
+  -- # gridsy 0.2
+  -- # gridsmin 0.5
+  -- # gridsbias 0
+  -- # gridsscale 8
+  # hdmodel m_splatter
+  # hdlength 3
+  # hdlinked 0
+  # hdspeed 0
+  # hdcolor magenta
+  -- , fast 8
+  -- $ drumFrom "rolandtr808" "hh"
+  -- # gridsinst "hihat"
+  -- # gridsx 0.23
+  -- # gridsy 0.23
+  -- # gridsmin 0.5
+  -- # gridsbias 0
+  -- # gridsscale 8
+]
+
+d2 $ silence
+
+d4
+  $ slow 32
+  $ s "juno"
+  # n 11
+  -- # note (scale "dorian" (irand 7))
+  # note (scale "minPent" (irand 5))
+  # speed 0.5
+  # gain 1.2
+  # legato 2.5
+  -- # octave (choose [3,4])
+  # octave 4
+  -- # octave 5
+  # room 0.2
+  # size 0.5
+  # hdmodel 3
+  # hdcolor blue
+  # hdlength (20 + irand 80)
+  -- # distort (rrand 0 0.2)
+
+xfadeIn 5 8
+  $ slow 2
+  $ every 3 (slow 8)
+  $ every 2 (slow 4)
+  -- $ degrade
+  $ degradeBy 0.1
+  $ jux rev
+  -- $ every 3 (|-12)
+  -- $ every 5 (rev)
+  -- $ every 6 (# octave 6) . (# bpq 0.25) . (# rel 2.0)
+  -- $ off 0.125 (# distort 0.2) . (|-12)
+  $ note (scale "minPent" "<[0 4 5] [0 4 5 4] [5 2 1/2]>")
+  -- # s "tides" # tidesshape (rsinf 0 0.5 0.07) # slope (rrand 0 0.5)
+  # s "plaits" # engine 3 # color (rrand 0.2 0.8) # timbre (rrand 0 0.5)
+  -- # s "supersquare"
+  # gain 0.5
+  # room 0.5
+  # size 0.95
+  -- # octave (slow 64 $ floor <$> (range 4 6 saw))
+  -- # lpf (rsinf 500 2000 0.33)
+  # legato 2.0
+  # mu 1.0
+  -- # pan (rand)
+  # hdmodel 3
+  # hdcolor blue
+  # hdlength 20
+  -- # distort 0.2
+  # shape (rsinf 0 0.6 0.33)
+
+d5 $ silence
+
+xfadeIn 6 8
+  $ slow 8
+  $ degrade
+  $ jux rev
+  $ every 3 (|-12)
+  -- $ every 5 (rev)
+  $ note (scale "dorian" "<[0 4 5]*5 [0 4 5 4]*4 [5 2 1/2]>")
+  # s "plaits"
+  # engine (slow 32 $ floor <$> (range 4 6 saw))
+  -- # engine 4
+  -- # s "braids"
+  -- # model (choose [4,9,12,15])
+  -- # model (slow 32 $ floor <$> (range 3 15 saw))
+  # hpf (rsinf 500 2000 0.33)
+  # lpf 7000
+  # color (rrand 0.2 0.8)
+  # timbre (rrand 0.5 1.0)
+  # gain 0.5
+  # room (rsinf 0.25 0.5 0.11)
+  # size 0.95
+  # legato 2.0
+  # mu 1.0
+  # pan (rand)
+  # hdmodel 2
+  # hdcolor magenta
+  -- # crackleamclip 0.2
+  # hdlength 10
+
+d6 silence
+
+xfadeIn 7 8
+  $ slow 8
+  $ degrade
+  -- $ every 3 (|-12)
+  -- $ every 5 (rev)
+  $ note (scale "minPent" "<[0 4 5]*5 [0 4 5 4]*4 [5 2 1/2]>")
+  -- # s "plaits"
+  -- # engine (slow 32 $ floor <$> (range 4 6 saw))
+  -- # engine 4
+  # s "braids"
+  # model (choose [4,9,12,15])
+  -- # model (slow 32 $ floor <$> (range 3 15 saw))
+  # lpf (rsinf 500 2000 0.33)
+  # color (rrand 0.2 0.8)
+  # timbre (rrand 0.5 1.0)
+  # gain 0.8
+  # room (rsinf 0.25 0.5 0.11)
+  # size 0.95
+  # legato 2.0
+  # mu 1.0
+  # pan (rand)
+  # hdmodel 2
+  # hdcolor white
+  # hdlength 10
+
+d7 silence
+
+-- FOR THE END
+d8
+  $ slow 2
+  $ every 3 (slow 8)
+  $ every 2 (slow 4)
+  -- $ slow 8
+  $ degrade
+  -- $ every 3 (jux rev) . (|- 12)
+  -- $ every 5 (rev)
+  $ every 6 (# octave 4) . (# bpq 0.25) . (# rel 2.0)
+  $ note (scale "minPent" "<[0 4 5] [0 4 5 4] [5 3 1/2]>")
+  # model 28
+  -- # s "braids" # color (rrand 0.2 0.8) # timbre (rrand 0 0.5) # octave 3
+  -- # s "plaits" # engine 3 # octave 3
+  # s "tides" # octave 3
+  # slope (rrand 0 0.5)
+  # room 0.5
+  # size 0.9
+  # gain 0.8
+  -- # hpf (rsinf 500 2000 0.07)
+  # bpf (rsinf 500 2000 0.33)
+  # legato 3.0
+  -- # pan (rrand 0.3 0.7)
+  -- # distort (rsinf 0 0.6 0.13)
+  # shape (rsinf 0 0.6 0.33)
+  # mu 1.0
+  # hdmodel 3
+  # hdlength 10
+  # hdcolor ukr_yellow
+
+d8 silence
+
+-- xfadeIn 9 8
+d9
+  $ slow 4
+  $ every 3 (slow 8)
+  $ every 2 (slow 2)
+  $ degrade
+  -- $ every 3 (jux rev) . (|- 12)
+  -- $ every 5 (rev)
+  $ every 6 (# octave 6) . (# bpq 0.25) . (# rel 2.0)
+  $ note (scale "dorian" "<[0 4 5]*5 [0 4 5 4]*4 [5 3 1/2]>")
+  -- # s "braids"
+  -- # model (choose [4,9,12,15]) # octave 4
+  # s "plaits"
+  # engine 3 # octave (choose [4,5])
+  -- # lesscrackle 0.2
+  -- # slope (rrand 0 0.5)
+  # color (rrand 0.2 0.8)
+  # timbre (rrand 0.5 1.0)
+  # room 0.5
+  -- # size 0.9
+  -- # gain 1.6
+  # gain 0.7
+  # bpf (rsinf 500 2000 0.7)
+  -- # lpf (rsinf 500 2000 0.33)
+  # legato 2.0
+  # pan (rrand 0.3 0.7)
+  -- # distort (rsinf 0 0.6 0.13)
+  -- # shape (rsinf 0 0.6 0.33)
+  -- # u (rand)
+  # mu 1.0
+  -- # pg (10 + irand 6)
+  # hdmodel 1
+  # hdlength 10
+  # hdcolor ukr_blue
+
+d9 silence

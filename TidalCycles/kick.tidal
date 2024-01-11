@@ -3,19 +3,60 @@ setcps(130/60)
 d2 $ stack [
   fast 4
   -- $ drumFrom "rolandtr808" "bd*4"
-  $ drumFrom "doepferms404" "bd"
+  -- $ drumFrom "doepferms404" "bd"
+  $ drumFrom "doepferms404" "<bd bd*2 ~>"
+  -- # gain 0
   # gridsinst "kick"
-  # gridsx 0.75
-  # gridsy 0.2
-  # gridsmin 0.25
+  # gridsx 0.5
+  # gridsy 0.5
+  # gridsmin 0.5
   # gridsbias 0
-  # gridsscale 4
+  # gridsscale 16
   # hdmodel 0
   # hdlength 10
   # hdfrom (slow (14*4) $ range 0 14 $ saw)
   # hdcolor white
   # hdsustain 0.01
   # hdbehaviour b_render_segment
+  , fast 4
+  -- $ drumFrom "rolandtr808" "~ sd"
+  $ s "sd"
+  # n (irand 4)
+  # gain 1.2
+  # gridsinst "snare"
+  # gridsx 0.5
+  # gridsy 0.4
+  # gridsmin 0.5
+  # gridsbias 0
+  # gridsscale 4
+  # hdmodel 3
+  # hdlength (irand 20)
+  -- # hdsustain 0.1
+  # hdcolor ukr_yellow
+  # hdbehaviour b_render_segment
+  # hdspeed 0
+  , fast 8
+  $ drumFrom "rolandtr808" "hh"
+  # gridsinst "hihat"
+  # gridsx 0.2
+  # gridsy 0.2
+  # gridsmin 0.5
+  # gridsbias 0
+  # gridsscale 8
+  , fast 8
+  $ drumFrom "rolandtr808" "sh"
+  # gain 0
+  # gridsinst "hihat"
+  # gridsx 0.5
+  # gridsy 0.5
+  # gridsmin 0
+  # gridsbias 0
+  # gridsscale 8
+  # hdlength 3
+  # hdlinked 0
+  -- # hdspeed 0
+  # hdcolor magenta
+  # hdmodel m_splatter
 ]
 
 d2 $ stack [
@@ -25,7 +66,7 @@ d2 $ stack [
   -- $ drumFrom "rolandtr808" "[bd!3 ~] bd!3"
   -- $ drumFrom "rolandtr808" "[bd!3 ~] [[bd ~]!2] bd!2"
   -- $ drumFrom "rolandtr808" "[~ bd] [bd!3 ~] [bd]!2"
-  $ drumFrom "rolandtr808" "[~ bd] [bd!3 ~] [[bd ~]!2] bd"
+  -- $ drumFrom "rolandtr808" "[~ bd] [bd!3 ~] [[bd ~]!2] bd"
   -- $ drumFrom "rolandtr808" "bd*4"
   -- $ drumFrom "rolandtr808" "[~*2 bd*2] ~"
   # gain 0.7
