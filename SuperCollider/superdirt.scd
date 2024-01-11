@@ -32,17 +32,18 @@ hslToRgb = { |h, s=1, l=0.5|
 };
 
 ~dirt.addModule(\hd, { |dirtEvent|
-	if (dirtEvent.event.gain > 0 and: { ~hdon.isNil } or: { ~hdon.notNil and: { ~hdon > 0 } }) {
+	if (~gain > 0 and: { ~hdon.isNil } or: { ~hdon.notNil and: { ~hdon > 0 } }) {
+		var sustain = ~hdsustain ? ~sustain;
 		(
 			type: \hd,
-			sustain: ~hdsustain ? ~sustain,
+			sustain: sustain,
 			model: ~hdmodel,
 			speed: ~hdspeed,
 			ease: ~hdease,
 			fade: ~hdfade,
 			thresh: ~hdthresh,
 			fadeEase: ~hdfadease,
-			length: ~hdlength,
+			length: (~hdlength ? ~hdlen) ?? { sustain * (~hdlenmul ? 10) },
 			trail: ~hdtrail,
 			order: ~hdorder,
 			head: ~hdhead,
@@ -54,8 +55,8 @@ hslToRgb = { |h, s=1, l=0.5|
 			emit: ~hdemit,
 			offset: ~hdoffset,
 			colorChange: ~hdcolorchange,
-			color: ~hdcolor ?? { if (dirtEvent.event.freq.notNil, {
-				midiToRgb.(dirtEvent.event.freq.cpsmidi.floor, ~hdhueoff);
+			color: ~hdcolor ?? { if (~freq.notNil, {
+				midiToRgb.(~freq.cpsmidi.floor, ~hdhueoff);
 			}, nil) },
 		).play;
 	};
