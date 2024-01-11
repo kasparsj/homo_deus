@@ -10,6 +10,8 @@ MainFX.clear;
 ~hdMaster.add(\volume, 1.0);
 // ~hdMaster.add(\limiter, 0, 0);
 
+//~hdMaster.gui
+
 // [\add, \remove].do { |method|
 // 	OSCdef(("phi8MasterFilter" ++ method).asSymbol, { |msg|
 // 		var index = msg.indexOf(1.0);

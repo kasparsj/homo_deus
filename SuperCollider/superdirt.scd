@@ -2,6 +2,34 @@
 var hd = ~hd;
 var hdP = ~hdP;
 var openFrameworks = NetAddr("127.0.0.1", 12345);
+var midiToRgb, hueToRgb, hslToRgb;
+
+midiToRgb = { |midi, offset=0|
+	hslToRgb.(midi/127 + offset);
+};
+
+hueToRgb = { |p, q, t|
+	if(t < 0, { t = t + 1 },
+		if (t > 1, { t = t - 1 }));
+	if(t < (1/6), { p + (q - p) * 6 * t },
+		if(t < (1/2), { q },
+			if(t < (2/3), { p + (q - p) * ((2/3) - t) * 6 },
+				{ p })));
+};
+
+hslToRgb = { |h, s=1, l=0.5|
+	var r, g, b;
+	if (s === 0) {
+		r = g = b = l; // achromatic
+	} {
+		var q = if (l < 0.5, { l * (1 + s) }, { l + s - l * s });
+		var p = 2 * l - q;
+		r = hueToRgb.(p, q, h + (1/3));
+		g = hueToRgb.(p, q, h);
+		b = hueToRgb.(p, q, h - (1/3));
+	};
+	[(r * 255).round.asInteger, (g * 255).round.asInteger, (b * 255).round.asInteger];
+};
 
 ~dirt.addModule(\hd, { |dirtEvent|
 	if (dirtEvent.event.gain > 0 and: { ~hdon.isNil } or: { ~hdon.notNil and: { ~hdon > 0 } }) {
@@ -26,7 +54,9 @@ var openFrameworks = NetAddr("127.0.0.1", 12345);
 			emit: ~hdemit,
 			offset: ~hdoffset,
 			colorChange: ~hdcolorchange,
-			color: ~hdcolor,
+			color: ~hdcolor ?? { if (dirtEvent.event.freq.notNil, {
+				midiToRgb.(dirtEvent.event.freq.cpsmidi.floor, ~hdhueoff);
+			}, nil) },
 		).play;
 	};
 }, {~hdmodel.notNil or: { ~hdlength.notNil } or: { ~hdspeed.notNil } or: { ~hdorder.notNil } or: { ~hdbehaviour.notNil }});

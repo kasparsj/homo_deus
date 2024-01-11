@@ -15,9 +15,10 @@ s.waitForBoot {
 		"superdirt.scd".loadRelative;
 	});
 
-	~hd.net = NetAddr("homo-deus", 54321);
-	// ~hd.net = NetAddr("127.0.0.1", 54321);
-	// ~hd.net = NetAddr("192.168.35.181", 54321);
+	// does not work with hotspot (works with router)
+	// ~hd.net = NetAddr("homo-deus", 54321);
+	~hd.net = NetAddr("127.0.0.1", 54321);
+	// ~hd.net = NetAddr("192.168.151.181", 54321);
 	//~hd.net.disconnect;
 
 	~playAuto = false;
@@ -26,8 +27,8 @@ s.waitForBoot {
 
 	if (~playAuto) {
 		~hdP.startSpawn;
-		~hdP.startCrickets(
-			\type, Pfunc{ [\hd, \pause].wchoose([0.97, 0.03]); },
+		~hdP.startCrickets([
+\type, Pfunc{ [\hd, \pause].wchoose([0.97, 0.03]); },
 			\colorChange, Pfunc{
 				if (3.rand == 1, {
 					0;
@@ -81,7 +82,7 @@ s.waitForBoot {
 				};
 				true;
 			},
-		);
+		]);
 
 		if (~soundInterval > 0) {
 			~isOn = true;
@@ -110,6 +111,10 @@ s.waitForBoot {
 };
 
 )
+
+~hd.command(\debug_all);
+~hd.command(\debug_intersection);
+~hd.command(\debug_connection);
 
 // (
 // ~hdP.spawn.stop;
