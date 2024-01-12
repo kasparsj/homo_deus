@@ -100,7 +100,7 @@
 			if (event[\type] == \hd) {
 				self.playCrickets;
 				if (fadeTime == 0) {
-					self.unmuteCrickets;
+					self.unmuteCrickets(vol);
 				};
 			} {
 				self.muteCrickets;
