@@ -26,7 +26,7 @@ float planeSize = diam / diamMM * 2500.f;
 float edgesWidth = 7;
 boolean showGui = false;
 boolean showWall = false;
-boolean showGlass = true;
+boolean showGlass = false;
 boolean showFloor = false;
 boolean showVideo = false;
 boolean showInfo = true;
@@ -58,7 +58,7 @@ Heptagon heptagon;
 Tunnel leg;
 //Movie movie;
 PeasyCam pCam;
-QueasyCam qCam;
+//QueasyCam qCam;
 ControlP5 cp5;
 
 void setup() {
@@ -68,8 +68,8 @@ void setup() {
   pCam = new PeasyCam(this, 500);
   pCam.setMinimumDistance(50);
   pCam.setMaximumDistance(10000);
-  qCam = new QueasyCam(this, 50.f, 10000.f);
-  qCam.controllable = false;
+  //qCam = new QueasyCam(this, 50.f, 10000.f);
+  //qCam.controllable = false;
   
   heptagon = new Heptagon(diam);
   heptagon.insetWOZ = !regularLeg;
@@ -550,6 +550,7 @@ void drawInfo() {
   text("q - extendLegToGlass", width-250, 400);
   text("v - showVideo", width-250, 420);
   text("n - insetWOZ", width-250, 440);
+  text("o - next face", width-250, 460);
   pCam.endHUD();
   hint(ENABLE_DEPTH_TEST);
 }
@@ -663,10 +664,10 @@ void keyPressed() {
   if (key == 'c') {
     if (pCam.isActive()) {
       pCam.setActive(false);
-      qCam.controllable = true;
+      //qCam.controllable = true;
     }
     else {
-      qCam.controllable = false;
+      //qCam.controllable = false;
       pCam.setActive(true);
       pCam.reset();
     }

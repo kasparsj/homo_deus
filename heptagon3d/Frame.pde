@@ -4,6 +4,9 @@ class Frame {
   float rotation = 0; // 13
   float sizeMM = 15;
   float k;
+  boolean drawOutside = false;
+  boolean drawBottom = true;
+  boolean offsetConn = true;
   ArrayList<PVector[]> boxes;
   float[] lengthsMM;
   
@@ -13,16 +16,25 @@ class Frame {
   }
   
   void update() {
-    k = edgesWidth / 8.f;
+    if (edgesWidth > 0) {
+      k =  edgesWidth / 8.f;
+      drawOutside = false;
+    }
+    else {
+      k =  1;
+      drawOutside = true;
+    }
   }
   
   void draw() {
     drawFrame(sizeMM * k);
-    pushMatrix();
-    translate(0, 0, -depth * k);
-    rotateY(radians(rotation));
-    drawFrame(sizeMM * k);
-    popMatrix();
+    if (drawBottom) {
+      pushMatrix();
+      translate(0, 0, -depth * k);
+      rotateY(radians(rotation));
+      drawFrame(sizeMM * k);
+      popMatrix();
+    }
     drawConnections(sizeMM * k);
     //pushMatrix();
     //pushStyle();
@@ -34,11 +46,12 @@ class Frame {
   }
   
   void drawFrame(float side) {
+    float offset = drawOutside ? side*2 : side;
     for (int i=0; i<7; i++) {
       //PVector outer = gon.hepts[i].verts[0];
       //PVector outerNext1 = gon.hepts[i].verts[2];
-      PVector outer = pointOnEllipse(2*PI/7.f*i, gon.size+side, gon.size+side);
-      PVector outerNext = pointOnEllipse(2*PI/7.f*(i+1), gon.size+side, gon.size+side);
+      PVector outer = pointOnEllipse(2*PI/7.f*i, gon.size+offset, gon.size+offset);
+      PVector outerNext = pointOnEllipse(2*PI/7.f*(i+1), gon.size+offset, gon.size+offset);
       float w = PVector.sub(outer, outerNext).mag();
       pushMatrix();
       translate(outer.x, outer.y, outer.z - side/2);
@@ -50,9 +63,10 @@ class Frame {
   }
   
   void drawConnections(float side) {
+    float offset = drawOutside ? side : 0;
     for (int i=0; i<7; i++) {
       //PVector outer = gon.hepts[i].verts[0];
-      PVector outer = pointOnEllipse(2*PI/7.f*i, gon.size, gon.size);
+      PVector outer = pointOnEllipse(2*PI/7.f*i, gon.size+offset, gon.size+offset);
       Vec3D temp = new Vec3D(outer.x, outer.y, outer.z - depth * k);
       temp.rotateY(radians(-rotation));
       PVector outerDown = new PVector(temp.x, temp.y, temp.z);
@@ -64,7 +78,10 @@ class Frame {
       //popMatrix();
       pushMatrix();
       translate(outer.x, outer.y, outer.z - d/2.f - side/2.f);
-      //rotate(heading3D(PVector.sub(outer, outerDown)));
+      if (offsetConn) {
+        rotate(TWO_PI/7.f*i+(TWO_PI-5*PI/7.f)/2.f);
+        translate(side/2, 0, 0);
+      }
       box(side, side, len);
       lengthsMM[i] = len / k;
       popMatrix();
