@@ -64,6 +64,7 @@
 ~hdP.c1p = ~hdP.c2p = ~hdP.c31p = ~hdP.c32p = nil;
 ~hdP.c1 = Pmono(\cricket1,
 	\amp, ~hdP.cricketsBus.asMap,
+	// todo: PSinOsc does not seem to work with <1 freqs
 	\pan, PSinOsc(1/5),
 	\mod, PSinOsc(1/5, 0, mul: 0.1),
 );

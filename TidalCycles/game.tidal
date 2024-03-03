@@ -1,0 +1,278 @@
+d1
+  $ drumFrom "rolandtr808" "sh*4"
+  -- # gain "0.3 0.5 0.9 0.3"
+  # gain 1.0
+  -- # gain 0
+  # gridsinst "hihat"
+  # gridsx (slow 32 $ rand)
+  # gridsy 0.2
+  # gridsmin 0.1
+  # gridsbias 0
+  # gridsscale 4
+  # hdmodel m_splatter
+  # hdlength 5
+  # hdsustain 0.2
+  # hdlinked 0
+  -- # hdspeed 0
+  -- # hdcolor magenta
+
+d2
+  $ drumFrom "rolandtr808" "hh*8"
+  -- # gain 0
+  # gain 1
+  -- # gain rand
+  # gridsinst "hihat"
+  # gridsx 0.2
+  # gridsy (slow 32 $ rand)
+  # gridsmin (slow 32 $ rand)
+  # gridsbias 0
+  # gridsscale 8
+  # hdmodel m_splatter
+  # hdlinked 0
+  # hdsustain 0.1
+  -- # hdspeed 10
+  # hdlength (10+ irand 10)
+  -- # hdcolor white
+  # hdcolor yellow
+
+d3
+  $ slow 1
+  -- $ stut 2 0.8 (1/8)
+  $ drumFrom "viscospacedrum" "[~ sd]*4"
+  # n (irand 4)
+  # gain 1
+  -- # note (-12)
+  -- # gain 0
+  -- # lesscrackle 0.1
+  # gridsinst "snare"
+  # gridsx (slow 64 $ saw)
+  # gridsx 0.1
+  # gridsy 0.2
+  -- # gridsmin (slow 128 $ sine)
+  # gridsmin (slow 8 $ rand)
+  # gridsbias 0
+  # gridsscale 4
+  -- # hdmodel 1
+  -- # hdlength (10 + irand 10)
+  -- -- # hdsustain 0.1
+  -- # hdcolor yellow
+  -- # hdbehaviour b_render_segment
+  -- # hdspeed 0
+
+d3 silence
+
+d4
+  $ slow 2
+  -- $ stut 2 0.8 (1/8)
+  $ drumFrom "viscospacedrum" "[~ sd]*4"
+  # n (irand 4)
+  # gain 1
+  # note (-12)
+  -- # gain 0
+  # borcrackle 0.6
+  # gridsinst "snare"
+  # gridsx (slow 64 $ saw)
+  # gridsx 0.4
+  # gridsy 0.2
+  # gridsmin (slow 8 $ sine)
+  -- # gridsmin (slow 8 $ rand)
+  # gridsbias 0
+  # gridsscale 4
+  -- # hdmodel 1
+  -- # hdlength (10 + irand 10)
+  -- -- # hdsustain 0.1
+  -- # hdcolor yellow
+  -- # hdbehaviour b_render_segment
+  -- # hdspeed 0
+
+d5
+  $ slow 1
+  -- $ stut 2 0.8 (1/8)
+  $ s "[~ sd]*4"
+  -- $ drumFrom "viscospacedrum" "[~ sd]*4"
+  # n (irand 4)
+  # gain 1
+  -- # note (-12)
+  -- # gain 0
+  -- # borcrackle 0.6
+  # gridsinst "snare"
+  # gridsx (slow 64 $ saw)
+  # gridsx 0.4
+  # gridsy 0.2
+  # gridsmin (slow 8 $ sine)
+  -- # gridsmin (slow 8 $ rand)
+  # gridsbias 0
+  # gridsscale 4
+  -- # hdmodel 1
+  -- # hdlength (10 + irand 10)
+  -- -- # hdsustain 0.1
+  -- # hdcolor yellow
+  -- # hdbehaviour b_render_segment
+  -- # hdspeed 0
+
+d6
+  -- $ drumFrom "rolandtr808" "bd"
+  -- $ drumFrom "doepferms404" "bd"
+  -- drumFrom "doepferms404" "bd*16"
+  -- drumFrom "doepferms404" "bd*16"
+  $ drumFrom "doepferms404" "<bd bd*2 ~>"
+  # gain 0.8
+  -- # gain 1
+  -- # gain 0
+  -- # note "0 -12"
+  -- # room 0.5
+  -- # gridsinst "kick"
+  -- # gridsx 0.1
+  -- # gridsy 0.1
+  -- # gridsmin 0.8
+  -- -- # gridsmin (slow 32 $ saw)
+  -- # gridsbias 0
+  -- # gridsscale 16
+  # hdmodel 3
+  # hdspeed 0
+  # hdsustain 0.1
+  # hdlength (-1)
+  -- # hdlength 3
+  # hdcolor white
+  -- # hdcolor (choose [white, red])
+  -- # hdcolor yellow
+  -- # hdcolorsrc c_gain
+  # hdbehaviour b_render_segment
+  # hdfrom (slow 14 $ range 0 14 $ saw)
+
+d7
+  $ drumFrom "rolandtr808" "bd*8"
+  -- $ drumFrom "doepferms404" "bd"
+  -- drumFrom "doepferms404" "bd*16"
+  -- drumFrom "doepferms404" "bd*16"
+  -- drumFrom "doepferms404" "<bd bd*2 ~>"
+  -- # gain 0.8
+  # gain 1.2
+  -- # gain 0
+  -- # note "0 -12"
+  -- # room 0.5
+  # gridsinst "kick"
+  # gridsx 0.1
+  # gridsy 0.1
+  -- # gridsmin 0.3
+  # gridsmin (slow 32 $ saw)
+  # gridsbias 0
+  # gridsscale 8
+  # hdmodel 3
+  # hdspeed 0
+  # hdsustain 0.1
+  # hdlength (-1)
+  -- # hdlength 3
+  # hdcolor white
+  -- # hdcolor (choose [white, red])
+  -- # hdcolor yellow
+  -- # hdcolorsrc c_gain
+  # hdbehaviour b_render_segment
+  # hdfrom (slow 14 $ range 0 14 $ saw)
+
+d8
+  $ drumFrom "rolandtr808" "hh*16"
+  -- # gain 0
+  # gain 1
+  -- # gain rand
+  # gridsinst "hihat"
+  # gridsx 0
+  # gridsy 0.1
+  # gridsmin (slow 32 $ saw)
+  # gridsbias 0
+  # gridsscale 16
+  # hdmodel m_splatter
+  # hdlinked 0
+  # hdsustain 0.1
+  -- # hdspeed 10
+  # hdlength (10+ irand 10)
+  -- # hdcolor white
+  # hdcolor yellow
+
+d9
+  $ slow 8
+  $ degradeBy 0.1
+  $ note (scale "minPent" "<[0 4 5]*5 [0 4 5 4]*4 [5 2 1/2]>")
+  # s "braids"
+  # model 2
+  # octave 7
+  -- # model (choose [4,9,12,15])
+  -- # lpf (rsinf 500 2000 0.33)
+  # color (rrand 0.2 0.8)
+  # timbre (rrand 0.5 1.0)
+  # gain (rsinf 0.35 0.55 0.13)
+  # room (rsinf 0.25 0.5 0.11)
+  # size 0.5
+  # legato 2.0
+  # mu 1.0
+  -- # pan (rand)
+  # hdmodel 2
+  # hdcolor cyan
+  # hdlength 10
+  # distort 0.1
+  # crackleamclip 0.1
+
+d9 silence
+
+d10
+  $ slow 2
+  -- $ slow 32
+  -- $ every 3 (slow 8)
+  -- $ every 2 (slow 4)
+  -- $ degrade
+  $ degradeBy 0.1
+  $ jux rev
+  -- $ every 3 (|-12)
+  -- $ every 5 (rev)
+  -- $ every 6 (# octave 6) . (# bpq 0.25) . (# rel 2.0)
+  -- $ off 0.125 (|-24)
+  $ note (scale "minPent" "<[0 4 5] [0 4 5 4] [5 2 1/2]>")
+  # s "tides" # tidesshape (rsinf 0 0.5 0.07) # slope (rrand 0 0.5)
+  -- # s "plaits" # engine 3 # color (rrand 0.2 0.8) # timbre (rrand 0 0.5)
+  # gain (rsinf 0.35 0.55 0.11)
+  # room 0.5
+  # size 0.9
+  # octave (slow 64 $ floor <$> (range 4 6 saw))
+  -- # lpf (rsinf 500 20000 0.33)
+  -- # legato 2.0
+  # mu 1.0
+  # pan (rand)
+  -- # hdmodel 0
+  -- # hdhue magenta
+  -- -- # hdhue blue
+  -- # hdlength 20
+  # crackleamclip 0.1
+  # shape (rsinf 0 0.6 0.33)
+
+d10 silence
+
+d11
+  $ slow 2
+  $ every 3 (slow 1)
+  $ every 5 (#speed 0.5)
+  $ degradeBy 0.5
+  $ s "juno*4"
+  # note (scale "minPent" (irand 5))
+  # n 0
+  # gain (slow 16 $ 0.3 + rand * 0.4)
+  # lpf (rsinf 500 20000 0.33)
+  # speed 1.5
+  # gridsx 0.5
+  # gridsy 0.5
+  # gridsmin 0.5
+  # gridsbias 0
+  # gridsscale 4
+  -- # legato 2
+  # octave (choose [4,5,6])
+  -- # octave 4
+  -- # sustain 3
+  # hdmodel (choose [0,3])
+  -- # hdhuemul 2
+  # hdhueadd (-0.3)
+  # hdlenmul 100
+  # room 0.8
+  # size 0.9
+  # mu 1
+  -- # djf 0.4
+
+d11 silence

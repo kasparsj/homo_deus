@@ -2,10 +2,10 @@
 var hd = ~hd;
 var hdP = ~hdP;
 var openFrameworks = NetAddr("127.0.0.1", 12345);
-var midiToRgb, hueToRgb, hslToRgb, rgbToHsl, rgbArray;
+var floatToRgb, hueToRgb, hslToRgb, rgbToHsl, rgbArray, getColorFrom;
 
-midiToRgb = { |midi, mul, add|
-	hslToRgb.((midi/127) * (mul ? 1) + (add ? 0));
+floatToRgb = { |value, mul, add|
+	hslToRgb.(value * (mul ? 1) + (add ? 0));
 };
 
 hueToRgb = { |p, q, t|
@@ -57,7 +57,7 @@ rgbToHsl = { |rgb|
 		var d = vmax - vmin;
 		s = if (l > 0.5, { d / (2 - vmax - vmin) }, { d / (vmax + vmin) });
 		if (vmax === r) {
-			h = (g - b) / d + (g < b ? 6 : 0);
+			h = (g - b) / d + if (g < b, 6, 0);
 		};
 		if (vmax === g) {
 			h = (b - r) / d + 2;
@@ -68,6 +68,26 @@ rgbToHsl = { |rgb|
 		h = h / 6;
 
 		[h, s, l];
+	};
+};
+
+getColorFrom = { |src|
+	if (~hdhue.notNil) {
+		var hsl = rgbToHsl.(~hdhue);
+		~hdhueadd = (~hdhueadd ? 0) - 0.5 + hsl[0];
+	};
+	switch ((src ? 0))
+	// gain
+	{ 1 } {
+		if (~gain.notNil, {
+			floatToRgb.(~gain, ~hdhuemul, ~hdhueadd);
+		}, nil);
+	}
+	// note
+	{
+		if (~freq.notNil, {
+			floatToRgb.(~freq.cpsmidi.floor/127, ~hdhuemul, ~hdhueadd);
+		}, nil);
 	};
 };
 
@@ -95,13 +115,7 @@ rgbToHsl = { |rgb|
 			emit: ~hdemit,
 			offset: ~hdoffset,
 			colorChange: ~hdcolorchange,
-			color: ~hdcolor ?? { if (~freq.notNil, {
-				if (~hdhue.notNil) {
-					var hsl = rgbToHsl.(~hdhue);
-					~hdhueadd = (~hdhueadd ? 0) - 0.5 + hsl[0];
-				};
-				midiToRgb.(~freq.cpsmidi.floor, ~hdhuemul, ~hdhueadd);
-			}, nil) },
+			color: ~hdcolor ?? { getColorFrom.(~hdcolorsrc) },
 		).play;
 	};
 }, {~hdmodel.notNil or: { ~hdlength.notNil } or: { ~hdspeed.notNil } or: { ~hdorder.notNil } or: { ~hdbehaviour.notNil }});
