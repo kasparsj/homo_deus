@@ -91,20 +91,20 @@ d2
   -- drumFrom "rolandtr808" "bd"
   -- drumFrom "doepferms404" "bd"
   -- drumFrom "doepferms404" "bd*16"
-  -- drumFrom "doepferms404" "bd*16"
-  drumFrom "doepferms404" "<bd bd*2 ~>"
-  -- # gain 0.8
+  drumFrom "doepferms404" "bd*16"
+  -- drumFrom "doepferms404" "<bd bd*2 ~>"
+  # gain 0.8
   -- # gain 1
-  # gain 0
+  -- # gain 0
   # note "0 -12"
   -- # room 0.5
-  -- # gridsinst "kick"
-  -- # gridsx 0.1
-  -- # gridsy 0.1
+  # gridsinst "kick"
+  # gridsx 0.1
+  # gridsy 0.1
   -- # gridsmin 0.8
-  -- -- # gridsmin (slow 32 $ saw)
-  -- # gridsbias 0
-  -- # gridsscale 16
+  # gridsmin (slow 32 $ saw)
+  # gridsbias 0
+  # gridsscale 16
   # hdmodel 3
   # hdspeed 0
   # hdsustain 0.1
@@ -116,23 +116,23 @@ d2
   -- # hdcolorsrc c_gain
   # hdbehaviour b_render_segment
   # hdfrom (slow 14 $ range 0 14 $ saw)
-  -- , s "[~ sd]"
-  , slow 1
+  , s "[~ sd]*4"
+  -- , slow 1
   -- $ stut 2 0.8 (1/8)
-  $ drumFrom "viscospacedrum" "[~ sd]*4"
+  -- $ drumFrom "viscospacedrum" "[~ sd]*4"
   # n (irand 4)
-  -- # gain 1.1
+  # gain 0.8
   # note (-12)
-  # gain 0
-  # lesscrackle 0.1
-  # gridsinst "snare"
-  # gridsx (slow 64 $ saw)
-  # gridsx 0.1
-  # gridsy 0.2
-  # gridsmin (slow 128 $ sine)
-  # gridsmin (slow 8 $ rand)
-  # gridsbias 0
-  # gridsscale 4
+  -- # gain 0
+  -- # lesscrackle 0.1
+  -- # gridsinst "snare"
+  -- # gridsx (slow 64 $ saw)
+  -- # gridsx 0.1
+  -- # gridsy 0.2
+  -- # gridsmin (slow 128 $ sine)
+  -- -- # gridsmin (slow 8 $ rand)
+  -- # gridsbias 0
+  -- # gridsscale 4
   -- # hdmodel 1
   -- # hdlength (10 + irand 10)
   -- -- # hdsustain 0.1
@@ -202,22 +202,22 @@ d2 $ silence
 d3
   $ slow 2
   $ every 3 (slow 1)
-  -- $ every 5 (#speed 0.5)
-  $ degradeBy 0.7
-  $ s "juno*4"
+  $ every 5 (#speed 0.5)
+  -- $ degrade
+  $ s "juno"
   # note (scale "minPent" (irand 5))
   # n 0
   # gain (slow 16 $ 0.5 + rand * 0.4)
   # lpf (rsinf 500 20000 0.33)
   # speed 1.5
-  # gridsx 0.5
-  # gridsy 0.5
-  # gridsmin 0.5
-  # gridsbias 0
-  # gridsscale 4
+  -- # gridsx 0.5
+  -- # gridsy 0.5
+  -- # gridsmin 0.5
+  -- # gridsbias 0
+  -- # gridsscale 4
   # legato 2
   # octave (choose [4,5,6])
-  -- # octave 4
+  -- # octave 5
   -- # sustain 3
   # hdmodel (choose [0,3])
   -- # hdhuemul 2
@@ -226,7 +226,7 @@ d3
   # room 0.8
   # size 0.9
   # mu 1
-  # djf 0.2
+  -- # djf 0.2
 
 d3 silence
 

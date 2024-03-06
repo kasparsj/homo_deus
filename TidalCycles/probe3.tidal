@@ -24,7 +24,7 @@ d1
   # verbgain 0.9
   -- # hdmodel 3
   # hdmodel (choose [0,3])
-  # hdhueoff 0.4
+  -- # hdhueoff 0.4
   -- # hdlenmul 20
   -- # hdcolor magenta
   -- # hdcolor white
