@@ -110,13 +110,16 @@ int8_t State::setupListFrom(uint8_t i, EmitParams &params) {
 LPOwner* State::getEmitter(Model* model, Behaviour* behaviour, EmitParams& params) {
     int8_t from = params.getEmit();
     if (behaviour->emitFromConnection()) {
-        from = from >= 0 ? from : LP_RANDOM(object.countConnections(params.emitGroups));
-        return object.getConnection(from, params.emitGroups);
+        uint8_t emitGroups = params.emitGroups;
+        uint8_t connCount = object.countConnections(emitGroups);
+        from = from >= 0 ? from : LP_RANDOM(connCount);
+        return object.getConnection(from % connCount, emitGroups);
     }
     else {
         uint8_t emitGroups = params.getEmitGroups(model->emitGroups);
-        from = from >= 0 ? from : LP_RANDOM(object.countIntersections(emitGroups));
-        return object.getIntersection(from, emitGroups);
+        uint8_t interCount = object.countIntersections(emitGroups);
+        from = from >= 0 ? from : LP_RANDOM(interCount);
+        return object.getIntersection(from % interCount, emitGroups);
     }
 }
 

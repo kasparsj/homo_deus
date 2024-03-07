@@ -101,12 +101,12 @@ d2
   # gridsinst "kick"
   # gridsx 0.1
   # gridsy 0.1
-  -- # gridsmin 0.8
-  # gridsmin (slow 32 $ saw)
+  # gridsmin 0.8
+  -- # gridsmin (slow 32 $ saw)
   # gridsbias 0
   # gridsscale 16
   # hdmodel 3
-  # hdspeed 0
+  -- # hdspeed 0
   # hdsustain 0.1
   # hdlength (-1)
   -- # hdlength 3
@@ -116,14 +116,14 @@ d2
   -- # hdcolorsrc c_gain
   # hdbehaviour b_render_segment
   # hdfrom (slow 14 $ range 0 14 $ saw)
-  , s "[~ sd]*4"
+  , s "[~ sd]"
   -- , slow 1
   -- $ stut 2 0.8 (1/8)
   -- $ drumFrom "viscospacedrum" "[~ sd]*4"
   # n (irand 4)
-  # gain 0.8
+  -- # gain 0.8
   # note (-12)
-  -- # gain 0
+  # gain 0
   -- # lesscrackle 0.1
   -- # gridsinst "snare"
   -- # gridsx (slow 64 $ saw)
@@ -142,8 +142,8 @@ d2
   , slow 16
   $ stut 2 0.8 (1/16)
   $ drumFrom "rolandtr808" "cp"
-  # gain 0
-  -- # gain 1.2
+  -- # gain 0
+  # gain 1.2
   # room 0.5
   # size 0.8
   -- # note 12
@@ -158,14 +158,14 @@ d2
   # hdlinked 0
   # hdsustain 0.1
   -- -- # hdspeed 10
-  -- # hdlength (10+ irand 10)
-  -- -- # hdcolor white
-  -- # hdcolor cyan
-  -- -- # hdcolor lat_red
-  -- -- # lesscrackle 0.1
+  # hdlength (10+ irand 10)
+  -- # hdcolor white
+  # hdcolor cyan
+  -- # hdcolor lat_red
+  # lesscrackle 0.1
   , drumFrom "rolandtr808" "sh*4"
-  -- # gain "0.3 0.5 0.9 0.3"
-  # gain 1.0
+  # gain "0.3 0.5 0.9 0.3"
+  -- # gain 1.0
   -- # gain 0
   # gridsinst "hihat"
   # gridsx 0.2
@@ -177,10 +177,10 @@ d2
   # hdlength 5
   # hdsustain 0.2
   # hdlinked 0
-  -- # hdspeed 0
-  -- # hdcolor magenta
+  # hdspeed 0
+  # hdcolor magenta
   , drumFrom "rolandtr808" "hh*8"
-  -- # gain 0
+  # gain 0
   # gridsinst "hihat"
   # gridsx 0.2
   # gridsy 0.2
@@ -200,7 +200,7 @@ d2
 d2 $ silence
 
 d3
-  $ slow 2
+  -- $ slow 2
   $ every 3 (slow 1)
   $ every 5 (#speed 0.5)
   -- $ degrade

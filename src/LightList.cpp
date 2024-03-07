@@ -184,6 +184,10 @@ bool LightList::update() {
 }
 
 void LightList::doEmit() {
+    if (emitter == NULL) {
+        LP_LOGF("LightList::doEmit failed: emitter NULL");
+        return;
+    }
     if (numEmitted < numLights) {
         const uint8_t batchSize = numLights - numEmitted;
         const uint8_t j = numEmitted;
