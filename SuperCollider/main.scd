@@ -19,7 +19,7 @@ s.waitForBoot {
 	// does not work with hotspot (works with router)
 	// ~hd.net = NetAddr("homo-deus", 54321);
 	~hd.net = NetAddr("127.0.0.1", 54321);
-	// ~hd.net = NetAddr("192.168.183.181", 54321);
+	// ~hd.net = NetAddr("192.168.1.105", 54321); // esp32-6E0B08
 	//~hd.net.disconnect;
 
 	~playAuto = false;
