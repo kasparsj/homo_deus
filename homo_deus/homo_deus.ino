@@ -3,14 +3,8 @@
 #define PIXEL_PIN2 26
 #define BUTTON_PIN 25
 #define WIFI_HOSTNAME "homo-deus"
-// #define WIFI_SSID "k"
-// #define WIFI_PASS "letmeinplease"
-//#define WIFI_SSID "Redmi"
-//#define WIFI_PASS "kaspars123"
-// #define WIFI_SSID "VA37-3"
-// #define WIFI_PASS "fdsa4321"
-#define WIFI_SSID "MPLAB"
-#define WIFI_PASS ""
+#define WIFI_SSID "toplap"
+#define WIFI_PASS "karlsruhe"
 #define HD_OSC
 #define HD_SERIAL
 #define HD_DEBUGGER
