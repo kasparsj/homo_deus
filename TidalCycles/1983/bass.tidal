@@ -1,0 +1,16 @@
+d1
+  $ sometimesBy 0.2 (|+ note 7)
+  -- $ note "<a!16 f!16>"
+  -- $ note "<[~ a]!16 [~ f]!16>"
+  $ note "f(9,16)/8"
+  -- $ note "f(5,8)/4"
+  # s "braids"
+  # model 7
+  # gain 1
+  # octave 2
+  -- # sustain 1
+  # lpf (rsinf 200 500 0.33)
+  # lpq 0.3
+  # room 0.1
+  # size 0.2
+  # shape 0.2
