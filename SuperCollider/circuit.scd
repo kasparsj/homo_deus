@@ -1,7 +1,7 @@
 (
 var tidalNetAddr = NetAddr.new("127.0.0.1", 6010);
-var muteNotes = 86 + [0, 2, 3, 5, 7, 8, 10, 12];
-var soloNotes = 72 + [0, 2, 3, 5, 7, 8, 10, 12];
+var muteNotes = 84 + [0, 2, 3, 5, 7, 8, 10];
+var soloNotes = 72 + [0, 2, 3, 5, 7, 8, 10];
 ~circuit = Circuit.new.connect("M-Track");
 ~circuit.normalize = true;
 ~circuit.onControl({ |value, i|
@@ -12,12 +12,14 @@ var soloNotes = 72 + [0, 2, 3, 5, 7, 8, 10, 12];
 }, \synth2);
 ~circuit.toggleMode(\synth1);
 ~circuit.toggleMode(\synth2);
-8.do { |i|
+7.do { |i|
 	~circuit.knob(\synth1, i, ~dirt.orbits[i].get(\amp));
 	~circuit.onNoteOn({ |value, num|
+		("/mute" ++ i).postln;
 		tidalNetAddr.sendMsg("/mute", i + 1)
 	}, \synth1, muteNotes[i]);
 	~circuit.onNoteOff({ |value, num|
+		("/unmute" ++ i).postln;
 		tidalNetAddr.sendMsg("/unmute", i + 1)
 	}, \synth1, muteNotes[i]);
 	~circuit.onNoteOn({ |value, num|
