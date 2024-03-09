@@ -3,12 +3,16 @@ var tidalNetAddr = NetAddr.new("127.0.0.1", 6010);
 var muteNotes = 84 + [0, 2, 3, 5, 7, 8, 10];
 var soloNotes = 72 + [0, 2, 3, 5, 7, 8, 10];
 var numChans = muteNotes.size;
-~circuit = Circuit.new.connect("M-Track");
+// todo: connectIn fails if MIDIIn already connected
+// ~circuit = Circuit.new.connect("M-Track");
+~circuit = Circuit.new.connectOut("M-Track");
 ~circuit.normalize = true;
 ~circuit.onControl({ |value, i|
+	// todo: don't allow to go over numChans
 	~dirt.orbits[i].set(\amp, value)
 }, \synth1);
 ~circuit.onControl({ |value, i|
+	// todo: don't allow to go over numChans
 	~dirt.orbits[(numChans+i)].set(\amp, value);
 }, \synth2);
 ~circuit.toggleMode(\synth1);
