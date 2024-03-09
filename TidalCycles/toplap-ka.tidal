@@ -1,5 +1,6 @@
 setcps(127/60)
 
+-- FX
 once
   $ s "hd_wind"
   # gain 0
@@ -14,13 +15,33 @@ once
   # hdcolor green
   # hdbehaviour b_random_color
 
+-- BASS
 d1 $ slow 16 $ s "hd_drone" # freq 51 # gain 0.05
 
 d1 silence
 
+d1
+  $ sometimesBy 0.2 (|+ note 7)
+  -- $ note "<a!16 f!16>"
+  -- $ note "<[~ a]!16 [~ f]!16>"
+  $ note "f(9,16)/8"
+  -- $ note "f(5,8)/4"
+  # s "braids"
+  # model 7
+  # gain 1
+  # octave 1
+  -- # sustain 1
+  # lpf (rsinf 200 2500 0.33)
+  # lpq 0.3
+  # room 0.1
+  # size 0.2
+  # shape 0.2
+
+-- DRUMS
 d2 $ stack [
   -- drumFrom "doepferms404" "bd*4"
-  drumFrom "doepferms404" "<bd!7 bd*4>"
+  -- drumFrom "doepferms404" "<bd!7 bd*4>"
+  drumFrom "doepferms404" "<bd bd*2 ~>"
   -- # gain "0.85 0.4 0.7"
   # gain 1
   -- # gain 0
@@ -52,7 +73,7 @@ d2 $ stack [
   # hdcolor ukr_blue
   -- # crackleamclip 0.1
   , drumFrom "rolandtr808" "sh*4"
-  -- # gain "0.3 0.5 0.9 0.3"
+  # gain "0.3 0.5 0.9 0.3"
   -- # gain 0
   , drumFrom "viscospacedrum" "hh*4"
   # gain 0.5
@@ -63,15 +84,27 @@ d2 $ stack [
   # hdmodel 3
   , drumFrom "viscospacedrum" "[~ oh]"
   # gain 0.6
-  , slow 8
-  $ drumFrom "viscospacedrum" "[[~ sd ~ ~] [~*4] [~*4] [~*3 sd]]" # n 1
-  # room 0.1
-  # size 0.7
-  # delay 0.7
-  # hpf 100
-  # gain 0.9
+  ,
+  drumFrom "viscospacedrum" "[[~ sd ~ ~] [~*4] [~*4] [~*3 sd]]/8" # n 1
+  -- s "[~ sd]/2" # n (irand 4)
+  -- drumFrom "rolandtr808" "<[~ sd] [~ [sd sd]] ~>" # n 2
+  -- # room 0.1
+  -- # size 0.7
+  -- # delay 0.7
+  -- # hpf 100
   -- # gain 0
-  # shape 0.7
+  -- # gain 2
+  # gain (rrand 0.9 1.3)
+  # hdmodel 3
+  -- # hdlength (irand 20)
+  # hdlength (-1)
+  # hdcolor ukr_yellow
+  # hdbehaviour b_render_segment
+  # hdspeed 0
+  -- # hdsustain 0.1
+  # hdsustain 0.01
+  # hdfrom (slow 14 $ range 0 14 $ saw)
+  -- # shape 0.7
   -- # lesscrackle 0.1
 ]
 
