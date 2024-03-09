@@ -3,9 +3,8 @@ var tidalNetAddr = NetAddr.new("127.0.0.1", 6010);
 var muteNotes = 84 + [0, 2, 3, 5, 7, 8, 10];
 var soloNotes = 72 + [0, 2, 3, 5, 7, 8, 10];
 var numChans = muteNotes.size;
-// todo: connectIn fails if MIDIIn already connected
-// ~circuit = Circuit.new.connect("M-Track");
-~circuit = Circuit.new.connectOut("M-Track");
+var djfOrbit = 1;
+~circuit = Circuit.new("M-Track");
 ~circuit.normalize = true;
 ~circuit.onControl({ |value, i|
 	// todo: don't allow to go over numChans
@@ -15,6 +14,9 @@ var numChans = muteNotes.size;
 	// todo: don't allow to go over numChans
 	~dirt.orbits[(numChans+i)].set(\amp, value);
 }, \synth2);
+~circuit.onControl({ |value|
+	~dirt.orbits[djfOrbit].set(\djf, value);
+}, \filter);
 ~circuit.toggleMode(\synth1);
 ~circuit.toggleMode(\synth2);
 numChans.do { |i|
