@@ -323,10 +323,6 @@ s.sync;
 
 s.sync;
 
-//"compositions/*.scd".loadRelative;
-//"mapping/*.scd".loadRelative;
-"master.scd".loadRelative;
-
 "###     homo deus loaded     ####".postln;
 
 )
