@@ -14,12 +14,12 @@ class Connection : public LPOwner {
     Intersection* to;
     Port* fromPort;
     Port* toPort;
-    uint8_t numLeds = 0;
+    uint16_t numLeds = 0;
     bool pixelDir;
     uint16_t fromPixel;
     uint16_t toPixel;
     
-    Connection(Intersection *from, Intersection *to, uint8_t group);
+    Connection(Intersection *from, Intersection *to, uint8_t group, uint16_t numLeds = 0);
     
     uint8_t getType() { return TYPE_CONNECTION; };
     inline void add(LPLight* const light) const {

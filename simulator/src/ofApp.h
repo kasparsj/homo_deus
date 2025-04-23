@@ -3,11 +3,8 @@
 #include "ofMain.h"
 #include "ofxOsc.h"
 #include "HeptagonStar.h"
+#include "Line.h"
 #include "LPDebugger.h"
-
-#define PIXEL_COUNT1 524
-#define PIXEL_COUNT2 395
-#define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2) // 919
 #define OSC_PORT 54321
 #define MAX_BRIGHTNESS 255
 
@@ -16,9 +13,15 @@ glm::vec2 pointOnEllipse(float rad, float w, float h);
 class ofApp : public ofBaseApp{
 
 public:
-    HeptagonStar *heptagon;
+    enum ObjectType {
+        OBJ_HEPTAGON_STAR = 0,
+        OBJ_LINE = 1
+    };
+    
+    LPObject *object;
     State *state;
     LPDebugger *debugger;
+    ObjectType currentObjectType;
 
     void setup();
     void update();
@@ -47,6 +50,7 @@ public:
     void parseParam(EmitParams &p, const ofxOscMessage &m, EmitParam &param, uint8_t j);
     void doCommand(char command);
     glm::vec2 intersectionPos(Intersection* intersection, int8_t j = -1);
+    LPObject* createObject(ObjectType type, uint16_t pixelCount);
     ofColor getColor(uint16_t i);
     void doEmit(EmitParams &params);
 

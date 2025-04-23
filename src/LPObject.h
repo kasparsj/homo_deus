@@ -17,7 +17,7 @@ class LPObject {
     Model **models;
 
     LPObject(uint16_t pixelCount);
-    ~LPObject();
+    virtual ~LPObject();
 
     void initInter(uint8_t inter1Count, uint8_t inter2Count=0, uint8_t inter3Count=0, uint8_t inter4Count=0, uint8_t inter5Count=0);
     void initConn(uint8_t conn1Count, uint8_t conn2Count=0, uint8_t conn3Count=0, uint8_t conn4Count=0, uint8_t conn5Count=0);

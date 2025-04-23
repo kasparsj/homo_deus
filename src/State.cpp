@@ -1,7 +1,7 @@
 #include "State.h"
 #include "Model.h"
 #include "Behaviour.h"
-#include "HeptagonStar.h"
+#include "objects/HeptagonStar.h"
 #include "LightList.h"
 
 #ifdef USE_FASTLED

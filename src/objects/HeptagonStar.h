@@ -1,8 +1,12 @@
 #pragma once
 
-#include "Config.h"
-#include "LPObject.h"
-#include "State.h"
+#include "../Config.h"
+#include "../LPObject.h"
+#include "../State.h"
+
+#define HEPTAGON_PIXEL_COUNT1 524
+#define HEPTAGON_PIXEL_COUNT2 395
+#define HEPTAGON_PIXEL_COUNT (HEPTAGON_PIXEL_COUNT1 + HEPTAGON_PIXEL_COUNT2) // 919
 
 enum HeptagonStarModel {
     M_DEFAULT = 0,
@@ -23,6 +27,8 @@ class HeptagonStar : public LPObject {
     HeptagonStar(uint16_t pixelCount) : LPObject(pixelCount) {
         setup();
     }
+    
+    virtual ~HeptagonStar() {}
     
     bool isMirrorSupported() { return true; }
     uint16_t* getMirroredPixels(uint16_t pixel, LPOwner* mirrorFlipEmitter, bool mirrorRotate);

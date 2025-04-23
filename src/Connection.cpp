@@ -3,7 +3,7 @@
 #include "Intersection.h"
 #include "LPObject.h"
 
-Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LPOwner(group) {
+Connection::Connection(Intersection *from, Intersection *to, uint8_t group, uint16_t forceNumLeds) : LPOwner(group) {
   this->from = from;
   this->to = to;
   
@@ -13,34 +13,40 @@ Connection::Connection(Intersection *from, Intersection *to, uint8_t group) : LP
   pixelDir = to->topPixel > from->topPixel;
   fromPixel = from->topPixel + (pixelDir ? 1 : -1);
   toPixel = to->topPixel - (pixelDir ? 1 : -1);
-  uint16_t diff = abs(fromPixel - toPixel);
-  uint16_t leds = diff > 4 && diff < (LPObject::instance->pixelCount - 4) ? diff + 1 : 0;
-  if (from->bottomPixel > -1) {
-    if (abs(from->bottomPixel - to->topPixel) < leds) {
-      pixelDir = to->topPixel > from->bottomPixel;
-      fromPixel = from->bottomPixel + (pixelDir ? 1 : -1);
-      toPixel = to->topPixel - (pixelDir ? 1 : -1);
-      leds = abs(fromPixel - toPixel) + 1;
+  
+  // If forceNumLeds is provided, use it, otherwise calculate
+  if (forceNumLeds > 0) {
+    numLeds = forceNumLeds;
+  } else {
+    uint16_t diff = abs(fromPixel - toPixel);
+    uint16_t leds = diff > 4 && diff < (LPObject::instance->pixelCount - 4) ? diff + 1 : 0;
+    if (from->bottomPixel > -1) {
+      if (abs(from->bottomPixel - to->topPixel) < leds) {
+        pixelDir = to->topPixel > from->bottomPixel;
+        fromPixel = from->bottomPixel + (pixelDir ? 1 : -1);
+        toPixel = to->topPixel - (pixelDir ? 1 : -1);
+        leds = abs(fromPixel - toPixel) + 1;
+      }
     }
-  }
-  if (to->bottomPixel > -1) {
-    if (abs(from->topPixel - to->bottomPixel) < leds) {
-      pixelDir = to->bottomPixel > from->topPixel;
-      fromPixel = from->topPixel + (pixelDir ? 1 : -1);
-      toPixel = to->bottomPixel - (pixelDir ? 1 : -1);
-      leds = abs(fromPixel - toPixel) + 1;
+    if (to->bottomPixel > -1) {
+      if (abs(from->topPixel - to->bottomPixel) < leds) {
+        pixelDir = to->bottomPixel > from->topPixel;
+        fromPixel = from->topPixel + (pixelDir ? 1 : -1);
+        toPixel = to->bottomPixel - (pixelDir ? 1 : -1);
+        leds = abs(fromPixel - toPixel) + 1;
+      }
     }
-  }
-  if (from->bottomPixel > -1 && to->bottomPixel > -1) {
-    if (abs(from->bottomPixel - to->bottomPixel) < leds) {
-      pixelDir = to->bottomPixel > from->bottomPixel;
-      fromPixel = from->bottomPixel + (pixelDir ? 1 : -1);
-      toPixel = to->bottomPixel - (pixelDir ? 1 : -1);
-      leds = abs(fromPixel - toPixel) + 1;
+    if (from->bottomPixel > -1 && to->bottomPixel > -1) {
+      if (abs(from->bottomPixel - to->bottomPixel) < leds) {
+        pixelDir = to->bottomPixel > from->bottomPixel;
+        fromPixel = from->bottomPixel + (pixelDir ? 1 : -1);
+        toPixel = to->bottomPixel - (pixelDir ? 1 : -1);
+        leds = abs(fromPixel - toPixel) + 1;
+      }
     }
-  }
-  if (leds > 0) {
-    numLeds = leds;
+    if (leds > 0) {
+      numLeds = leds;
+    }
   }
 }
 

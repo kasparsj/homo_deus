@@ -4,12 +4,26 @@
 #include "LPRandom.h"
 
 //--------------------------------------------------------------
+LPObject* ofApp::createObject(ObjectType type, uint16_t pixelCount) {
+    currentObjectType = type;
+    switch (type) {
+        case OBJ_HEPTAGON_STAR:
+            return new HeptagonStar(pixelCount);
+        case OBJ_LINE:
+            return new Line(pixelCount);
+        default:
+            return new HeptagonStar(pixelCount);
+    }
+}
+
+//--------------------------------------------------------------
 void ofApp::setup(){
     ofSetFrameRate(62);
-    heptagon = new HeptagonStar(PIXEL_COUNT);
-    state = new State(*heptagon);
-    debugger = new LPDebugger(*heptagon);
-    receiver.setup( OSC_PORT );
+    // Default to HeptagonStar for now but can be changed via key commands
+    object = createObject(OBJ_HEPTAGON_STAR, HEPTAGON_PIXEL_COUNT);
+    state = new State(*object);
+    debugger = new LPDebugger(*object);
+    receiver.setup(OSC_PORT);
 }
 
 //--------------------------------------------------------------
@@ -225,8 +239,25 @@ void ofApp::doCommand(char command) {
       break;
     case 'm':
       showModel++;
-      if (showModel >= heptagon->modelCount) {
+      if (showModel >= object->modelCount) {
           showModel = 0;
+      }
+      break;
+    case 'o':
+      {
+          // Switch object type
+          ObjectType newType = (currentObjectType == OBJ_HEPTAGON_STAR) ? OBJ_LINE : OBJ_HEPTAGON_STAR;
+          delete state;
+          delete debugger;
+          delete object;
+          
+          // Create appropriate object type with corresponding pixel count
+          uint16_t pixelCount = (newType == OBJ_HEPTAGON_STAR) ? HEPTAGON_PIXEL_COUNT : LINE_PIXEL_COUNT;
+          object = createObject(newType, pixelCount);
+          state = new State(*object);
+          debugger = new LPDebugger(*object);
+          ofLog(OF_LOG_NOTICE, "Switched to %s", 
+               newType == OBJ_HEPTAGON_STAR ? "HeptagonStar" : "Line");
       }
       break;
     case 'p':
@@ -320,26 +351,26 @@ void ofApp::draw(){
     ofPushMatrix();
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
     for (uint8_t i=0; i<MAX_GROUPS; i++) {
-        if (heptagon->interCount[i] > 0) {
-            for (uint8_t j=0; j<heptagon->interCount[i]; j++) {
-                ofSetColor(getColor(heptagon->inter[i][j]->topPixel));
-                glm::vec2 point = intersectionPos(heptagon->inter[i][j], j);
+        if (object->interCount[i] > 0) {
+            for (uint8_t j=0; j<object->interCount[i]; j++) {
+                ofSetColor(getColor(object->inter[i][j]->topPixel));
+                glm::vec2 point = intersectionPos(object->inter[i][j], j);
                 ofDrawCircle(point, size);
                 if (showPixels) {
                     ofSetColor(255);
-                    ofDrawBitmapString(ofToString(heptagon->inter[i][j]->topPixel), point + glm::vec2(20, 20));
+                    ofDrawBitmapString(ofToString(object->inter[i][j]->topPixel), point + glm::vec2(20, 20));
                 }
             }
         }
-        if (heptagon->connCount[i] > 0) {
-            for (uint8_t j=0; j<heptagon->connCount[i]; j++) {
-                Connection* conn = heptagon->conn[i][j];
+        if (object->connCount[i] > 0) {
+            for (uint8_t j=0; j<object->connCount[i]; j++) {
+                Connection* conn = object->conn[i][j];
                 glm::vec2 fromPos = intersectionPos(conn->from);
                 glm::vec2 toPos = intersectionPos(conn->to);
                 float dist = glm::distance(fromPos, toPos);
-                for (uint8_t k=0; k<conn->numLeds; k++) {
+                for (uint16_t k=0; k<conn->numLeds; k++) {
                     glm::vec2 point = glm::mix(fromPos, toPos, (float) (k+1)/(conn->numLeds+1));
-                    ofSetColor(getColor(heptagon->conn[i][j]->getPixel(k)));
+                    ofSetColor(getColor(object->conn[i][j]->getPixel(k)));
                     ofDrawCircle(point, size);
                 }
             }
@@ -371,27 +402,43 @@ void ofApp::draw(){
 
 glm::vec2 ofApp::intersectionPos(Intersection* intersection, int8_t j) {
     uint16_t groupDiam[MAX_GROUPS] = {0};
-    groupDiam[0] = ofGetHeight()*0.9;
-    groupDiam[1] = ofGetHeight()*0.4;
-    groupDiam[2] = ofGetHeight()*0.25;
+    
+    if (currentObjectType == OBJ_HEPTAGON_STAR) {
+        // HeptagonStar visualization
+        groupDiam[0] = ofGetHeight()*0.9;
+        groupDiam[1] = ofGetHeight()*0.4;
+        groupDiam[2] = ofGetHeight()*0.25;
+    } else if (currentObjectType == OBJ_LINE) {
+        groupDiam[0] = ofGetWidth()*0.8;
+    }
 
     uint8_t i = log2(intersection->group);
     if (j<0) {
-        for (j=0; j<heptagon->interCount[i]; j++) {
-            if (heptagon->inter[i][j] == intersection) {
+        for (j=0; j<object->interCount[i]; j++) {
+            if (object->inter[i][j] == intersection) {
                 break;
             }
         }
     }
 
-    float offset = TWO_PI/4.f+(i%2*TWO_PI/7.f/2.f);
-    float delta = 0;
-    if (heptagon->interCount[i] == 14) {
-        float k = showPixels ? 0.1 : 0.01;
-        delta = (k/2)-((j+1)%2)*k;
-        j = j / 2;
+    if (currentObjectType == OBJ_HEPTAGON_STAR) {
+        // Heptagon star positioning - circular arrangement
+        float offset = TWO_PI/4.f+(i%2*TWO_PI/7.f/2.f);
+        float delta = 0;
+        if (object->interCount[i] == 14) {
+            float k = showPixels ? 0.1 : 0.01;
+            delta = (k/2)-((j+1)%2)*k;
+            j = j / 2;
+        }
+        return pointOnEllipse(TWO_PI/7.f*j+offset+delta, groupDiam[i], groupDiam[i]);
+    } else if (currentObjectType == OBJ_LINE) {
+        // Line positioning - linear arrangement
+        float x = -groupDiam[0]/2 + groupDiam[0] * j / (float)max(1, object->interCount[i]-1);
+        return glm::vec2(x, 0);
     }
-    return pointOnEllipse(TWO_PI/7.f*j+offset+delta, groupDiam[i], groupDiam[i]);
+    
+    // Default fallback
+    return glm::vec2(0, 0);
 }
 
 glm::vec2 pointOnEllipse(float rad, float w, float h) {

@@ -80,11 +80,11 @@ void LPLight::setPixel1() {
 
 void LPLight::setSegmentPixels() {
     if (outPort != NULL) {
-        uint8_t numPixels = outPort->connection->numLeds;
+        uint16_t numPixels = outPort->connection->numLeds;
         pixels[0] = numPixels+2;
         pixels[1] = outPort->connection->getFromPixel();
         pixels[2] = outPort->connection->getToPixel();
-        for (uint8_t i=3; i<numPixels+3; i++) {
+        for (uint16_t i=3; i<numPixels+3; i++) {
             pixels[i] = outPort->connection->getPixel(i-3);
         }
     }
@@ -96,9 +96,9 @@ void LPLight::setSegmentPixels() {
 void LPLight::setLinkPixels() {
     LPLight* prev = getPrev();
     if (prev != NULL && owner == prev->owner) {
-        uint8_t numPixels = abs(pixel1 - prev->pixel1);
+        uint16_t numPixels = abs(pixel1 - prev->pixel1);
         pixels[0] = numPixels;
-        for (uint8_t i=1; i<numPixels+1; i++) {
+        for (uint16_t i=1; i<numPixels+1; i++) {
             pixels[i] = pixel1 + (i-1) * (pixel1 < prev->pixel1 ? 1 : -1);
         }
     }

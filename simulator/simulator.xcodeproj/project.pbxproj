@@ -26,7 +26,8 @@
 		2B2971C928BDEDC200B98A88 /* LPLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B2971B428BDEDC200B98A88 /* LPLight.cpp */; };
 		2B2971CA28BDEDC200B98A88 /* Connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B2971B528BDEDC200B98A88 /* Connection.cpp */; };
 		2B2971CB28BDEDC200B98A88 /* Port.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B2971B628BDEDC200B98A88 /* Port.cpp */; };
-		2B2971CC28BDEDC200B98A88 /* HeptagonStar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B2971BA28BDEDC200B98A88 /* HeptagonStar.cpp */; };
+		2BEE34D72DB9636700668DEF /* HeptagonStar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BEE34D42DB9631200668DEF /* HeptagonStar.cpp */; };
+		2BEE34DA2DB9645400668DEF /* Line.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BEE34D82DB9645400668DEF /* Line.cpp */; };
 		3275A03B2CEA3CFBCE2A1AD0 /* ofxOscReceiver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5B9D126A0EC6A2FBA786A96B /* ofxOscReceiver.cpp */; };
 		3A08B6618440EB7AC8B773AC /* ofxOscMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94302101FA2821CE77F40FDA /* ofxOscMessage.cpp */; };
 		5004215C76EB0D1B34DFF3EB /* ofxOscParameterSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E8FC182745392DF9C408A02 /* ofxOscParameterSync.cpp */; };
@@ -86,7 +87,6 @@
 		2B2971AD28BDEDC200B98A88 /* Behaviour.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Behaviour.cpp; sourceTree = "<group>"; };
 		2B2971AE28BDEDC200B98A88 /* FastNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FastNoise.cpp; sourceTree = "<group>"; };
 		2B2971AF28BDEDC200B98A88 /* LPDebugger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LPDebugger.cpp; sourceTree = "<group>"; };
-		2B2971B028BDEDC200B98A88 /* HeptagonStar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeptagonStar.h; sourceTree = "<group>"; };
 		2B2971B128BDEDC200B98A88 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		2B2971B228BDEDC200B98A88 /* Model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Model.cpp; sourceTree = "<group>"; };
 		2B2971B328BDEDC200B98A88 /* EmitParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmitParams.h; sourceTree = "<group>"; };
@@ -96,8 +96,11 @@
 		2B2971B728BDEDC200B98A88 /* ofxEasing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxEasing.h; sourceTree = "<group>"; };
 		2B2971B828BDEDC200B98A88 /* State.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = State.h; sourceTree = "<group>"; };
 		2B2971B928BDEDC200B98A88 /* LPDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPDebugger.h; sourceTree = "<group>"; };
-		2B2971BA28BDEDC200B98A88 /* HeptagonStar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HeptagonStar.cpp; sourceTree = "<group>"; };
 		2B2971BB28BDEDC200B98A88 /* LPOwner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPOwner.h; sourceTree = "<group>"; };
+		2BEE34D42DB9631200668DEF /* HeptagonStar.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = HeptagonStar.cpp; sourceTree = "<group>"; };
+		2BEE34D52DB9631200668DEF /* HeptagonStar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HeptagonStar.h; sourceTree = "<group>"; };
+		2BEE34D82DB9645400668DEF /* Line.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Line.cpp; sourceTree = "<group>"; };
+		2BEE34D92DB9645400668DEF /* Line.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Line.h; sourceTree = "<group>"; };
 		4580BD0C14A4F90E048FF170 /* ofxOscArg.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = ofxOscArg.h; path = ../../openframeworks/addons/ofxOsc/src/ofxOscArg.h; sourceTree = SOURCE_ROOT; };
 		4BC3C7D08AB83E0FF30A665D /* ofxOscSender.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = ofxOscSender.h; path = ../../openframeworks/addons/ofxOsc/src/ofxOscSender.h; sourceTree = SOURCE_ROOT; };
 		5B9D126A0EC6A2FBA786A96B /* ofxOscReceiver.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ofxOscReceiver.cpp; path = ../../openframeworks/addons/ofxOsc/src/ofxOscReceiver.cpp; sourceTree = SOURCE_ROOT; };
@@ -321,6 +324,7 @@
 		2B29719428BDEDC200B98A88 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				2BEE34D62DB9631200668DEF /* objects */,
 				2B2971AD28BDEDC200B98A88 /* Behaviour.cpp */,
 				2B2971A128BDEDC200B98A88 /* Behaviour.h */,
 				2B29719F28BDEDC200B98A88 /* Config.h */,
@@ -333,8 +337,6 @@
 				2B2971AB28BDEDC200B98A88 /* Globals.cpp */,
 				2B2971AA28BDEDC200B98A88 /* Globals.h */,
 				2B2971A828BDEDC200B98A88 /* HashMap.h */,
-				2B2971BA28BDEDC200B98A88 /* HeptagonStar.cpp */,
-				2B2971B028BDEDC200B98A88 /* HeptagonStar.h */,
 				2B29719628BDEDC200B98A88 /* Intersection.cpp */,
 				2B29719A28BDEDC200B98A88 /* Intersection.h */,
 				2B2971A328BDEDC200B98A88 /* Light.cpp */,
@@ -363,6 +365,17 @@
 			);
 			name = src;
 			path = ../src;
+			sourceTree = "<group>";
+		};
+		2BEE34D62DB9631200668DEF /* objects */ = {
+			isa = PBXGroup;
+			children = (
+				2BEE34D82DB9645400668DEF /* Line.cpp */,
+				2BEE34D92DB9645400668DEF /* Line.h */,
+				2BEE34D42DB9631200668DEF /* HeptagonStar.cpp */,
+				2BEE34D52DB9631200668DEF /* HeptagonStar.h */,
+			);
+			path = objects;
 			sourceTree = "<group>";
 		};
 		30CB364908817057B430D528 /* osc */ = {
@@ -880,10 +893,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B2971C928BDEDC200B98A88 /* LPLight.cpp in Sources */,
+				2BEE34DA2DB9645400668DEF /* Line.cpp in Sources */,
 				2B2971C728BDEDC200B98A88 /* LPDebugger.cpp in Sources */,
 				2B2971C428BDEDC200B98A88 /* LPObject.cpp in Sources */,
 				2B2971BF28BDEDC200B98A88 /* Light.cpp in Sources */,
-				2B2971CC28BDEDC200B98A88 /* HeptagonStar.cpp in Sources */,
+				2BEE34D72DB9636700668DEF /* HeptagonStar.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				2B2971BD28BDEDC200B98A88 /* EmitParams.cpp in Sources */,
