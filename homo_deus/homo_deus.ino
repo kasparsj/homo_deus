@@ -1,4 +1,3 @@
-// /private/var/folders/sw/36pn0vxj55l7r1xl1bk5c16m0000gp/T/arduino-sketch-8EA0552AA4E8E7F16E2C2E3D022AFCD8/homo_deus.ino.elf
 #define PIXEL_PIN1 14
 #define PIXEL_PIN2 26
 #define BUTTON_PIN 25
@@ -17,10 +16,19 @@
 #define OSC_PORT 54321
 //#define MAX_BRIGHTNESS 192
 #define MAX_BRIGHTNESS 255
+#define USE_NEOPIXELBUS
+// #define USE_FASTLED
 
 #include "BluetoothSerial.h"
 #include "esp_bt.h"
-#include <NeoPixelBus.h>
+
+#ifdef USE_NEOPIXELBUS
+  #include <NeoPixelBus.h>
+#endif
+#ifdef USE_FASTLED
+  #include <FastLED.h>
+#endif
+
 #include "src/HeptagonStar.h"
 #include "src/Globals.h"
 #include "src/LightList.h"
@@ -29,16 +37,28 @@
 #ifdef WIFI_SSID
 #include <WiFi.h>
 #endif
+
 #ifdef HD_OSC
 #include <ArduinoOSCWiFi.h>
 #endif
+
 #ifdef HD_DEBUGGER
 #include "src/LPDebugger.h"
 #endif
 
-NeoPixelBus<NeoGrbFeature, NeoWs2813Method> strip1(PIXEL_COUNT1, PIXEL_PIN1);
-NeoPixelBus<NeoGrbFeature, NeoEsp32Rmt5Ws2812xMethod> strip2(PIXEL_COUNT2, PIXEL_PIN2);
-NeoGamma<NeoGammaTableMethod> colorGamma;
+#ifdef USE_NEOPIXELBUS
+  // NeoPixelBus<NeoGrbFeature, NeoWs2813Method> strip1(PIXEL_COUNT1, PIXEL_PIN1);
+  // NeoPixelBus<NeoGrbFeature, NeoEsp32Rmt5Ws2812xMethod> strip2(PIXEL_COUNT2, PIXEL_PIN2);
+  NeoPixelBus<NeoRgbFeature, NeoEsp32Rmt0Ws2811Method> strip1(PIXEL_COUNT1, PIXEL_PIN1);
+  NeoPixelBus<NeoRgbFeature, NeoEsp32Rmt1Ws2811Method> strip2(PIXEL_COUNT2, PIXEL_PIN2);
+  NeoGamma<NeoGammaTableMethod> colorGamma;
+#endif
+
+#ifdef USE_FASTLED
+  CRGB leds1[PIXEL_COUNT1];
+  CRGB leds2[PIXEL_COUNT2];
+#endif
+
 HeptagonStar heptagon(PIXEL_COUNT);
 State *state;
 bool showIntersections = false;
@@ -55,11 +75,21 @@ bool wifiConnected = false;
 void setup() {
   setupComms();
 
-  strip1.Begin();
-  strip1.Show();
-
-  strip2.Begin();
-  strip2.Show();
+  #ifdef USE_NEOPIXELBUS
+    strip1.Begin();
+    strip1.Show();
+    
+    strip2.Begin();
+    strip2.Show();
+  #endif
+  
+  #ifdef USE_FASTLED
+    FastLED.addLeds<WS2811, PIXEL_PIN1, RGB>(leds1, PIXEL_COUNT1);
+    FastLED.addLeds<WS2811, PIXEL_PIN2, RGB>(leds2, PIXEL_COUNT2);
+    FastLED.setBrightness(MAX_BRIGHTNESS);
+    FastLED.clear();
+    FastLED.show();
+  #endif
 
   pinMode(BUTTON_PIN, INPUT);
 
@@ -133,17 +163,30 @@ void update() {
 }
 
 void draw() {
-  for (uint16_t i=0; i<PIXEL_COUNT1; i++) {
-    strip1.SetPixelColor(i, getColor(i));
-  }
-  for (uint16_t i=0; i<PIXEL_COUNT2; i++) {
-    strip2.SetPixelColor(i, getColor(PIXEL_COUNT1+i));
-  }
-  strip1.Show();
-  strip2.Show();
+  #ifdef USE_NEOPIXELBUS
+    for (uint16_t i=0; i<PIXEL_COUNT1; i++) {
+      strip1.SetPixelColor(i, getNeoPixelColor(i));
+    }
+    for (uint16_t i=0; i<PIXEL_COUNT2; i++) {
+      strip2.SetPixelColor(i, getNeoPixelColor(PIXEL_COUNT1+i));
+    }
+    strip1.Show();
+    strip2.Show();
+  #endif
+  
+  #ifdef USE_FASTLED
+    for (uint16_t i=0; i<PIXEL_COUNT1; i++) {
+      leds1[i] = getFastLEDColor(i);
+    }
+    for (uint16_t i=0; i<PIXEL_COUNT2; i++) {
+      leds2[i] = getFastLEDColor(PIXEL_COUNT1+i);
+    }
+    FastLED.show();
+  #endif
 }
 
-RgbColor getColor(uint16_t i) {
+#ifdef USE_NEOPIXELBUS
+RgbColor getNeoPixelColor(uint16_t i) {
   ColorRGB pixel = state->getPixel(i, MAX_BRIGHTNESS);
   RgbColor color = RgbColor(pixel.R, pixel.G, pixel.B);
   #ifdef HD_DEBUGGER
@@ -163,6 +206,30 @@ RgbColor getColor(uint16_t i) {
   #endif
   return colorGamma.Correct(color);
 }
+#endif
+
+#ifdef USE_FASTLED
+CRGB getFastLEDColor(uint16_t i) {
+  ColorRGB pixel = state->getPixel(i, MAX_BRIGHTNESS);
+  CRGB color = CRGB(pixel.R, pixel.G, pixel.B);
+  #ifdef HD_DEBUGGER
+  if (showAll) {
+    color.r = MAX_BRIGHTNESS / 2;
+  }
+  if (showConnections) {
+    color.g = (debugger->isConnection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
+  }
+  if (showIntersections) {
+    color.b = (debugger->isIntersection(i) ? 1.f : 0.f) * MAX_BRIGHTNESS;
+  }
+  if (showPalette && i < 256) {
+    pixel = state->paletteColor(i);
+    color = CRGB(pixel.R, pixel.G, pixel.B);
+  }
+  #endif
+  return color;
+}
+#endif
 
 void loop() {
   #ifdef HD_OSC
@@ -278,7 +345,7 @@ void doCommand(char command) {
     case '+': {
       EmitParams params(M_SPLATTER, LPRandom::randomSpeed());
       params.linked = false;
-      params.duration = max(1, (int) (1.f/params.speed) + 1) * EmitParams::frameMs();
+      params.duration = max(1, (int) (LPRandom::MAX_SPEED/params.speed) + 1) * EmitParams::frameMs();
       doEmit(params);
       break;
     }

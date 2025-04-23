@@ -272,7 +272,7 @@ void ofApp::doCommand(char command) {
     case '+': {
       EmitParams params(M_SPLATTER, LPRandom::randomSpeed());
       params.linked = false;
-      params.duration = max(1, (int) (1.f/params.speed) + 1) * EmitParams::frameMs();
+      params.duration = max(1, (int) (LPRandom::MAX_SPEED/params.speed) + 1) * EmitParams::frameMs();
       doEmit(params);
       break;
     }
@@ -371,7 +371,7 @@ void ofApp::draw(){
 
 glm::vec2 ofApp::intersectionPos(Intersection* intersection, int8_t j) {
     uint16_t groupDiam[MAX_GROUPS] = {0};
-    groupDiam[0] = ofGetHeight();
+    groupDiam[0] = ofGetHeight()*0.9;
     groupDiam[1] = ofGetHeight()*0.4;
     groupDiam[2] = ofGetHeight()*0.25;
 
