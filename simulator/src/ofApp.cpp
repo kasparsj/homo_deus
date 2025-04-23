@@ -11,6 +11,8 @@ LPObject* ofApp::createObject(ObjectType type, uint16_t pixelCount) {
             return new HeptagonStar(pixelCount);
         case OBJ_LINE:
             return new Line(pixelCount);
+        case OBJ_CROSS:
+            return new Cross(pixelCount);
         default:
             return new HeptagonStar(pixelCount);
     }
@@ -245,19 +247,53 @@ void ofApp::doCommand(char command) {
       break;
     case 'o':
       {
-          // Switch object type
-          ObjectType newType = (currentObjectType == OBJ_HEPTAGON_STAR) ? OBJ_LINE : OBJ_HEPTAGON_STAR;
+          // Cycle through object types
+          ObjectType newType;
+          switch (currentObjectType) {
+              case OBJ_HEPTAGON_STAR:
+                  newType = OBJ_LINE;
+                  break;
+              case OBJ_LINE:
+                  newType = OBJ_CROSS;
+                  break;
+              case OBJ_CROSS:
+              default:
+                  newType = OBJ_HEPTAGON_STAR;
+                  break;
+          }
+          
           delete state;
           delete debugger;
           delete object;
           
           // Create appropriate object type with corresponding pixel count
-          uint16_t pixelCount = (newType == OBJ_HEPTAGON_STAR) ? HEPTAGON_PIXEL_COUNT : LINE_PIXEL_COUNT;
+          uint16_t pixelCount;
+          switch (newType) {
+              case OBJ_HEPTAGON_STAR:
+                  pixelCount = HEPTAGON_PIXEL_COUNT;
+                  break;
+              case OBJ_LINE:
+                  pixelCount = LINE_PIXEL_COUNT;
+                  break;
+              case OBJ_CROSS:
+                  pixelCount = CROSS_PIXEL_COUNT;
+                  break;
+              default:
+                  pixelCount = HEPTAGON_PIXEL_COUNT;
+                  break;
+          }
+          
           object = createObject(newType, pixelCount);
           state = new State(*object);
           debugger = new LPDebugger(*object);
-          ofLog(OF_LOG_NOTICE, "Switched to %s", 
-               newType == OBJ_HEPTAGON_STAR ? "HeptagonStar" : "Line");
+          const char* objName;
+          switch (newType) {
+              case OBJ_HEPTAGON_STAR: objName = "HeptagonStar"; break;
+              case OBJ_LINE: objName = "Line"; break;
+              case OBJ_CROSS: objName = "Cross"; break;
+              default: objName = "Unknown"; break;
+          }
+          ofLog(OF_LOG_NOTICE, "Switched to %s", objName);
       }
       break;
     case 'p':
@@ -409,7 +445,11 @@ glm::vec2 ofApp::intersectionPos(Intersection* intersection, int8_t j) {
         groupDiam[1] = ofGetHeight()*0.4;
         groupDiam[2] = ofGetHeight()*0.25;
     } else if (currentObjectType == OBJ_LINE) {
+        // Line visualization - use a linear layout
         groupDiam[0] = ofGetWidth()*0.8;
+    } else if (currentObjectType == OBJ_CROSS) {
+        // Cross visualization - use dimensions for the cross
+        groupDiam[0] = ofGetHeight()*0.9;
     }
 
     uint8_t i = log2(intersection->group);
@@ -435,6 +475,12 @@ glm::vec2 ofApp::intersectionPos(Intersection* intersection, int8_t j) {
         // Line positioning - linear arrangement
         float x = -groupDiam[0]/2 + groupDiam[0] * j / (float)max(1, object->interCount[i]-1);
         return glm::vec2(x, 0);
+    } else if (currentObjectType == OBJ_CROSS) {
+        if (j < 4) {
+            int k = j == 0 ? 1 : j == 1 ? 3 : j == 3 ? 0 : j;
+            return pointOnEllipse(TWO_PI/4.f * k, groupDiam[i], groupDiam[i]);
+        }
+        return glm::vec2(0, 0);
     }
     
     // Default fallback

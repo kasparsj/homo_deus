@@ -3,7 +3,7 @@
 #include "Intersection.h"
 #include "LPObject.h"
 
-Connection::Connection(Intersection *from, Intersection *to, uint8_t group, uint16_t forceNumLeds) : LPOwner(group) {
+Connection::Connection(Intersection *from, Intersection *to, uint8_t group, int16_t forceNumLeds) : LPOwner(group) {
   this->from = from;
   this->to = to;
   
@@ -15,7 +15,7 @@ Connection::Connection(Intersection *from, Intersection *to, uint8_t group, uint
   toPixel = to->topPixel - (pixelDir ? 1 : -1);
   
   // If forceNumLeds is provided, use it, otherwise calculate
-  if (forceNumLeds > 0) {
+  if (forceNumLeds > -1) {
     numLeds = forceNumLeds;
   } else {
     uint16_t diff = abs(fromPixel - toPixel);

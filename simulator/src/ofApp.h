@@ -4,6 +4,7 @@
 #include "ofxOsc.h"
 #include "HeptagonStar.h"
 #include "Line.h"
+#include "Cross.h"
 #include "LPDebugger.h"
 #define OSC_PORT 54321
 #define MAX_BRIGHTNESS 255
@@ -15,7 +16,8 @@ class ofApp : public ofBaseApp{
 public:
     enum ObjectType {
         OBJ_HEPTAGON_STAR = 0,
-        OBJ_LINE = 1
+        OBJ_LINE = 1,
+        OBJ_CROSS = 2
     };
     
     LPObject *object;

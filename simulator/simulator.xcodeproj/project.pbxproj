@@ -28,6 +28,7 @@
 		2B2971CB28BDEDC200B98A88 /* Port.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B2971B628BDEDC200B98A88 /* Port.cpp */; };
 		2BEE34D72DB9636700668DEF /* HeptagonStar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BEE34D42DB9631200668DEF /* HeptagonStar.cpp */; };
 		2BEE34DA2DB9645400668DEF /* Line.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BEE34D82DB9645400668DEF /* Line.cpp */; };
+		2BEE34DD2DB97F6800668DEF /* Cross.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BEE34DC2DB97F6800668DEF /* Cross.cpp */; };
 		3275A03B2CEA3CFBCE2A1AD0 /* ofxOscReceiver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5B9D126A0EC6A2FBA786A96B /* ofxOscReceiver.cpp */; };
 		3A08B6618440EB7AC8B773AC /* ofxOscMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94302101FA2821CE77F40FDA /* ofxOscMessage.cpp */; };
 		5004215C76EB0D1B34DFF3EB /* ofxOscParameterSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E8FC182745392DF9C408A02 /* ofxOscParameterSync.cpp */; };
@@ -101,6 +102,8 @@
 		2BEE34D52DB9631200668DEF /* HeptagonStar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HeptagonStar.h; sourceTree = "<group>"; };
 		2BEE34D82DB9645400668DEF /* Line.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Line.cpp; sourceTree = "<group>"; };
 		2BEE34D92DB9645400668DEF /* Line.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Line.h; sourceTree = "<group>"; };
+		2BEE34DB2DB97F6800668DEF /* Cross.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cross.h; sourceTree = "<group>"; };
+		2BEE34DC2DB97F6800668DEF /* Cross.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cross.cpp; sourceTree = "<group>"; };
 		4580BD0C14A4F90E048FF170 /* ofxOscArg.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = ofxOscArg.h; path = ../../openframeworks/addons/ofxOsc/src/ofxOscArg.h; sourceTree = SOURCE_ROOT; };
 		4BC3C7D08AB83E0FF30A665D /* ofxOscSender.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = ofxOscSender.h; path = ../../openframeworks/addons/ofxOsc/src/ofxOscSender.h; sourceTree = SOURCE_ROOT; };
 		5B9D126A0EC6A2FBA786A96B /* ofxOscReceiver.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ofxOscReceiver.cpp; path = ../../openframeworks/addons/ofxOsc/src/ofxOscReceiver.cpp; sourceTree = SOURCE_ROOT; };
@@ -370,6 +373,8 @@
 		2BEE34D62DB9631200668DEF /* objects */ = {
 			isa = PBXGroup;
 			children = (
+				2BEE34DC2DB97F6800668DEF /* Cross.cpp */,
+				2BEE34DB2DB97F6800668DEF /* Cross.h */,
 				2BEE34D82DB9645400668DEF /* Line.cpp */,
 				2BEE34D92DB9645400668DEF /* Line.h */,
 				2BEE34D42DB9631200668DEF /* HeptagonStar.cpp */,
@@ -908,6 +913,7 @@
 				D7802E84A85C510344228DCF /* NetworkingUtils.cpp in Sources */,
 				237289D63272209F9AB3647A /* UdpSocket.cpp in Sources */,
 				280CF762901BA61E95B278D6 /* OscOutboundPacketStream.cpp in Sources */,
+				2BEE34DD2DB97F6800668DEF /* Cross.cpp in Sources */,
 				23DA2CABE99CFB8CD7FE1E80 /* OscPrintReceivedElements.cpp in Sources */,
 				2B2971BE28BDEDC200B98A88 /* LightList.cpp in Sources */,
 				CE6491CEE6B473B8DB15239C /* OscReceivedElements.cpp in Sources */,

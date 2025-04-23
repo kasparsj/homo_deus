@@ -87,9 +87,9 @@ Connection* LPObject::addConnection(Connection *connection) {
     return connection;
 }
 
-Connection* LPObject::addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group) {
-    Intersection *from = new Intersection(fromPixel, group);
-    Intersection *to = new Intersection(toPixel, group);
+Connection* LPObject::addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group, uint8_t numPorts) {
+    Intersection *from = new Intersection(numPorts, fromPixel, -1, group);
+    Intersection *to = new Intersection(numPorts, toPixel, -1, group);
     addIntersection(from);
     addIntersection(to);
     return addConnection(new Connection(from, to, group));

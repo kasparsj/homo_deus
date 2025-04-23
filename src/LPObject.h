@@ -25,7 +25,7 @@ class LPObject {
     virtual Model* addModel(Model *model);
     virtual Intersection* addIntersection(Intersection *intersection);
     virtual Connection* addConnection(Connection *connection);
-    virtual Connection* addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group);
+    virtual Connection* addBridge(uint16_t fromPixel, uint16_t toPixel, uint8_t group, uint8_t numPorts = 2);
     Model* getModel(int i) {
       return models[i];
     }
