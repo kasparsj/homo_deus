@@ -320,60 +320,13 @@ void ofApp::doCommand(char command) {
     case 'I':
       debugger->dumpIntersections();
       break;
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6': {
-      EmitParams params(command - '1', LPRandom::randomSpeed());
-      doEmit(params);
+    default:
+      EmitParams* params = object->getParams(command);
+      if (params != NULL) {
+        doEmit(*params);
+      }
+      delete params;
       break;
-    }
-    case '7': {
-      EmitParams params(M_STAR);
-      params.colorChangeGroups |= GROUP1;
-      doEmit(params);
-      break;
-    }
-    case '+': {
-      EmitParams params(M_SPLATTER, LPRandom::randomSpeed());
-      params.linked = false;
-      params.duration = max(1, (int) (LPRandom::MAX_SPEED/params.speed) + 1) * EmitParams::frameMs();
-      doEmit(params);
-      break;
-    }
-    case '*': {
-      // works reliably with M_STAR, other models might or might not work
-      EmitParams params(M_STAR);
-      params.speed = 0;
-      params.fadeSpeed = 1;
-      params.fadeThresh = 127;
-      params.order = LIST_ORDER_RANDOM;
-      params.behaviourFlags |= B_POS_CHANGE_FADE;
-      doEmit(params);
-      break;
-    }
-    case '/': { // emitSegment
-      EmitParams params;
-      params.behaviourFlags |= B_RENDER_SEGMENT;
-      params.setLength(1);
-      state->emit(params);
-      break;
-    }
-    case '-': { // emitBounce
-      EmitParams params(M_STAR);
-      params.behaviourFlags |= B_FORCE_BOUNCE;
-      state->emit(params);
-      break;
-    }
-    case '?': { // emitNoise
-      EmitParams params;
-      //params.order = LIST_NOISE;
-      params.behaviourFlags |= B_BRI_CONST_NOISE;
-      state->emit(params);
-      break;
-    }
   }
 }
 

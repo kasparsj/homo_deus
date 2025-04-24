@@ -1,23 +1,24 @@
-#define PIXEL_PIN1 14
-#define PIXEL_PIN2 26
 #define BUTTON_PIN 25
-#define WIFI_HOSTNAME "homo-deus"
-#define WIFI_SSID "toplap"
-#define WIFI_PASS "karlsruhe"
-#define HD_OSC
-#define HD_SERIAL
-#define HD_DEBUGGER
+
+// WiFi Configuration (comment out WIFI_ENABLED to disable WiFi completely)
+//#define WIFI_ENABLED
+#ifdef WIFI_ENABLED
+  #define WIFI_HOSTNAME "homo-deus"
+  #define WIFI_SSID "toplap"
+  #define WIFI_PASS "karlsruhe"
+  #define OSC_ENABLED // OSC support (requires WiFi)
+#endif
+
+#define SERIAL_ENABLED   // Serial communication
+#define DEBUGGER_ENABLED // Debugging features
 //#define SC_HOST "192.168.43.101"
 //#define SC_PORT 57120
 //#define LP_OSC_REPLY(I) OscWiFi.publish(SC_HOST, SC_PORT, "/emit", (I));
-#define PIXEL_COUNT1 524
-#define PIXEL_COUNT2 395
-#define PIXEL_COUNT (PIXEL_COUNT1 + PIXEL_COUNT2)
 #define OSC_PORT 54321
 //#define MAX_BRIGHTNESS 192
 #define MAX_BRIGHTNESS 255
-#define USE_NEOPIXELBUS
-// #define USE_FASTLED
+// #define USE_NEOPIXELBUS
+#define USE_FASTLED
 
 #include "BluetoothSerial.h"
 #include "esp_bt.h"
@@ -29,7 +30,24 @@
   #include <FastLED.h>
 #endif
 
-#include "src/HeptagonStar.h"
+//#define OBJ_HEPTAGON_STAR
+#ifdef OBJ_HEPTAGON_STAR
+#include "src/objects/HeptagonStar.h"
+#define PIXEL_COUNT1 HEPTAGON_PIXEL_COUNT1
+#define PIXEL_COUNT2 HEPTAGON_PIXEL_COUNT2
+#define PIXEL_COUNT HEPTAGON_PIXEL_COUNT
+#define PIXEL_PIN1 14
+#define PIXEL_PIN2 26
+#endif
+
+#define OBJ_LINE
+#ifdef OBJ_LINE
+#include "src/objects/Line.h"
+#define PIXEL_COUNT1 LINE_PIXEL_COUNT
+#define PIXEL_PIN1 21
+#define PIXEL_COUNT LINE_PIXEL_COUNT
+#endif
+
 #include "src/Globals.h"
 #include "src/LightList.h"
 #include "src/LPRandom.h"
@@ -38,34 +56,45 @@
 #include <WiFi.h>
 #endif
 
-#ifdef HD_OSC
+#ifdef OSC_ENABLED
 #include <ArduinoOSCWiFi.h>
 #endif
 
-#ifdef HD_DEBUGGER
+#ifdef DEBUGGER_ENABLED
 #include "src/LPDebugger.h"
 #endif
 
 #ifdef USE_NEOPIXELBUS
   // NeoPixelBus<NeoGrbFeature, NeoWs2813Method> strip1(PIXEL_COUNT1, PIXEL_PIN1);
-  // NeoPixelBus<NeoGrbFeature, NeoEsp32Rmt5Ws2812xMethod> strip2(PIXEL_COUNT2, PIXEL_PIN2);
   NeoPixelBus<NeoRgbFeature, NeoEsp32Rmt0Ws2811Method> strip1(PIXEL_COUNT1, PIXEL_PIN1);
+  #ifdef PIXEL_PIN2
+  // NeoPixelBus<NeoGrbFeature, NeoEsp32Rmt5Ws2812xMethod> strip2(PIXEL_COUNT2, PIXEL_PIN2);
   NeoPixelBus<NeoRgbFeature, NeoEsp32Rmt1Ws2811Method> strip2(PIXEL_COUNT2, PIXEL_PIN2);
+  #endif
   NeoGamma<NeoGammaTableMethod> colorGamma;
 #endif
 
 #ifdef USE_FASTLED
   CRGB leds1[PIXEL_COUNT1];
+  #ifdef PIXEL_COUNT2
   CRGB leds2[PIXEL_COUNT2];
+  #endif
 #endif
 
-HeptagonStar heptagon(PIXEL_COUNT);
+#ifdef OBJ_HEPTAGON_STAR
+HeptagonStar object(PIXEL_COUNT);
+#endif
+
+#ifdef OBJ_LINE
+Line object(PIXEL_COUNT);
+#endif
+
 State *state;
 bool showIntersections = false;
 bool showConnections = false;
 bool showPalette = false;
 bool showAll = false;
-#ifdef HD_DEBUGGER
+#ifdef DEBUGGER_ENABLED
 LPDebugger *debugger;
 #endif
 #ifdef WIFI_SSID
@@ -78,27 +107,33 @@ void setup() {
   #ifdef USE_NEOPIXELBUS
     strip1.Begin();
     strip1.Show();
-    
+
+    #ifdef PIXEL_PIN2
     strip2.Begin();
     strip2.Show();
+    #endif
   #endif
-  
+
   #ifdef USE_FASTLED
     FastLED.addLeds<WS2811, PIXEL_PIN1, RGB>(leds1, PIXEL_COUNT1);
+    #ifdef PIXE_PIN2
     FastLED.addLeds<WS2811, PIXEL_PIN2, RGB>(leds2, PIXEL_COUNT2);
+    #endif
     FastLED.setBrightness(MAX_BRIGHTNESS);
     FastLED.clear();
     FastLED.show();
   #endif
 
-  pinMode(BUTTON_PIN, INPUT);
-
-  state = new State(heptagon);
-
-  #ifdef HD_DEBUGGER
-  debugger = new LPDebugger(heptagon);
+  #ifdef BUTTON_PIN
+    pinMode(BUTTON_PIN, INPUT);
   #endif
-  #ifdef HD_SERIAL
+
+  state = new State(object);
+
+  #ifdef DEBUGGER_ENABLED
+  debugger = new LPDebugger(object);
+  #endif
+  #ifdef SERIAL_ENABLED
   Serial.println("setup complete");
   #endif
 }
@@ -134,28 +169,34 @@ void setupComms() {
     WiFi.persistent(true);
   }
   else {
-    // todo: should boot even if WiFi connection fails
+    // Continue even if WiFi connection fails
+    Serial.println("WiFi failed to connect. Continuing without WiFi...");
     WiFi.disconnect(true, true);
-    ESP.restart();
-    Serial.println("WiFi failed to connect");
+    wifiConnected = false;
   }
 
   #endif
-  #ifdef HD_OSC
-  OscWiFi.subscribe(OSC_PORT, "/emit", onEmit);
-  OscWiFi.subscribe(OSC_PORT, "/note_on", onNoteOn);
-  OscWiFi.subscribe(OSC_PORT, "/note_off", onNoteOff);
-  OscWiFi.subscribe(OSC_PORT, "/notes_set", onNotesSet);
-  OscWiFi.subscribe(OSC_PORT, "/palette", onPalette);
-  OscWiFi.subscribe(OSC_PORT, "/color", onColor);
-  OscWiFi.subscribe(OSC_PORT, "/split", onSplit);
-  OscWiFi.subscribe(OSC_PORT, "/command", onCommand);
+  #ifdef OSC_ENABLED
+  // Only set up OSC if WiFi is connected
+  if (wifiConnected) {
+    OscWiFi.subscribe(OSC_PORT, "/emit", onEmit);
+    OscWiFi.subscribe(OSC_PORT, "/note_on", onNoteOn);
+    OscWiFi.subscribe(OSC_PORT, "/note_off", onNoteOff);
+    OscWiFi.subscribe(OSC_PORT, "/notes_set", onNotesSet);
+    OscWiFi.subscribe(OSC_PORT, "/palette", onPalette);
+    OscWiFi.subscribe(OSC_PORT, "/color", onColor);
+    OscWiFi.subscribe(OSC_PORT, "/split", onSplit);
+    OscWiFi.subscribe(OSC_PORT, "/command", onCommand);
+    Serial.println("OSC setup complete");
+  } else {
+    Serial.println("OSC setup skipped (no WiFi connection)");
+  }
   #endif
 }
 
 void update() {
   gMillis = millis();
-  #ifdef HD_DEBUGGER
+  #ifdef DEBUGGER_ENABLED
   debugger->update(gMillis);
   #endif
   state->autoEmit(gMillis);
@@ -167,20 +208,24 @@ void draw() {
     for (uint16_t i=0; i<PIXEL_COUNT1; i++) {
       strip1.SetPixelColor(i, getNeoPixelColor(i));
     }
+    strip1.Show();
+    #ifdef PIXEL_COUNT2
     for (uint16_t i=0; i<PIXEL_COUNT2; i++) {
       strip2.SetPixelColor(i, getNeoPixelColor(PIXEL_COUNT1+i));
     }
-    strip1.Show();
     strip2.Show();
+    #endif
   #endif
-  
+
   #ifdef USE_FASTLED
     for (uint16_t i=0; i<PIXEL_COUNT1; i++) {
       leds1[i] = getFastLEDColor(i);
     }
+    #ifdef PIXEL_COUNT2
     for (uint16_t i=0; i<PIXEL_COUNT2; i++) {
       leds2[i] = getFastLEDColor(PIXEL_COUNT1+i);
     }
+    #endif
     FastLED.show();
   #endif
 }
@@ -189,7 +234,7 @@ void draw() {
 RgbColor getNeoPixelColor(uint16_t i) {
   ColorRGB pixel = state->getPixel(i, MAX_BRIGHTNESS);
   RgbColor color = RgbColor(pixel.R, pixel.G, pixel.B);
-  #ifdef HD_DEBUGGER
+  #ifdef DEBUGGER_ENABLED
   if (showAll) {
     color.R = MAX_BRIGHTNESS / 2;
   }
@@ -212,7 +257,7 @@ RgbColor getNeoPixelColor(uint16_t i) {
 CRGB getFastLEDColor(uint16_t i) {
   ColorRGB pixel = state->getPixel(i, MAX_BRIGHTNESS);
   CRGB color = CRGB(pixel.R, pixel.G, pixel.B);
-  #ifdef HD_DEBUGGER
+  #ifdef DEBUGGER_ENABLED
   if (showAll) {
     color.r = MAX_BRIGHTNESS / 2;
   }
@@ -232,14 +277,17 @@ CRGB getFastLEDColor(uint16_t i) {
 #endif
 
 void loop() {
-  #ifdef HD_OSC
-  OscWiFi.update();
+  #ifdef OSC_ENABLED
+  // Only update OSC if WiFi is connected
+  if (wifiConnected) {
+    OscWiFi.update();
+  }
   #endif
 
   update();
   draw();
 
-  #ifdef HD_SERIAL
+  #ifdef SERIAL_ENABLED
   readSerial();
   #endif
 }
@@ -253,16 +301,6 @@ void readSerial() {
 
 void doCommand(char command) {
   switch (command) {
-    case 'd': {
-      EmitParams params(M_STAR, 0.5);
-      params.setLength(3);
-      params.from = 1;
-      // todo: fix, infinite duration does not work
-      // params.duration = INFINITE_DURATION;
-      params.duration = 100000;
-      doEmit(params); 
-      break;
-    }
     case 'r':
       ESP.restart();
       break;
@@ -271,14 +309,14 @@ void doCommand(char command) {
       break;
     case '!':
       state->colorAll();
-      break;        
+      break;
     case 's':
       state->splitAll();
       break;
     case 'h':
       Serial.printf("Free heap: %d\n", ESP.getFreeHeap());
       break;
-    #ifdef HD_DEBUGGER
+    #ifdef DEBUGGER_ENABLED
     case 'f':
       Serial.printf("FPS: %f (%d)\n", debugger->getFPS(), state->totalLights);
       break;
@@ -312,7 +350,7 @@ void doCommand(char command) {
     case 'E':
       state->autoEnabled = !state->autoEnabled;
       Serial.printf("AutoEmitter is %s\n", state->autoEnabled ? "enabled" : "disabled");
-      break;      
+      break;
     case 'L':
       state->debug();
       break;
@@ -323,88 +361,38 @@ void doCommand(char command) {
       debugger->dumpIntersections();
       break;
     #endif
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7': {
-      int model = command - '1';
-      if (model <= HeptagonStarModel::M_LAST) {
-        EmitParams params(model, LPRandom::randomSpeed());
-        doEmit(params); 
+    default:
+      EmitParams* params = object.getParams(command);
+      if (params != NULL) {
+        doEmit(*params);
       }
-      else { // 8 and up
-        EmitParams params(M_STAR);
-        params.colorChangeGroups |= GROUP1;
-        doEmit(params);
-      }
+      delete params;
       break;
-    }
-    case '+': {
-      EmitParams params(M_SPLATTER, LPRandom::randomSpeed());
-      params.linked = false;
-      params.duration = max(1, (int) (LPRandom::MAX_SPEED/params.speed) + 1) * EmitParams::frameMs();
-      doEmit(params);
-      break;
-    }
-    case '*': {
-      // works reliably with M_STAR, other models might or might not work
-      EmitParams params(M_STAR);
-      params.speed = 0;
-      params.fadeSpeed = 1;
-      params.fadeThresh = 127;
-      params.order = LIST_ORDER_RANDOM;
-      params.behaviourFlags |= B_POS_CHANGE_FADE;
-      doEmit(params);
-      break;        
-    }
-    case '/': {
-      EmitParams params;
-      params.behaviourFlags |= B_RENDER_SEGMENT;
-      params.setLength(1);
-      doEmit(params);
-      break;
-    }
-    case '-': { // emitBounce
-      EmitParams params(M_STAR);
-      params.behaviourFlags |= B_FORCE_BOUNCE;
-      doEmit(params);
-      break;
-    }
-    case '?': { // emitNoise
-      EmitParams params;
-      //params.order = LIST_NOISE;
-      params.behaviourFlags |= B_BRI_CONST_NOISE;
-      doEmit(params);
-      break;
-    }
   }
 }
 
 void doEmit(EmitParams &params) {
   int8_t i = state->emit(params);
-  #ifdef HD_DEBUGGER
+  #ifdef DEBUGGER_ENABLED
   debugger->countEmit();
   #endif
   // todo: I think HD_DEBUG does not exist anymore
   #ifdef HD_DEBUG
   LP_LOGF("emitting %d %s lights (%d/%.1f/%d/%d/%d/%d), total: %d (%d)\n",
-    state->lightLists[i]->numLights, 
-    (params.linked ? "linked" : "random"), 
-    params.model, 
-    params.speed, 
-    state->lightLists[i]->length, 
-    state->lightLists[i]->lifeMillis, 
-    state->lightLists[i]->maxBri, 
-    params.fadeSpeed, 
-    state->totalLights + state->lightLists[i]->numLights, 
+    state->lightLists[i]->numLights,
+    (params.linked ? "linked" : "random"),
+    params.model,
+    params.speed,
+    state->lightLists[i]->length,
+    state->lightLists[i]->lifeMillis,
+    state->lightLists[i]->maxBri,
+    params.fadeSpeed,
+    state->totalLights + state->lightLists[i]->numLights,
     state->totalLightLists + 1);
-  #endif  
+  #endif
 }
 
-#ifdef HD_OSC
+#ifdef OSC_ENABLED
 void parseParams(EmitParams &p, const OscMessage &m) {
   for (uint8_t i=0; i<m.size() / 2; i++) {
     EmitParam param = static_cast<EmitParam>(m.arg<uint8_t>(i*2));
@@ -427,7 +415,7 @@ void parseParam(EmitParams &p, const OscMessage &m, EmitParam &param, uint8_t j)
         break;
       case P_EASE:
         p.ease = m.arg<uint8_t>(j);
-        break;        
+        break;
       case P_LENGTH:
         p.setLength(m.arg<uint16_t>(j));
         break;
@@ -460,7 +448,7 @@ void parseParam(EmitParams &p, const OscMessage &m, EmitParam &param, uint8_t j)
         p.duration = m.arg<uint32_t>(j);
         break;
       case P_COLOR:
-        p.color = ColorRGB(m.arg<uint32_t>(j));        
+        p.color = ColorRGB(m.arg<uint32_t>(j));
         break;
       case P_COLOR_INDEX: {
         int16_t index = m.arg<int16_t>(j);
@@ -468,7 +456,7 @@ void parseParam(EmitParams &p, const OscMessage &m, EmitParam &param, uint8_t j)
           p.color.setRandom();
         }
         else {
-          p.color = state->paletteColor(index);        
+          p.color = state->paletteColor(index);
         }
         break;
       }
@@ -540,7 +528,7 @@ void onNotesSet(const OscMessage& m) {
   }
   for (uint8_t i=0; i<MAX_NOTES_SET; i++) {
     if (notesSet[i].noteId > 0) {
-      doEmit(notesSet[i]);      
+      doEmit(notesSet[i]);
     }
   }
 }

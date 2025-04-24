@@ -3,6 +3,7 @@
 #include "Intersection.h"
 #include "Connection.h"
 #include "Model.h"
+#include "EmitParams.h"
 
 class LPObject {
 
@@ -52,6 +53,36 @@ class LPObject {
     
     virtual bool isMirrorSupported() { return false; }
     virtual uint16_t* getMirroredPixels(uint16_t pixel, LPOwner* mirrorFlipEmitter, bool mirrorRotate) = 0;
+    
+    virtual EmitParams* getParams(char command) {
+        switch (command) {
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7': {
+                int model = command - '1';
+                EmitParams* params = this->getModelParams(model);
+                return params;
+            }
+            case '/': {
+                EmitParams* params = new EmitParams();
+                params->behaviourFlags |= B_RENDER_SEGMENT;
+                params->setLength(1);
+                return params;
+            }
+            case '?': { // emitNoise
+                EmitParams* params = new EmitParams();
+                //params->order = LIST_NOISE;
+                params->behaviourFlags |= B_BRI_CONST_NOISE;
+                return params;
+            }
+        }
+        return NULL;
+    }
+    virtual EmitParams* getModelParams(int model) = 0;
 
   private:
     uint8_t nextInter[MAX_GROUPS];

@@ -12,7 +12,7 @@ enum CrossModel {
     C_VERTICAL = 2,
     C_DIAGONAL = 3,
     C_FIRST = C_DEFAULT,
-    C_LAST = C_VERTICAL,
+    C_LAST = C_DIAGONAL,
 };
 
 class Cross : public LPObject {
@@ -36,6 +36,11 @@ class Cross : public LPObject {
     uint16_t* getMirroredPixels(uint16_t pixel, LPOwner* mirrorFlipEmitter, bool mirrorRotate);
     float getProgressOnLine(uint16_t pixel, bool isVertical) const;
     uint16_t getPixelOnLine(float perc, bool isVertical) const;
+    
+    EmitParams* getModelParams(int model) override {
+        EmitParams* params = new EmitParams(model % CrossModel::C_LAST, LPRandom::randomSpeed());
+        return params;
+    }
 
   private:
     void setup();
