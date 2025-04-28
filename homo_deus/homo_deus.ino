@@ -1,14 +1,16 @@
-#define BUTTON_PIN 25
+// #define BUTTON_PIN 25
 
 // WiFi Configuration (comment out WIFI_ENABLED to disable WiFi completely)
-//#define WIFI_ENABLED
+#define WIFI_ENABLED
 #ifdef WIFI_ENABLED
   #define WIFI_HOSTNAME "homo-deus"
   #define WIFI_SSID "toplap"
   #define WIFI_PASS "karlsruhe"
+  #define WIFI_REQUIRED
   #define OSC_ENABLED // OSC support (requires WiFi)
 #endif
 
+#define BLUETOOTH_ENABLED
 #define SERIAL_ENABLED   // Serial communication
 #define DEBUGGER_ENABLED // Debugging features
 //#define SC_HOST "192.168.43.101"
@@ -40,12 +42,20 @@
 #define PIXEL_PIN2 26
 #endif
 
-#define OBJ_LINE
+//#define OBJ_LINE
 #ifdef OBJ_LINE
 #include "src/objects/Line.h"
 #define PIXEL_COUNT1 LINE_PIXEL_COUNT
 #define PIXEL_PIN1 21
 #define PIXEL_COUNT LINE_PIXEL_COUNT
+#endif
+
+#define OBJ_TRIANGLE
+#ifdef OBJ_TRIANGLE
+#include "src/objects/Triangle.h"
+#define PIXEL_COUNT1 TRIANGLE_PIXEL_COUNT
+#define PIXEL_PIN1 3
+#define PIXEL_COUNT TRIANGLE_PIXEL_COUNT
 #endif
 
 #include "src/Globals.h"
@@ -89,6 +99,10 @@ HeptagonStar object(PIXEL_COUNT);
 Line object(PIXEL_COUNT);
 #endif
 
+#ifdef OBJ_TRIANGLE
+Triangle object(PIXEL_COUNT);
+#endif
+
 State *state;
 bool showIntersections = false;
 bool showConnections = false;
@@ -115,9 +129,9 @@ void setup() {
   #endif
 
   #ifdef USE_FASTLED
-    FastLED.addLeds<WS2811, PIXEL_PIN1, RGB>(leds1, PIXEL_COUNT1);
-    #ifdef PIXE_PIN2
-    FastLED.addLeds<WS2811, PIXEL_PIN2, RGB>(leds2, PIXEL_COUNT2);
+    FastLED.addLeds<WS2812, PIXEL_PIN1, GRB>(leds1, PIXEL_COUNT1).setRgbw(RgbwDefault());
+    #ifdef PIXEL_PIN2
+    FastLED.addLeds<WS2812, PIXEL_PIN2, GRB>(leds2, PIXEL_COUNT2).setRgbw(RgbwDefault());
     #endif
     FastLED.setBrightness(MAX_BRIGHTNESS);
     FastLED.clear();
@@ -141,13 +155,15 @@ void setup() {
 void setupComms() {
   Serial.begin(115200);
 
+  #ifndef BLUETOOTH_ENABLED
   esp_bt_controller_mem_release(ESP_BT_MODE_BTDM);
+  #endif
 
   #ifdef WIFI_SSID
 
   #ifdef ESP_PLATFORM
+  WiFi.disconnect(true);  // disable wifi, erase ap info
   WiFi.mode(WIFI_STA);
-  WiFi.disconnect(false, true);  // disable wifi, erase ap info
   delay(3000);
   #endif
 
@@ -170,8 +186,13 @@ void setupComms() {
   }
   else {
     // Continue even if WiFi connection fails
-    Serial.println("WiFi failed to connect. Continuing without WiFi...");
     WiFi.disconnect(true, true);
+    #ifdef WIFI_REQUIRED
+    Serial.println("WiFi failed to connect. Restarting...");
+    ESP.restart();
+    #else
+    Serial.println("WiFi failed to connect. Continuing without WiFi...");
+    #endif
     wifiConnected = false;
   }
 
@@ -403,13 +424,9 @@ void parseParams(EmitParams &p, const OscMessage &m) {
 
 void parseParam(EmitParams &p, const OscMessage &m, EmitParam &param, uint8_t j) {
   switch (param) {
-      case P_MODEL: {
-        int8_t model = m.arg<int8_t>(j);
-        if (model >= HeptagonStarModel::M_FIRST && model <= HeptagonStarModel::M_LAST) {
-          p.model = model;
-        }
+      case P_MODEL:
+        p.model = m.arg<uint8_t>(j);
         break;
-      }
       case P_SPEED:
         p.speed = m.arg<float>(j);
         break;
