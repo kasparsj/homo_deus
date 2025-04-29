@@ -1,6 +1,6 @@
 [Šūna / Homo Deus (2021)](https://kaspars.cc/installations/) is a light installation and [performance](https://kaspars.cc/performances/) by Kaspars Jaudzems.
 
-It makes use of the smart high performance light mesh/geometry animation library.
+It makes use of the smart high performance LED mesh/geometry animation library.
 
 - [SuperCollider](/SuperCollider) Homo Deus SuperCollider library, installation and performance controllers
 - [TidalCycles](/TidalCycles) Homo Deus TidalCycles mappings, techno set and experiments
