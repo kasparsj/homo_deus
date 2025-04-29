@@ -5,7 +5,7 @@ s.waitForBoot {
 	"../patterns.scd".loadRelative;
 	if (~dirt.notNil, {
 		"../superdirt.scd".loadRelative;
-		"../circuit.scd".loadRelative;
+		//"../circuit.scd".loadRelative;
 	});
 
 	// does not work with hotspot (works with router)
@@ -55,3 +55,8 @@ RedTrack(\conn, RedFn({
 )
 
 ~sound.play;
+
+~hd.command(\debug_all);
+~hd.command(\debug_intersection);
+~hd.command(\debug_connection);
+

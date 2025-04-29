@@ -23,7 +23,7 @@ s.waitForBoot {
 	~hd.net = NetAddr("192.168.1.105", 54321); // esp32-6E0B08
 	//~hd.net.disconnect;
 
-	~playAuto = true;
+	~playAuto = false;
 	~soundInterval = 0;
 	~lastWindChange = 0;
 

@@ -10,6 +10,7 @@
 		237289D63272209F9AB3647A /* UdpSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0E7CD5F571BC7E9EBEAF67F /* UdpSocket.cpp */; };
 		23DA2CABE99CFB8CD7FE1E80 /* OscPrintReceivedElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DE5219AC44F62EDB0E8CD052 /* OscPrintReceivedElements.cpp */; };
 		280CF762901BA61E95B278D6 /* OscOutboundPacketStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27B6A0FBA3E7532EB28FF1D7 /* OscOutboundPacketStream.cpp */; };
+		2B2400B52DBD195E0078ECDB /* Triangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B2400B32DBD195E0078ECDB /* Triangle.cpp */; };
 		2B2971BC28BDEDC200B98A88 /* Intersection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B29719628BDEDC200B98A88 /* Intersection.cpp */; };
 		2B2971BD28BDEDC200B98A88 /* EmitParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B29719728BDEDC200B98A88 /* EmitParams.cpp */; };
 		2B2971BE28BDEDC200B98A88 /* LightList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B29719B28BDEDC200B98A88 /* LightList.cpp */; };
@@ -60,6 +61,8 @@
 		2458ACEB16C91E16D6D01FCB /* OscReceivedElements.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = OscReceivedElements.cpp; path = ../../openframeworks/addons/ofxOsc/libs/oscpack/src/osc/OscReceivedElements.cpp; sourceTree = SOURCE_ROOT; };
 		27B6A0FBA3E7532EB28FF1D7 /* OscOutboundPacketStream.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = OscOutboundPacketStream.cpp; path = ../../openframeworks/addons/ofxOsc/libs/oscpack/src/osc/OscOutboundPacketStream.cpp; sourceTree = SOURCE_ROOT; };
 		286BA36D33B59DA3F2A0E0DB /* OscReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = OscReceivedElements.h; path = ../../openframeworks/addons/ofxOsc/libs/oscpack/src/osc/OscReceivedElements.h; sourceTree = SOURCE_ROOT; };
+		2B2400B32DBD195E0078ECDB /* Triangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Triangle.cpp; sourceTree = "<group>"; };
+		2B2400B42DBD195E0078ECDB /* Triangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Triangle.h; sourceTree = "<group>"; };
 		2B28EAC383B6C7F0BC940517 /* ofxOscSender.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ofxOscSender.cpp; path = ../../openframeworks/addons/ofxOsc/src/ofxOscSender.cpp; sourceTree = SOURCE_ROOT; };
 		2B29719528BDEDC200B98A88 /* Connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Connection.h; sourceTree = "<group>"; };
 		2B29719628BDEDC200B98A88 /* Intersection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Intersection.cpp; sourceTree = "<group>"; };
@@ -373,6 +376,8 @@
 		2BEE34D62DB9631200668DEF /* objects */ = {
 			isa = PBXGroup;
 			children = (
+				2B2400B32DBD195E0078ECDB /* Triangle.cpp */,
+				2B2400B42DBD195E0078ECDB /* Triangle.h */,
 				2BEE34DC2DB97F6800668DEF /* Cross.cpp */,
 				2BEE34DB2DB97F6800668DEF /* Cross.h */,
 				2BEE34D82DB9645400668DEF /* Line.cpp */,
@@ -908,6 +913,7 @@
 				2B2971BD28BDEDC200B98A88 /* EmitParams.cpp in Sources */,
 				F7A16F8C9FD60E62574A92BA /* IpEndpointName.cpp in Sources */,
 				2B2971C028BDEDC200B98A88 /* Weight.cpp in Sources */,
+				2B2400B52DBD195E0078ECDB /* Triangle.cpp in Sources */,
 				2B2971BC28BDEDC200B98A88 /* Intersection.cpp in Sources */,
 				2B2971C128BDEDC200B98A88 /* State.cpp in Sources */,
 				D7802E84A85C510344228DCF /* NetworkingUtils.cpp in Sources */,

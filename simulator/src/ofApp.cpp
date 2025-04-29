@@ -13,6 +13,8 @@ LPObject* ofApp::createObject(ObjectType type, uint16_t pixelCount) {
             return new Line(pixelCount);
         case OBJ_CROSS:
             return new Cross(pixelCount);
+        case OBJ_TRIANGLE:
+            return new Triangle(pixelCount);
         default:
             return new HeptagonStar(pixelCount);
     }
@@ -257,6 +259,9 @@ void ofApp::doCommand(char command) {
                   newType = OBJ_CROSS;
                   break;
               case OBJ_CROSS:
+                  newType = OBJ_TRIANGLE;
+                  break;
+              case OBJ_TRIANGLE:
               default:
                   newType = OBJ_HEPTAGON_STAR;
                   break;
@@ -278,6 +283,9 @@ void ofApp::doCommand(char command) {
               case OBJ_CROSS:
                   pixelCount = CROSS_PIXEL_COUNT;
                   break;
+              case OBJ_TRIANGLE:
+                  pixelCount = TRIANGLE_PIXEL_COUNT;
+                  break;
               default:
                   pixelCount = HEPTAGON_PIXEL_COUNT;
                   break;
@@ -291,6 +299,7 @@ void ofApp::doCommand(char command) {
               case OBJ_HEPTAGON_STAR: objName = "HeptagonStar"; break;
               case OBJ_LINE: objName = "Line"; break;
               case OBJ_CROSS: objName = "Cross"; break;
+              case OBJ_TRIANGLE: objName = "Triangle"; break;
               default: objName = "Unknown"; break;
           }
           ofLog(OF_LOG_NOTICE, "Switched to %s", objName);
@@ -403,6 +412,9 @@ glm::vec2 ofApp::intersectionPos(Intersection* intersection, int8_t j) {
     } else if (currentObjectType == OBJ_CROSS) {
         // Cross visualization - use dimensions for the cross
         groupDiam[0] = ofGetHeight()*0.9;
+    } else if (currentObjectType == OBJ_TRIANGLE) {
+        // Triangle visualization - use dimensions for the triangle
+        groupDiam[0] = ofGetHeight()*0.8;
     }
 
     uint8_t i = log2(intersection->group);
@@ -434,6 +446,23 @@ glm::vec2 ofApp::intersectionPos(Intersection* intersection, int8_t j) {
             return pointOnEllipse(TWO_PI/4.f * k, groupDiam[i], groupDiam[i]);
         }
         return glm::vec2(0, 0);
+    } else if (currentObjectType == OBJ_TRIANGLE) {
+        if (j < 3) {
+            // Main triangle vertices (0, 1, 2)
+            return pointOnEllipse(TWO_PI/3.f * j, groupDiam[i], groupDiam[i]);
+        } else {
+            // Midpoints on each side
+            int side = (j - 3) / 4;  // Which side (0, 1, 2)
+            int pos = (j - 3) % 4;   // Position on side (0=1/5, 1=2/5, 2=3/5, 3=4/5)
+            float t = (pos + 1) / 5.0f;  // Position along the side (1/5, 2/5, 3/5, or 4/5)
+            
+            // Get the position of the surrounding vertices
+            glm::vec2 v1 = pointOnEllipse(TWO_PI/3.f * side, groupDiam[i], groupDiam[i]);
+            glm::vec2 v2 = pointOnEllipse(TWO_PI/3.f * ((side + 1) % 3), groupDiam[i], groupDiam[i]);
+            
+            // Linear interpolation between vertices
+            return glm::mix(v1, v2, t);
+        }
     }
     
     // Default fallback
